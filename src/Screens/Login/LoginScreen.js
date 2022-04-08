@@ -29,8 +29,8 @@ import SplashScreen from 'react-native-splash-screen';
 import Feather from 'react-native-vector-icons/Feather';
 
 const LoginScreen = ({navigation, route, loginUser}) => {
-  const [username, onChangeUsername] = React.useState('');
-  const [password, onChangePassword] = React.useState('');
+  const [username, onChangeUsername] = React.useState('danial@gmail.com');
+  const [password, onChangePassword] = React.useState('ahsan1234');
   const loginHandle = (userName, password) => {
     const foundUser = Users.filter(item => {
       return userName == item.username && password == item.password;
@@ -169,11 +169,16 @@ const LoginScreen = ({navigation, route, loginUser}) => {
             }}>
             <TouchableOpacityBtn
               onPress={() => {
+                // console.log("testtt")
                 loginUser(username, password);
               }}
               title="Sign In"
             />
-            <TouchableOpacity onPress={() => navigation.navigate('forgot')}>
+            <TouchableOpacity
+              onPress={() => {
+                return;
+                navigation.navigate('forgot');
+              }}>
               <Text
                 style={{
                   color: 'white',
@@ -184,7 +189,11 @@ const LoginScreen = ({navigation, route, loginUser}) => {
                 Forgot Password?
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('signup')}>
+            <TouchableOpacity
+              onPress={() => {
+                return;
+                navigation.navigate('signup');
+              }}>
               <Text
                 style={{
                   color: 'white',

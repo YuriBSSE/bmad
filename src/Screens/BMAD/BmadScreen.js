@@ -36,29 +36,30 @@ const SPACING_FOR_CARD_INSET = width * 0.055 - 10;
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0925;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const BmadScreen = ({navigation, route, props, getUserCoords}) => {
-  // console.log(getUserCoords, "COORDINATES")
+const BmadScreen = ({navigation, route, props, userCoordsReducer}) => {
+  // console.log(userCoordsReducer, "COORDINATES")
 
   const initialMapState = {
     markers,
     region: {
-      latitude: getUserCoords?.lat,
-      longitude: getUserCoords?.long,
+      latitude: 24.7931,
+      longitude: 67.0651,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     },
   };
 
   const [state, setState] = React.useState(initialMapState);
-
+  const _map = React.useRef(null);
+  const _scrollView = React.useRef(null);
   let mapIndex = 0;
   let mapAnimation = new Animated.Value(0);
 
   useEffect(() => {
     mapAnimation.addListener(({value}) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      if (index >= state.markers.length) {
-        index = state.markers.length - 1;
+      if (index >= state?.markers?.length) {
+        index = state?.markers?.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -132,9 +133,6 @@ const BmadScreen = ({navigation, route, props, getUserCoords}) => {
     });
   };
 
-  const _map = React.useRef(null);
-  const _scrollView = React.useRef(null);
-
   return (
     <View style={styles.container}>
       <MapView
@@ -142,9 +140,7 @@ const BmadScreen = ({navigation, route, props, getUserCoords}) => {
         initialRegion={state.region}
         onMarkerDragEnd={onRegionChange}
         ref={_map}
-        initialRegion={state.region}
-        style={{flex: 1}}
-        provider={PROVIDER_GOOGLE}>
+        style={{flex: 1}}>
         <Marker
           stopPropagation={false}
           style={{position: 'absolute'}}
@@ -222,6 +218,7 @@ const BmadScreen = ({navigation, route, props, getUserCoords}) => {
         {state.markers.map((marker, index) => (
           <TouchableOpacity
             key={index}
+            style={styles.cardContainer}
             onPress={() => navigation.navigate('detail', {Data: marker})}>
             <View style={styles.card}>
               <View style={styles.imageView}>
@@ -281,8 +278,8 @@ const BmadScreen = ({navigation, route, props, getUserCoords}) => {
     </View>
   );
 };
-function mapStateToProps({getUserCoords}) {
-  return {getUserCoords};
+function mapStateToProps({userCoordsReducer}) {
+  return {userCoordsReducer};
 }
 
 export default connect(mapStateToProps, actions)(BmadScreen);
@@ -332,6 +329,17 @@ const styles = StyleSheet.create({
   },
   endPadding: {
     paddingRight: width - CARD_WIDTH,
+  },
+  cardContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+
+    elevation: 12,
   },
   card: {
     padding: 0,

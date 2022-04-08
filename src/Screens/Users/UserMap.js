@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {Badge} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
 import {
   markers,
   mapDarkStyle,
@@ -26,6 +26,7 @@ import {
 import AppText from '../../Components/AppText';
 import {Rating} from 'react-native-elements';
 import {connect} from 'react-redux';
+import {imageUrl} from '../../Config/Apis.json';
 import * as actions from '../../Store/Actions';
 import UserProfileMarker from './../../Components/UserProfileMarker';
 import YourImage from './../../Assets/Images/pic5.png';
@@ -41,15 +42,22 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.01725;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userGets}) => {
-  console.log(getNearMeUsers, "COORDINATES")
+const UserMap = ({
+  navigation,
+  route,
+  props,
+  userCoordsReducer,
+  usersNearmeReducer,
+  userReducer,
+}) => {
+  // console.log(usersNearmeReducer, 'COORDINATES');
   const _map = React.useRef(null);
   const _scrollView = React.useRef(null);
   const initialMapState = {
-    getNearMeUsers,
+    usersNearmeReducer,
     region: {
-      latitude: getUserCoords?.lat,
-      longitude: getUserCoords?.long,
+      latitude: userCoordsReducer?.lat,
+      longitude: userCoordsReducer?.long,
       latitudeDelta: 0.0925,
       longitudeDelta: 0.0925,
     },
@@ -61,13 +69,12 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
   let mapAnimation = new Animated.Value(0);
 
   useEffect(() => {
-
-    if(getNearMeUsers == {} || state.getNearMeUsers.length > 0){
+    if (usersNearmeReducer == {} || state.usersNearmeReducer.length > 0) {
       // alert("AAAA")
       mapAnimation.addListener(({value}) => {
         let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-        if (index >= state.getNearMeUsers?.length) {
-          index = state.getNearMeUsers?.length - 1;
+        if (index >= state.usersNearmeReducer?.length) {
+          index = state.usersNearmeReducer?.length - 1;
         }
         if (index <= 0) {
           index = 0;
@@ -76,7 +83,7 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
         const regionTimeout = setTimeout(() => {
           if (mapIndex !== index) {
             mapIndex = index;
-            const {coordinate} = state.getNearMeUsers[index];
+            const {coordinate} = state.usersNearmeReducer[index];
             _map.current.animateToRegion(
               {
                 ...coordinate,
@@ -104,35 +111,30 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
   };
 
   const onMarkerPress = mapEventData => {
-
     const markerID = mapEventData._targetInst.return.key;
     let x = markerID * CARD_WIDTH + markerID * 20;
     if (Platform.OS === 'ios') {
       x = x - SPACING_FOR_CARD_INSET;
     }
     _scrollView.current.scrollTo({x: x, y: 0, animated: true});
-
   };
-  // console.log(state.getNearMeUsers)
+  // console.log(state.usersNearmeReducer)
 
-
- 
-  const interpolations = (state.getNearMeUsers == {} ? []: getNearMeUsers).map((marker, index) => {
-      const inputRange = [
-        (index - 1) * CARD_WIDTH,
-        index * CARD_WIDTH,
-        (index + 1) * CARD_WIDTH,
-      ];
-      const scale = mapAnimation.interpolate({
-        inputRange,
-        outputRange: [1.1, 1.1, 1],
-        extrapolate: 'clamp',
-      });
-      return {scale};
-  }); 
-
-  
-
+  const interpolations = (
+    state.usersNearmeReducer == {} ? [] : usersNearmeReducer
+  ).map((marker, index) => {
+    const inputRange = [
+      (index - 1) * CARD_WIDTH,
+      index * CARD_WIDTH,
+      (index + 1) * CARD_WIDTH,
+    ];
+    const scale = mapAnimation.interpolate({
+      inputRange,
+      outputRange: [1.1, 1.1, 1],
+      extrapolate: 'clamp',
+    });
+    return {scale};
+  });
 
   const onRegionChange = mark => {
     const Delta = 0.025;
@@ -144,22 +146,20 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
     });
   };
 
-
   // const size = zoomLevel <= 10 ? 40 : 80;
 
-  if(state.getNearMeUsers == {} || state.getNearMeUsers.length > 0){
+  if (state.usersNearmeReducer == {} || state.usersNearmeReducer.length > 0) {
     // alert("AAAA")
     return (
       <View style={styles.container}>
         <MapView
-            minZoomLevel={16}
-            onMarkerDragEnd={onRegionChange}
-            ref={_map}
-            initialRegion={state.region}
-            style={{flex: 1}}
-            // mapType={Platform.OS == 'android' ? 'terrain' : 'standard'}
-            provider={Platform.OS == 'android' ? PROVIDER_GOOGLE : null}
-          >
+          minZoomLevel={16} // revert it back to 16 !!
+          onMarkerDragEnd={onRegionChange}
+          ref={_map}
+          initialRegion={state.region}
+          style={{flex: 1}}
+          // mapType={Platform.OS == 'android' ? 'terrain' : 'standard'}
+          provider={Platform.OS == 'android' ? PROVIDER_GOOGLE : null}>
           <Marker
             stopPropagation={false}
             style={{position: 'absolute'}}
@@ -167,26 +167,33 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
               latitude: state.region.latitude,
               longitude: state.region.longitude,
             }}
-            title={'Your Location'}
-            >
-              {
-              userGets?.user_image?.includes('ngrok') ?
-                <Avatar
-                    rounded
-                    size="medium"
-                    containerStyle={{borderWidth: 1}}
-                    source={require('./../../Assets/Images/dp.png')} 
-                />:
-                <Avatar
-                      rounded
-                      size="medium"
-                      source={{uri: userGets?.user_image}} 
-                  />
-              }
-  
+            title={'Your Location'}>
+            <MapView.Circle
+              key={(state.region.latitude + state.region.longitude).toString()}
+              center={state.region}
+              radius={300}
+              strokeWidth={0}
+              strokeColor={'#1a66ff'}
+              fillColor={'rgba(176,17,37,0.2)'}
+            />
+            {userReducer?.data?.user_image?.includes('ngrok') ? (
+              <Avatar
+                rounded
+                size="medium"
+                containerStyle={{borderWidth: 1}}
+                source={require('./../../Assets/Images/placeholderImage.jpg')}
+              />
+            ) : (
+              <Avatar
+                rounded
+                size="medium"
+                source={{uri: `${imageUrl}/${userReducer?.data?.user_image}`}}
+              />
+            )}
           </Marker>
-  
-          {state.getNearMeUsers?.map((marker, index) => {
+
+          {/* Maps Users Location on Map  */}
+          {state.usersNearmeReducer?.map((marker, index) => {
             const scaleStyle = {
               transform: [
                 {
@@ -198,41 +205,43 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
               <MapView.Marker
                 key={index}
                 coordinate={{
-                  latitude: parseFloat(marker.user_latitude),
-                  longitude: parseFloat(marker.user_longitude),
+                  latitude: marker.user_latitude,
+                  longitude: marker.user_longitude,
                 }}
                 title={marker.user_name}
                 onPress={e => onMarkerPress(e)}>
-                <Animated.View style={[styles.markerWrap]}>
+                <Animated.View style={styles.markerWrap}>
                   <Animated.View
                     style={{
                       borderColor: '#EA2C2E',
                       borderRadius: 50,
                       padding: 0,
                       alignItems: 'center',
-                      width: 40, height: 40,
-                      justifyContent:'center'
+                      width: 40,
+                      height: 40,
+                      justifyContent: 'center',
                     }}>
-                     {
-                      marker.user_image.includes('ngrok') ?
-                      <Animated.Image
-                        source={require('./../../Assets/Images/dp.png')}
-                        style={[styles.marker, scaleStyle]}
-                        resizeMode="cover"
-                      />
-                    :
+                    {marker.user_image ? (
                       <Animated.Image
                         source={{uri: marker.user_image}}
                         style={[styles.marker, scaleStyle]}
                         resizeMode="cover"
                       />
-                    }
+                    ) : (
+                      <Animated.Image
+                        source={require('./../../Assets/Images/placeholderImage.jpg')}
+                        style={[styles.marker, scaleStyle]}
+                        resizeMode="cover"
+                      />
+                    )}
                   </Animated.View>
                 </Animated.View>
               </MapView.Marker>
             );
           })}
         </MapView>
+
+        {/* Users Near Me Cards  */}
         <Animated.ScrollView
           ref={_scrollView}
           horizontal
@@ -264,22 +273,29 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
             ],
             {useNativeDriver: true},
           )}>
-
-          {state.getNearMeUsers.map((marker, index) => (
+          {state.usersNearmeReducer.map((marker, index) => (
             <TouchableOpacity
               key={index}
+              style={styles.cardContainer}
               onPress={() => navigation.navigate('OfferADrink')}>
               <View style={styles.card}>
                 <View style={styles.imageView}>
-                {/* {console.log(marker.user_image)} */}
-                {
-                  marker.user_image.includes('ngrok') ?
-                  <Avatar rounded size="large" source={require('./../../Assets/Images/dp.png')} />:
-                  <Avatar rounded size="large" source={{uri: marker.user_image}} />
-                }
-               
-  
-                  <Badge
+                  {/* {console.log(marker.user_image)} */}
+                  {marker.user_image.includes('ngrok') ? (
+                    <Avatar
+                      rounded
+                      size="large"
+                      source={require('./../../Assets/Images/placeholderImage.jpg')}
+                    />
+                  ) : (
+                    <Avatar
+                      rounded
+                      size="large"
+                      source={{uri: marker.user_image}}
+                    />
+                  )}
+
+                  {/* <Badge
                     badgeStyle={{
                       height: 12,
                       width: 12,
@@ -289,8 +305,8 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
                       position: 'absolute',
                     }}
                     status="success"
-                    containerStyle={{position: 'absolute', top: 30, right: 55}}
-                  />
+                    containerStyle={{position: 'absolute', top: height * 0.042, right: 55}}
+                  /> */}
                 </View>
                 <View style={styles.textContent}>
                   <AppText
@@ -320,7 +336,9 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
                     family="Poppins-Regular"
                     size={hp('1.4%')}
                     color="grey"
-                    Label={parseFloat(marker.distance).toFixed(2) + ' Km far away'}
+                    Label={
+                      parseFloat(marker.distance).toFixed(2) + ' Km far away'
+                    }
                   />
                 </View>
               </View>
@@ -329,21 +347,38 @@ const UserMap = ({navigation, route, props, getUserCoords, getNearMeUsers, userG
         </Animated.ScrollView>
       </View>
     );
-  }else{
+  } else {
     return (
-      <View style={{ alignItems:'center', justifyContent:'space-around', alignSelf:'center', flexDirection:'column', alignContent:'space-around'}}>
-            <LottieView style={{width: '80%', height: '90%',  alignItems:'center', }} source={require('./../../Assets/Lottie/notfound.json')} autoPlay loop />
-                <View style={{top: -150}}>
-                <AppText  nol={1}  textAlign="left"  family="Poppins-Regular" size={hp("2.5%")} color="black" Label={'No People Found'} />
-                </View>
-       </View>
-    )
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          alignSelf: 'center',
+          flexDirection: 'column',
+          alignContent: 'space-around',
+        }}>
+        <LottieView
+          style={{width: '80%', height: '90%', alignItems: 'center'}}
+          source={require('./../../Assets/Lottie/notfound.json')}
+          autoPlay
+          loop
+        />
+        <View style={{top: -150}}>
+          <AppText
+            nol={1}
+            textAlign="left"
+            family="Poppins-Regular"
+            size={hp('2.5%')}
+            color="black"
+            Label={'No People Found'}
+          />
+        </View>
+      </View>
+    );
   }
-
-
 };
-function mapStateToProps({getUserCoords,getNearMeUsers, userGets}) {
-  return {getUserCoords, getNearMeUsers, userGets};
+function mapStateToProps({userCoordsReducer, usersNearmeReducer, userReducer}) {
+  return {userCoordsReducer, usersNearmeReducer, userReducer};
 }
 
 export default connect(mapStateToProps, actions)(UserMap);
@@ -373,6 +408,17 @@ const styles = StyleSheet.create({
   },
   chipsIcon: {
     marginRight: 5,
+  },
+  cardContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+
+    elevation: 12,
   },
   chipsItem: {
     flexDirection: 'row',
@@ -443,7 +489,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 0,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent: 'center',
   },
   marker: {
     width: 30,

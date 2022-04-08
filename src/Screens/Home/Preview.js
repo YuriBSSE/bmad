@@ -1,4 +1,3 @@
-  
 import React from 'react';
 import {
   View,
@@ -9,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 
-export default (Preview = ({
+export default Preview = ({
   style,
   item,
   imageKey,
@@ -18,19 +17,18 @@ export default (Preview = ({
   active,
   local,
 }) => {
-    // console.log(item.image)
   return (
     <View style={styles.videoContainer}>
       <View style={[styles.imageContainer, styles.shadow]}>
-          <Image
-          resizeMethod='auto'
-            style={styles.videoPreview}
-            source={item.image}
-          />
+        <Image
+          resizeMethod="auto"
+          style={styles.videoPreview}
+          source={{uri: item}}
+        />
       </View>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   videoContainer: {
@@ -41,7 +39,7 @@ const styles = StyleSheet.create({
     width: 280,
     height: 220,
     // borderRadius: 8,
-    margin:10
+    margin: 10,
   },
   desc: {
     fontSize: 14,
@@ -66,4 +64,4 @@ const styles = StyleSheet.create({
       },
     }),
   },
-})
+});

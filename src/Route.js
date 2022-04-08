@@ -10,7 +10,7 @@ function Route(){
     const Stack=createStackNavigator();
     return(
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="main">
+            <Stack.Navigator  screenOptions={{headerShown: false}} initialRouteName="main">
                 <Stack.Screen 
                     name="main" 
                     options={{headerShown:false}} 

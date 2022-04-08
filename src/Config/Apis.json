@@ -1,6 +1,7 @@
-
 {
-    "api":"http://83da-110-93-244-255.ngrok.io",
-    "deploy_API": "http://83da-110-93-244-255.ngrok.io",
-    "googleMapKey": "AIzaSyBStPDYl2bu_pA_G3XRzWA5eEWc_yBGBx4"
+  "api": "http://192.168.0.38:5000",
+  "imageUrl": "http://192.168.0.38:5000/post_file",
+  "deploy_API": "http://192.168.0.38:5000",
+  "googleMapKey": "AIzaSyBStPDYl2bu_pA_G3XRzWA5eEWc_yBGBx4",
+  "PUB_KEY_STRIPE": "pk_test_51K7J3zEIGUZHqg4AQXRkFcz3FkVbBOa5MxjLqxY5z3EV5QpgJvDPmP285BvNt82FupjcBc8ZranqwU9rafxLKJTR009XtKs28i"
 }

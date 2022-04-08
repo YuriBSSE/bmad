@@ -1,9 +1,6 @@
-import React, {useEffect,useState} from 'react';
-import { View, StyleSheet,Image } from 'react-native';
-import {
-  DrawerItem,
-  DrawerContentScrollView,
-} from '@react-navigation/drawer';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Image} from 'react-native';
+import {DrawerItem, DrawerContentScrollView} from '@react-navigation/drawer';
 import {
   useTheme,
   Avatar,
@@ -18,56 +15,53 @@ import {
 import AppText from './Components/AppText';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { AuthContext } from './AuthContext';
+import {AuthContext} from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as actions from './Store/Actions'
-import {connect} from "react-redux";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import * as actions from './Store/Actions';
+import {connect} from 'react-redux';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-const DrawerContent = ({props,userGets, SignOut, navigation,userLogin }) => {
-  
-    return (
-    <View style={{flex:1}}>
+const DrawerContent = ({
+  props,
+  userReducer,
+  SignOut,
+  navigation,
+  userLogin,
+}) => {
+  return (
+    <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
-      <View
-          style={
-            styles.drawerContent
-          }
-        >
+        <View style={styles.drawerContent}>
           <View style={styles.userInfoSection}>
-          <Image
-                      resizeMode='contain'
-                      source={require('./Assets/Images/brand.png')}
-                      style={{
-                        width: 180,
-                        height: 200,
-                  
-                        // marginHorizontal: 3,
-                        
-                        // top: 8,
-                        // backgroundColor: "blue",
-                        // borderRadius: 3,
-                      }}
-                    />
+            <Image
+              resizeMode="contain"
+              source={require('./Assets/Images/brand.png')}
+              style={{
+                width: 180,
+                height: 200,
+              }}
+            />
           </View>
-          <Drawer.Section  style={styles.drawerSection}>
+          <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
-              
-              icon={({ color, size }) => (
-                <Feather
-                  name="home"
-                  color='white'
-                  size={30}
-                />
+              icon={({color, size}) => (
+                <Feather name="home" color="white" size={30} />
               )}
-              labelStyle={{fontFamily: 'Poppins-Regular', color: 'white', fontSize: hp('2%')}}
+              labelStyle={{
+                fontFamily: 'Poppins-Regular',
+                color: 'white',
+                fontSize: hp('2%'),
+              }}
               label="Home"
               onPress={() => navigation.navigate('HOME')}
             />
-              {/* <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => (
                 <FontAwesome
                   name="user-o"
@@ -79,30 +73,51 @@ const DrawerContent = ({props,userGets, SignOut, navigation,userLogin }) => {
               label=" Profile"
               onPress={() => navigation.navigate('profile')}
             /> */}
+
             <DrawerItem
-              icon={({ color, size }) => (
-                <Ionicons
-                  name="card-outline"
-                  color='white'
+              icon={({color, size}) => (
+                <MaterialCommunityIcons
+                  name="message-processing-outline"
+                  color="white"
                   size={30}
                 />
               )}
-              labelStyle={{fontFamily: 'Poppins-Regular', color: 'white', fontSize: hp('2%')}}
-              label="Credit Cards"
-              onPress={() => navigation.navigate('cards')}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <MaterialCommunityIcons
-                name="message-processing-outline"
-                color='white'
-                size={30}
-                />
-              )}
-              labelStyle={{fontFamily: 'Poppins-Regular', color: 'white', fontSize: hp('2%')}}
+              labelStyle={{
+                fontFamily: 'Poppins-Regular',
+                color: 'white',
+                fontSize: hp('2%'),
+              }}
               label="Messages"
               onPress={() => navigation.navigate('message')}
             />
+            <DrawerItem
+              icon={({color, size}) => (
+                <MaterialIcons
+                  name="connect-without-contact"
+                  color="white"
+                  size={30}
+                />
+              )}
+              labelStyle={{
+                fontFamily: 'Poppins-Regular',
+                color: 'white',
+                fontSize: hp('2%'),
+              }}
+              label="Connections"
+              onPress={() => navigation.navigate('connections')}
+            />
+            {/* <DrawerItem
+              icon={({color, size}) => (
+                <Ionicons name="card-outline" color="white" size={30} />
+              )}
+              labelStyle={{
+                fontFamily: 'Poppins-Regular',
+                color: 'white',
+                fontSize: hp('2%'),
+              }}
+              label="Credit Cards"
+              onPress={() => navigation.navigate('cards')}
+            /> */}
             {/* <DrawerItem
               icon={({ color, size }) => (
                 <Feather
@@ -119,67 +134,66 @@ const DrawerContent = ({props,userGets, SignOut, navigation,userLogin }) => {
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
-                <DrawerItem 
-                    icon={({color, size}) => (
-                        <MaterialIcons
-                        name="logout"
-                        color='white'
-                        size={30}
-                      />
-                    )}
-                    labelStyle={{fontFamily: 'Poppins-Regular', color: 'white', fontSize: hp('2%')}}
-                    onPress={()=>SignOut()}
-                    label="Sign Out"
-                />
-            </Drawer.Section>
+        <DrawerItem
+          icon={({color, size}) => (
+            <MaterialIcons name="logout" color="white" size={30} />
+          )}
+          labelStyle={{
+            fontFamily: 'Poppins-Regular',
+            color: 'white',
+            fontSize: hp('2%'),
+          }}
+          onPress={() => SignOut()}
+          label="Sign Out"
+        />
+      </Drawer.Section>
     </View>
-    );
-  }
-function mapStateToProps({userGets, userLogin}){
-  return {userGets,userLogin}
+  );
+};
+function mapStateToProps({userReducer, userLogin}) {
+  return {userReducer, userLogin};
 }
-export default connect(mapStateToProps,actions)(DrawerContent)
+export default connect(mapStateToProps, actions)(DrawerContent);
 
-  const styles = StyleSheet.create({
-    drawerContent: {
-      flex: 1,
-    },
-    userInfoSection: {
-      paddingLeft: 20,
-      
-    },
-    title: {
-      marginTop: 20,
-      fontWeight: 'bold',
-    },
-    caption: {
-      fontSize: 14,
-      lineHeight: 14,
-    },
-    row: {
-      marginTop: 20,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    section: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginRight: 15,
-    },
-    paragraph: {
-      fontWeight: 'bold',
-      marginRight: 3,
-    },
-    drawerSection: {
-      marginTop: 15,
-    },
-    preference: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-    },
-    bottomDrawerSection: {
-        marginBottom: 30,
-    },
-  });
+const styles = StyleSheet.create({
+  drawerContent: {
+    flex: 1,
+  },
+  userInfoSection: {
+    paddingLeft: 20,
+  },
+  title: {
+    marginTop: 20,
+    fontWeight: 'bold',
+  },
+  caption: {
+    fontSize: 14,
+    lineHeight: 14,
+  },
+  row: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  section: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  paragraph: {
+    fontWeight: 'bold',
+    marginRight: 3,
+  },
+  drawerSection: {
+    marginTop: 15,
+  },
+  preference: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  bottomDrawerSection: {
+    marginBottom: 30,
+  },
+});

@@ -13,7 +13,7 @@ import {
                     placeholder={placeholder}
                     placeholderTextColor="white"
                     style={styles.input}
-                    onChangeText={onchange}
+                    onChangeText={(text) => onchange(text)}
                     value={value}
                     caretHidden={false}
                     selectionColor="white"

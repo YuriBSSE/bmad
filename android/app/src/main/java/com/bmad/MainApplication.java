@@ -17,6 +17,8 @@ import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -36,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
             new LocationServicesDialogBoxPackage();
             new ImagePickerPackage();
             new FBSDKPackage();
+            new ReactNativePushNotificationPackage();
 
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());

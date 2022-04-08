@@ -19,6 +19,7 @@ import {
   TouchableHighlight,
   TextInput,
   ScrollView,
+  Dimensions,
   RefreshControl,
 } from 'react-native';
 import AppText from '../../Components/AppText';
@@ -27,8 +28,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 // import Avatara from '../../Components/Avatar';
+import LottieView from 'lottie-react-native';
 import {Avatar} from 'react-native-elements';
-import Posts from './../../../model/Posts';
+import {imageUrl} from '../../Config/Apis.json';
+
+// import Posts from './../../../model/Posts';
 import PostList from './PostList';
 import Geolocation from '@react-native-community/geolocation';
 import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
@@ -36,30 +40,42 @@ import * as actions from '../../Store/Actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
 
+const {width, height} = Dimensions.get('window');
+
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const HomeScreen = ({
+  coords,
   navigation,
   nearMeUsers,
-  getNearMeUsers,
-  coords,
-  userGets,
+  getFeedData,
+  userReducer,
+  postsReducer,
+  usersNearmeReducer,
+  userCoordsReducer,
+  likePost,
+  getAllConnections,
 }) => {
+  const USER_ID = userReducer?.data?.user_id;
+  const [posts, setPosts] = useState(postsReducer?.feedPosts);
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(2000).then(() => {
+      setRefreshing(false);
+      getFeedData(USER_ID);
+      nearMeUsers(userCoordsReducer.lat, userCoordsReducer.long, USER_ID);
+    });
   }, []);
 
-  useEffect(async () => {
-    var user = await AsyncStorage.getItem('user');
-    var parseData = JSON.parse(user);
-    console.log(
-      parseData?.user_id,
-      '=====================/====================',
-    );
+  useEffect(() => {
+    // console.log(JSON.stringify(postsReducer?.feedPosts, null, 2));
+    setPosts(postsReducer?.feedPosts);
+  }, [postsReducer?.feedPosts]);
+
+  useEffect(() => {
     if (Platform.OS === 'android') {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
         message:
@@ -75,35 +91,7 @@ const HomeScreen = ({
       })
         .then(
           function (success) {
-            Geolocation.getCurrentPosition(
-              position => {
-                let initialPosition = JSON.stringify(position);
-                // console.log(position.coords.latitude, "IN")
-                // console.log(position.coords.longitude, "IN")
-                console.log(
-                  parseData?.user_id,
-                  '=======================HOME SCREEN==================',
-                );
-                if (parseData?.user_id) {
-                  nearMeUsers(
-                    position.coords.latitude,
-                    position.coords.longitude,
-                    parseData?.user_id,
-                  );
-                } else {
-                  nearMeUsers(
-                    position.coords.latitude,
-                    position.coords.longitude,
-                    userGets.user_id,
-                  );
-                }
-                // nearMeUsers(position.coords.latitude,position.coords.longitude,userGets.user_id)
-                coords(position.coords.latitude, position.coords.longitude);
-                // console.log(position.longitude)
-              },
-              error => console.log(error),
-              {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
-            );
+            getOneTimeLocation();
           }.bind(this),
         )
         .catch(error => {
@@ -121,57 +109,105 @@ const HomeScreen = ({
         },
       );
     } else {
-      Geolocation.getCurrentPosition(
-        //Will give you the current location
-        position => {
-          // setLocationStatus('You are Here');
-          console.log(position, 'APP getCurrentPosition');
-        },
-        error => {
-          console.log(error.message);
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 30000,
-          maximumAge: 1000,
-        },
-      );
+      getOneTimeLocation();
     }
-    return () => {
-      // Anything in here is fired on component unmount.
-      if (Platform.OS === 'android') {
+    if (Platform.OS === 'android') {
+      return () => {
+        // Anything in here is fired on component unmount.
         LocationServicesDialogBox.stopListener();
-      }
-    };
+      };
+    }
   }, []);
+
+  const getOneTimeLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        nearMeUsers(
+          position.coords.latitude,
+          position.coords.longitude,
+          USER_ID,
+        );
+        getFeedData(USER_ID);
+        coords(position.coords.latitude, position.coords.longitude);
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
+
+  const _onPressHeart = item => {
+    const apiData = {
+      post_id: item?.post_id,
+      user_id: USER_ID,
+    };
+    likePost(apiData);
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
 
-      <View style={{}}>
+      {/* <View style={{}}> */}
+      {
         <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           scrollEnabled
           showsVerticalScrollIndicator={false}
-          data={Posts}
-          ListFooterComponent={<View style={{height: 100}}></View>}
+          data={posts}
+          contentContainerStyle={{paddingBottom:100,}}
+          ListFooterComponentStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          ListFooterComponent={() =>
+            posts?.length === 0 && (
+              <>
+                <View style={{height: 30}}></View>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <LottieView
+                    style={{
+                      width: width * 0.5,
+                      height: height * 0.35,
+                    }}
+                    source={require('./../../Assets/Lottie/notfound.json')}
+                    autoPlay
+                    loop
+                  />
+                  <View style={{marginTop: height * -0.07}}>
+                    <AppText
+                      nol={1}
+                      family="Poppins-Bold"
+                      size={width * 0.07}
+                      color="black"
+                      Label={'No Posts'}
+                    />
+                  </View>
+                </View>
+              </>
+            )
+          }
           ListHeaderComponent={
-            getNearMeUsers?.length > 0 ? (
+            usersNearmeReducer?.allUsers?.length > 0 ? (
               <View style={styles.cardContainer}>
                 <View style={styles.peopleNearContainer}>
                   <AppText
                     nol={1}
-                    family="Poppins-SemiBold"
+                    family="Poppins-Regular"
                     size={hp('2%')}
                     color="black"
                     Label={'People Near You'}
                   />
                   <AppText
                     nol={1}
-                    family="Poppins-SemiBold"
+                    family="Poppins-Regular"
                     size={hp('1.5%')}
                     color="black"
                     Label={'View More'}
@@ -180,58 +216,47 @@ const HomeScreen = ({
                 <FlatList
                   contentContainerStyle={styles.innerFlatlistContentStyle}
                   showsHorizontalScrollIndicator={false}
-                  data={getNearMeUsers}
+                  data={usersNearmeReducer?.allUsers}
                   horizontal
                   keyExtractor={(item, index) => index}
                   renderItem={({item, index}) => (
                     <View key={index} style={styles.cardHeaderStyle}>
-                      <View style={{bottom: 10, width: 50}}>
-                        <AppText
-                          nol={1}
-                          textAlign="center"
-                          family="Poppins-Regular"
-                          size={hp('1.5%')}
-                          color="black"
-                          Label={item.user_name}
-                        />
-                      </View>
-                      {item?.user_image == '' ? (
+                      {/* <View style={{bottom: 10, width: 50}}>
+                      <AppText
+                        nol={1}
+                        textAlign="center"
+                        family="Poppins-Regular"
+                        size={hp('1.5%')}
+                        color="black"
+                        Label={item?.user_name}
+                      />
+                    </View> */}
+                      {item?.user_image === undefined ? (
                         <Avatar
-                          size="large"
+                          size="medium"
                           rounded
-                          source={require('./../../Assets/Images/dp.png')}
-                          containerStyle={{borderColor: 'grey', borderWidth: 2}}
-                        />
-                      ) : item.user_image.includes('ngrok') ? (
-                        <Avatar
-                          size="large"
-                          rounded
-                          source={require('./../../Assets/Images/dp.png')}
-                          containerStyle={{
-                            borderColor: 'grey',
-                            borderWidth: 2,
-                            bottom: 5,
-                          }}
+                          source={require('./../../Assets/Images/placeholderImage.jpg')}
+                          containerStyle={{borderColor: 'grey', borderWidth: 1}}
                         />
                       ) : (
                         <Avatar
-                          size="large"
+                          size="medium"
                           rounded
-                          containerStyle={{borderColor: 'grey', borderWidth: 2}}
+                          containerStyle={{borderColor: 'grey', borderWidth: 1}}
                           source={{
-                            uri: item.user_image,
+                            uri: `${imageUrl}/${item?.user_image}`,
                           }}
                         />
                       )}
-                      {item.distance != undefined ? (
+                      {item?.distance != undefined ? (
                         <View style={{top: 7}}>
                           <AppText
                             nol={1}
                             textAlign="left"
                             family="Poppins-Regular"
-                            size={hp('1.5%')}
+                            size={hp('1.3%')}
                             color="black"
-                            Label={item.distance.toPrecision(2) + ' km'}
+                            Label={item?.distance?.toPrecision(2) + ' km'}
                           />
                         </View>
                       ) : null}
@@ -266,27 +291,37 @@ const HomeScreen = ({
             )
           }
           keyExtractor={(item, index) => index}
-          renderItem={({item, index}) => (
-            <PostList
-              Img={item.Images}
-              Name={item.Name}
-              Description={item.Description}
-              ProfileImg={item.ProfileImage}
-              UploadTime={item.UploadTime}
-              TotalLike={item.TotalLike}
-              Comment={item.Comment}
-              Navigation={navigation}
-            />
-          )}
+          renderItem={({item, index}) => {
+            return (
+              <PostList
+                item={item}
+                Img={item?.post_url}
+                Name={item?.user_id?.user_name}
+                Description={item?.post_desc}
+                ProfileImg={item?.user_id?.user_coverImage}
+                UploadTime={item?.post_created_at}
+                TotalLike={item?.count_likes}
+                Comment={item?.count_comments}
+                Navigation={navigation}
+                _onPressHeart={_onPressHeart}
+              />
+            );
+          }}
         />
-      </View>
+      }
+      {/* </View> */}
     </View>
   );
 };
 
 // nearMeUsers
-function mapStateToProps({getNearMeUsers, userGets}) {
-  return {getNearMeUsers, userGets};
+function mapStateToProps({
+  usersNearmeReducer,
+  userReducer,
+  postsReducer,
+  userCoordsReducer,
+}) {
+  return {usersNearmeReducer, userReducer, postsReducer, userCoordsReducer};
 }
 
 export default connect(mapStateToProps, actions)(HomeScreen);
@@ -295,7 +330,7 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    height: '100%',
+    height: height,
     backgroundColor: 'white',
   },
   cardContainer: {
@@ -306,26 +341,26 @@ var styles = StyleSheet.create({
     flexDirection: 'column',
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: 'white',
     zIndex: 4,
-    elevation: 2,
+    elevation: 1,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 0,
     },
-    width: '100%',
-    shadowOpacity: 3.22,
+    width: width,
+    shadowOpacity: 0.5,
     backgroundColor: 'white',
-    height: hp('25'),
+    height: height * 0.17,
     marginBottom: 10,
   },
   peopleNearContainer: {
     justifyContent: 'space-between',
-    padding: 10,
+    paddingTop: 10,
     flexDirection: 'row',
-    width: '90%',
+    width: width * 0.92,
     alignContent: 'space-between',
   },
   innerFlatlistContentStyle: {
@@ -348,7 +383,7 @@ var styles = StyleSheet.create({
 contentContainerStyle={{alignSelf: 'flex-start', margin: 5,alignContent:'flex-start',alignItems:'flex-start', flexDirection:'row'}}
 showsHorizontalScrollIndicator={false}
 
-data={getNearMeUsers}
+data={usersNearmeReducer}
 horizontal
 keyExtractor={(item, index) => index}
 renderItem={({ item, index }) => 

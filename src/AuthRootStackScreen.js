@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import * as actions from './Store/Actions';
 import {NavigationContainer} from '@react-navigation/native';
-import {SignUpStepOne} from './Store/Actions';
 const AuthStack = createStackNavigator();
 
 const SignUpFunction = (userSignup, userFavourite, userInterest, SignupAll) => {
@@ -28,7 +27,7 @@ const AuthRootStackScreen = ({
 }) => (
   <AuthStack.Navigator
     headerMode="float"
-    screenOptions={{gestureEnabled: 'true'}}
+    screenOptions={{gestureEnabled: 'true', headerShown:false}}
     initialRouteName="main">
     <AuthStack.Screen
       name="main"

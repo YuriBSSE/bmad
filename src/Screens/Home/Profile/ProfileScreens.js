@@ -1,56 +1,79 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
-  TouchableOpacity, View, Text, ImageBackground, StyleSheet, StatusBar, SafeAreaView, FlatList, Dimensions,
-  Image, KeyboardAvoidingView, LayoutAnimation, Platform, UIManager, Animated, TouchableHighlight, TextInput, ScrollView
+  TouchableOpacity,
+  View,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  StatusBar,
+  SafeAreaView,
+  FlatList,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+  Animated,
+  TouchableHighlight,
+  TextInput,
+  ScrollView,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import LinearGradient from 'react-native-linear-gradient'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import LinearGradient from 'react-native-linear-gradient';
 import AppText from '../../../Components/AppText';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import * as actions from '../../../Store/Actions'
-import { connect } from "react-redux";
+import * as actions from '../../../Store/Actions';
+import {imageUrl} from '../../../Config/Apis.json';
+import {connect} from 'react-redux';
 
 const data = [
-  { key: 'A', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'B', image: require('./../../../Assets/Images/post2.png') },
-  { key: 'C', image: require('./../../../Assets/Images/post3.png') },
-  { key: 'D', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'E', image: require('./../../../Assets/Images/Tech.png') },
-  { key: 'F', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'G', image: require('./../../../Assets/Images/share2.png') },
-  { key: 'H', image: require('./../../../Assets/Images/share2.png') },
-  { key: 'I', image: require('./../../../Assets/Images/share2.png') },
-  { key: 'J', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'K', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'L', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'M', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'N', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'O', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'P', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'Q', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'R', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'S', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'I', image: require('./../../../Assets/Images/share2.png') },
-  { key: 'J', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'K', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'L', image: require('./../../../Assets/Images/share1.png') },
-  { key: 'M', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'N', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'O', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'P', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'Q', image: require('./../../../Assets/Images/Animal.png') },
-  { key: 'R', image: require('./../../../Assets/Images/post1.png') },
-  { key: 'S', image: require('./../../../Assets/Images/Animal.png') },
+  {key: 'A', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'B', image: require('./../../../Assets/Images/post2.png')},
+  {key: 'C', image: require('./../../../Assets/Images/post3.png')},
+  {key: 'D', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'E', image: require('./../../../Assets/Images/Tech.png')},
+  {key: 'F', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'G', image: require('./../../../Assets/Images/share2.png')},
+  {key: 'H', image: require('./../../../Assets/Images/share2.png')},
+  {key: 'I', image: require('./../../../Assets/Images/share2.png')},
+  {key: 'J', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'K', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'L', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'M', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'N', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'O', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'P', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'Q', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'R', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'S', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'I', image: require('./../../../Assets/Images/share2.png')},
+  {key: 'J', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'K', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'L', image: require('./../../../Assets/Images/share1.png')},
+  {key: 'M', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'N', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'O', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'P', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'Q', image: require('./../../../Assets/Images/Animal.png')},
+  {key: 'R', image: require('./../../../Assets/Images/post1.png')},
+  {key: 'S', image: require('./../../../Assets/Images/Animal.png')},
 ];
 
 const formatData = (data, numColumns) => {
   const numberOfFullRows = Math.floor(data.length / numColumns);
-  let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
-  while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+  let numberOfElementsLastRow = data.length - numberOfFullRows * numColumns;
+  while (
+    numberOfElementsLastRow !== numColumns &&
+    numberOfElementsLastRow !== 0
+  ) {
+    data.push({key: `blank-${numberOfElementsLastRow}`, empty: true});
     numberOfElementsLastRow++;
   }
   return data;
@@ -59,26 +82,53 @@ const formatData = (data, numColumns) => {
 const numColumns = 3;
 const imageHeight = 400;
 const Data = [
-  'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1',
-  'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1',
-  'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1', 'item 1',
-]
-const ProfileScreen = ({ navigation, route, userGets }) => {
-  const renderItem = ({ item, index }) => {
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+  'item 1',
+];
+const ProfileScreen = ({navigation, route, userReducer}) => {
+  const renderItem = ({item, index}) => {
     return (
       <View style={styles.item}>
         <TouchableOpacity>
-          <Image style={{ height: 105, width: 105, borderRadius: 10 }} source={item.image} />
+          <Image
+            style={{height: 105, width: 105, borderRadius: 10}}
+            source={item.image}
+          />
         </TouchableOpacity>
       </View>
     );
   };
-  console.log(userGets, "PROFILE SCREEN USERDATA")
+  console.log(userReducer, 'PROFILE SCREEN USERDATA');
   useEffect(() => {
     // console.log(navigation)
-  }, [])
+  }, []);
 
-  let AnimatedHeaderValue = new Animated.Value(0)
+  let AnimatedHeaderValue = new Animated.Value(0);
   const Heade_Max = 550;
   const Header_Min = 150;
 
@@ -88,8 +138,7 @@ const ProfileScreen = ({ navigation, route, userGets }) => {
     extrapolateLeft: 'extend',
     extrapolateRight: 'clamp',
     // extrapolate:'extend',
-
-  })
+  });
 
   const animatedHeaderHeight = AnimatedHeaderValue.interpolate({
     inputRange: [0, imageHeight],
@@ -97,150 +146,233 @@ const ProfileScreen = ({ navigation, route, userGets }) => {
     // extrapolate:'extend',
     extrapolateLeft: 'extend',
     extrapolateRight: 'clamp',
-
-  })
+  });
 
   const animatedImageh = AnimatedHeaderValue.interpolate({
     inputRange: [0, 100],
     outputRange: [100, 0],
     extrapolateLeft: 'extend',
     extrapolateRight: 'clamp',
-
-
-  })
+  });
 
   const animatedImagep = AnimatedHeaderValue.interpolate({
     inputRange: [90, 90],
     outputRange: [90, 90],
     extrapolateLeft: 'extend',
     extrapolateRight: 'identity',
-    extrapolate: 'clamp'
-
-
-  })
+    extrapolate: 'clamp',
+  });
 
   const animatedImagew = AnimatedHeaderValue.interpolate({
     inputRange: [0, 100],
     outputRange: [100, 0],
     extrapolateLeft: 'extend',
     extrapolateRight: 'clamp',
-
-
-  })
-
-
+  });
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
       <Animated.View
         style={[
-          styles.imagebackground, {
+          styles.imagebackground,
+          {
             height: animatedHeaderHeight,
-
-          }
-        ]}
-      >
-        {
-          userGets[0].user_coverImage == undefined ?
-            <Animated.Image
-              style={[
-                styles.imagebackground, {
-                  height: animatedHeaderHeight,
-                  backgroundColor: animatedHeaderBgColor
-                }
-              ]}
-              resizeMode='cover' source={require('./../../../Assets/Images/backimage.jpg')} /> :
-            <Animated.Image
-              style={[
-                styles.imagebackground, {
-                  height: animatedHeaderHeight,
-                  backgroundColor: animatedHeaderBgColor
-                }
-              ]}
-              resizeMode='cover' source={{ uri: userGets[0].user_coverImage }} />
-        }
-
+          },
+        ]}>
+        {userReducer?.data?.user_coverImage == undefined ? (
+          <Animated.Image
+            style={[
+              styles.imagebackground,
+              {
+                height: animatedHeaderHeight,
+                backgroundColor: animatedHeaderBgColor,
+              },
+            ]}
+            resizeMode="cover"
+            source={require('./../../../Assets/Images/backimage.jpg')}
+          />
+        ) : (
+          <Animated.Image
+            style={[
+              styles.imagebackground,
+              {
+                height: animatedHeaderHeight,
+                backgroundColor: animatedHeaderBgColor,
+              },
+            ]}
+            resizeMode="cover"
+            source={{uri: userReducer?.data?.user_coverImage}}
+          />
+        )}
 
         <Animated.View style={styles.image}>
-
-
-          <View style={{ borderRadius: 100, borderWidth: 2, borderColor: 'white' }}>
-            <Animated.Image style={[{ width: 120, height: 120, borderRadius: 100, backgroundColor: 'black' }, {
-              height: animatedImageh,
-              width: animatedImagew,
-            }]}
-              source={{ uri: userGets[0].user_image }}
+          <View
+            style={{borderRadius: 100, borderWidth: 2, borderColor: 'white'}}>
+            <Animated.Image
+              style={[
+                {
+                  width: 120,
+                  height: 120,
+                  borderRadius: 100,
+                  backgroundColor: 'black',
+                },
+                {
+                  height: animatedImageh,
+                  width: animatedImagew,
+                },
+              ]}
+              source={{uri: `${imageUrl}/${userReducer?.data?.user_image}`}}
             />
-
           </View>
 
-          <Animated.View style={[styles.contentbellowImage, {
-            height: animatedImagep,
-          }]}>
-
-            <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-              <AppText nol={2} textAlign="center" family="Poppins-Medium" size={hp("2%")} color="white" Label={"Posts"} />
+          <Animated.View
+            style={[
+              styles.contentbellowImage,
+              {
+                height: animatedImagep,
+              },
+            ]}>
+            <View
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <AppText
+                nol={2}
+                textAlign="center"
+                family="Poppins-Medium"
+                size={hp('2%')}
+                color="white"
+                Label={'Posts'}
+              />
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'flex-start'
+                  alignItems: 'flex-start',
                 }}>
                 <MaterialCommunityIcons
                   name="image-multiple"
-                  color='white'
+                  color="white"
                   size={20}
-                  style={{ top: 0, right: 5 }}
+                  style={{top: 0, right: 5}}
                 />
-                <AppText nol={1} textAlign="left" family="Poppins-Medium" size={hp("1.5%")} color="white" Label={"80"} />
+                <AppText
+                  nol={1}
+                  textAlign="left"
+                  family="Poppins-Medium"
+                  size={hp('1.5%')}
+                  color="white"
+                  Label={'80'}
+                />
               </View>
             </View>
 
-            <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-              <AppText nol={2} textAlign="center" family="Poppins-Medium" size={hp("2%")} color="white" Label={"Connects"} />
+            <View
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <AppText
+                nol={2}
+                textAlign="center"
+                family="Poppins-Medium"
+                size={hp('2%')}
+                color="white"
+                Label={'Connects'}
+              />
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'flex-start'
+                  alignItems: 'flex-start',
                 }}>
                 <FontAwesome5
                   name="users"
-                  color='white'
+                  color="white"
                   size={20}
-                  style={{ top: 0, right: 5 }}
+                  style={{top: 0, right: 5}}
                 />
-                <AppText nol={1} textAlign="left" family="Poppins-Medium" size={hp("1.5%")} color="white" Label={"220"} />
+                <AppText
+                  nol={1}
+                  textAlign="left"
+                  family="Poppins-Medium"
+                  size={hp('1.5%')}
+                  color="white"
+                  Label={'220'}
+                />
               </View>
             </View>
 
-            <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-              <AppText nol={2} textAlign="left" family="Poppins-Medium" size={hp("2%")} color="white" Label={"Likes"} />
+            <View
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <AppText
+                nol={2}
+                textAlign="left"
+                family="Poppins-Medium"
+                size={hp('2%')}
+                color="white"
+                Label={'Likes'}
+              />
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'flex-start'
+                  alignItems: 'flex-start',
                 }}>
                 <Ionicons
                   name="heart"
-                  color='white'
+                  color="white"
                   size={20}
-                  style={{ top: 0, right: 5 }}
+                  style={{top: 0, right: 5}}
                 />
-                <AppText nol={1} textAlign="center" family="Poppins-Medium" size={hp("1.5%")} color="white" Label={"1.5K"} />
+                <AppText
+                  nol={1}
+                  textAlign="center"
+                  family="Poppins-Medium"
+                  size={hp('1.5%')}
+                  color="white"
+                  Label={'1.5K'}
+                />
               </View>
             </View>
           </Animated.View>
 
-
-          <Animated.View style={[styles.upperImage, {
-            height: animatedImagep,
-          }]}>
-            <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-              <AppText nol={2} textAlign="center" family="Poppins-Medium" size={hp("2%")} color="white" Label={userGets[0].user_name} />
-              <AppText nol={1} textAlign="left" family="Poppins-Medium" size={hp("1.7%")} color="white" Label={userGets[0].user_title} />
+          <Animated.View
+            style={[
+              styles.upperImage,
+              {
+                height: animatedImagep,
+              },
+            ]}>
+            <View
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <AppText
+                nol={2}
+                textAlign="center"
+                family="Poppins-Medium"
+                size={hp('2%')}
+                color="white"
+                Label={userReducer?.data?.user_name}
+              />
+              <AppText
+                nol={1}
+                textAlign="left"
+                family="Poppins-Medium"
+                size={hp('1.7%')}
+                color="white"
+                Label={userReducer?.data?.user_title}
+              />
             </View>
           </Animated.View>
-
         </Animated.View>
       </Animated.View>
       {/* </ImageBackground> */}
@@ -249,82 +381,94 @@ const ProfileScreen = ({ navigation, route, userGets }) => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         scrollEventThrottle={16}
-        onScroll={
-          Animated.event(
-            [{
+        onScroll={Animated.event(
+          [
+            {
               nativeEvent: {
                 contentOffset: {
-                  y: AnimatedHeaderValue
-                }
-              }
-            }],
-            { useNativeDriver: false }
-          )
-        }
-      >
+                  y: AnimatedHeaderValue,
+                },
+              },
+            },
+          ],
+          {useNativeDriver: false},
+        )}>
         {/* <View style={{paddingTop: 10}}></View> */}
-
       </ScrollView>
       {/* <View style={{height: 10}}></View> */}
       <FlatList
-
         data={formatData(data, numColumns)}
         renderItem={renderItem}
         numColumns={numColumns}
         scrollEnabled
         ListHeaderComponent={
-          <View style={{
-            width: '95%',
-            padding: 10,
-            left: 10,
-            justifyContent: 'flex-start',
-            flexDirection: 'column'
-
-          }}>
+          <View
+            style={{
+              width: '95%',
+              padding: 10,
+              left: 10,
+              justifyContent: 'flex-start',
+              flexDirection: 'column',
+            }}>
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'flex-start'
-              }}
-            >
+                alignItems: 'flex-start',
+              }}>
               <Ionicons
                 name="md-mail"
-                color='#B01125'
+                color="#B01125"
                 size={20}
-                style={{ top: 0, right: 5 }}
+                style={{top: 0, right: 5}}
               />
-              <AppText nol={2} textAlign="left" family="Poppins-Regular" size={hp("1.7%")} color="black" Label={userGets[0].user_email} />
-
+              <AppText
+                nol={2}
+                textAlign="left"
+                family="Poppins-Regular"
+                size={hp('1.7%')}
+                color="black"
+                Label={userReducer?.data?.user_email}
+              />
             </View>
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'flex-start'
-              }}
-            >
+                alignItems: 'flex-start',
+              }}>
               <Ionicons
                 name="home"
-                color='#B01125'
+                color="#B01125"
                 size={20}
-                style={{ top: 0, right: 5 }}
+                style={{top: 0, right: 5}}
               />
-              <AppText nol={2} textAlign="left" family="Poppins-Regular" size={hp("1.7%")} color="black" Label={`Lives in ${userGets[0].user_lives}`} />
-
+              <AppText
+                nol={2}
+                textAlign="left"
+                family="Poppins-Regular"
+                size={hp('1.7%')}
+                color="black"
+                Label={`Lives in ${userReducer?.data?.user_lives}`}
+              />
             </View>
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'flex-start'
-              }}
-            >
+                alignItems: 'flex-start',
+              }}>
               <Ionicons
                 name="ios-heart-sharp"
-                color='#B01125'
+                color="#B01125"
                 size={20}
-                style={{ top: 0, right: 5 }}
+                style={{top: 0, right: 5}}
               />
-              <AppText nol={2} textAlign="left" family="Poppins-Regular" size={hp("1.7%")} color="black" Label={userGets[0].user_relation} />
-
+              <AppText
+                nol={2}
+                textAlign="left"
+                family="Poppins-Regular"
+                size={hp('1.7%')}
+                color="black"
+                Label={userReducer?.data?.user_relation}
+              />
             </View>
             {/* <View
                 style={{
@@ -344,35 +488,42 @@ const ProfileScreen = ({ navigation, route, userGets }) => {
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'flex-start'
-              }}
-            >
+                alignItems: 'flex-start',
+              }}>
               <Ionicons
                 name="ios-information-circle"
-                color='#B01125'
+                color="#B01125"
                 size={20}
-                style={{ top: 0, right: 5 }}
+                style={{top: 0, right: 5}}
               />
-              <AppText nol={3} textAlign="left" family="Poppins-Regular" size={hp("1.7%")} color="black"
-                Label={userGets[0].user_bio} />
-
+              <AppText
+                nol={3}
+                textAlign="left"
+                family="Poppins-Regular"
+                size={hp('1.7%')}
+                color="black"
+                Label={userReducer?.data?.user_bio}
+              />
             </View>
           </View>
         }
         scrollEventThrottle={16}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: AnimatedHeaderValue } } }], { useNativeDriver: false })}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: AnimatedHeaderValue}}}],
+          {useNativeDriver: false},
+        )}
         showsVerticalScrollIndicator={false}
-        columnWrapperStyle={{ width: '90%', alignSelf: 'center' }}
+        columnWrapperStyle={{width: '90%', alignSelf: 'center'}}
       />
-      <View style={{ height: '37%' }} />
+      <View style={{height: '37%'}} />
     </SafeAreaView>
-  )
-}
+  );
+};
 
-function mapStateToProps({ userGets }) {
-  return { userGets }
+function mapStateToProps({userReducer}) {
+  return {userReducer};
 }
-export default connect(mapStateToProps, actions)(ProfileScreen)
+export default connect(mapStateToProps, actions)(ProfileScreen);
 
 var styles = StyleSheet.create({
   contentbellowImage: {
@@ -380,15 +531,19 @@ var styles = StyleSheet.create({
     width: 200,
     alignItems: 'center',
     flexDirection: 'row',
-    top: 20
+    top: 20,
   },
   upperImage: {
-    justifyContent: 'center', flexDirection: 'row', width: '95%', top: 20, alignItems: 'center'
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '95%',
+    top: 20,
+    alignItems: 'center',
   },
   image: {
     alignItems: 'center',
-    zIndex: 1, top: -300,
-
+    zIndex: 1,
+    top: -300,
   },
   imagebackground: {
     height: imageHeight,
@@ -399,7 +554,7 @@ var styles = StyleSheet.create({
   },
   container: {
     // height: hp('103%'),
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   touchableOpacity: {
     backgroundColor: 'white',
@@ -445,4 +600,4 @@ var styles = StyleSheet.create({
   itemText: {
     color: '#fff',
   },
-})
+});

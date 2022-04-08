@@ -6,6 +6,7 @@ import BmadScreen from './BmadScreen';
 import MessageIcon from '../../Components/MessageIcon';
 import DetailScreen from './DetailScreen.js';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 function BmadStack({navigation}) {
   const Stack = createStackNavigator();
   return (
@@ -28,7 +29,7 @@ function BmadStack({navigation}) {
                   color: 'black',
                   fontFamily: 'Poppins-SemiBold',
                 }}>
-                Search Parameter
+                {"Places"}
               </Text>
             ),
             headerTransparent: true,
