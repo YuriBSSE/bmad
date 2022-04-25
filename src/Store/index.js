@@ -15,7 +15,7 @@ import {
   postsReducer,
   usersNearmeReducer,
   userCoordsReducer,
-  notificationsReducer,
+  notificationsReducer,connectionsReducer
 } from './Reducers/InAppReducer';
 
 const reducers = combineReducers({
@@ -28,7 +28,7 @@ const reducers = combineReducers({
   usersNearmeReducer,
   userCoordsReducer,
   postsReducer,
-  notificationsReducer,
+  notificationsReducer,connectionsReducer
 });
 
 const persistConfig = {

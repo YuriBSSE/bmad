@@ -14,6 +14,7 @@ import {
   Platform,
   UIManager,
   Animated,
+  Dimensions,
   TouchableHighlight,
   TextInput,
   ScrollView,
@@ -25,6 +26,8 @@ import {
 import InterestList from './../../Components/InterestList';
 import * as actions from '../../Store/Actions';
 import {connect} from 'react-redux';
+import {themeRed} from '../../Assets/Colors/Colors';
+const {width, height} = Dimensions.get('window');
 const Data = [
   {
     Name: 'Tech',
@@ -75,14 +78,19 @@ const Data = [
     Id: 8,
   },
 ];
-const InterestScreen = ({navigation, Interest}) => {
+const InterestScreen = ({navigation, userInterest, Interest}) => {
   const [items, setItems] = useState([]);
+  console.log(userInterest);
+
+  useEffect(() => {
+    console.log(userInterest);
+  }, [userInterest]);
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+      {/* <StatusBar translucent backgroundColor="transparent" /> */}
       <View
         style={{
-          marginTop: '22%',
+          // marginTop: '22%',
           alignItems: 'center',
           height: hp('100%'),
           width: '98%',
@@ -102,7 +110,30 @@ const InterestScreen = ({navigation, Interest}) => {
           showsHorizontalScrollIndicator={false}
           ListEmptyComponent={null}
           ListHeaderComponent={<View style={{height: 40}}></View>}
-          ListFooterComponent={<View style={{height: 100}}></View>}
+          ListFooterComponent={
+            <View style={{height: 100}}>
+              {/* <TouchableOpacity
+              activeOpacity={0.8}
+                style={{
+                  alignSelf:'center',
+                  width: width * 0.35,
+                  height: height * 0.06,
+                  backgroundColor: themeRed,
+                  borderRadius: width * 0.7,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'Poppins-Medium',
+                    fontSize: width * 0.05,
+                  }}>
+                  I'm Done
+                </Text>
+              </TouchableOpacity> */}
+            </View>
+          }
           data={Data}
           keyExtractor={(item, index) => index}
           extraData={items}
@@ -132,4 +163,8 @@ var styles = StyleSheet.create({
     marginHorizontal: 20,
   },
 });
-export default connect(null, actions)(InterestScreen);
+
+const mapStateToProps = ({userInterest}) => {
+  return {userInterest};
+};
+export default connect(mapStateToProps, actions)(InterestScreen);

@@ -5,57 +5,91 @@ import * as types from './actionType';
 import {showMessage, hideMessage} from 'react-native-flash-message';
 
 export const postAction =
-  (caption, images, id, navigation, clearAllStates) => async dispatch => {
-    console.log('API DATA: ', id, caption, images[0].uri.substring(0, 30));
+  (caption, images, id, navigation, clearAllStates, _onPostFailed) =>
+  async dispatch => {
+    console.log(
+      'API DATA: ',
+      id,
+      caption,
+      images[0].uri.substring(0, 30),
+      images.length,
+    );
     var bodyFormData = new FormData();
     let arr = [];
-    // if (images) {
-    //   images.forEach((item, i) => {
-    //     arr.push({
-    //       uri: images[0].uri,
-    //       type: 'image/jpeg',
-    //       name: item.filename || `filename.jpg`,
-    //     });
-    //   });
-    // }
-   
-    bodyFormData.append('post_file', {
-      uri: images[0].uri,
-      type: 'image/jpeg',
-      name: `filename.jpg`,
-    });
+    if (images) {
+      images.forEach((item, i) => {
+        bodyFormData.append('post_file', {
+          uri: item.path,
+          type: item.type,
+          name: item.filename || `filename.jpg`,
+        });
+      });
+    }
+
+    // bodyFormData.append('post_file', {
+    //   uri: images[0].path,
+    //   type: images[0].type,
+    //   name: `filename.jpg`,
+    // });
+
     bodyFormData.append('user_id', id);
     bodyFormData.append('post_desc', caption);
+    bodyFormData.append('post_title', 'Test Title');
 
     // bodyFormData.append('post_title', 'tags');
-    const URL = `${api}/api/post/createPost`;
-    const header = {
-      headers: {
-        'Content-Type':
-          'multipart/form-data; boundary=<calculated when request is sent>',
-      },
-    };
+    // const URL = `${api}/api/post/createPost`;
+    // const header = {
+    //   headers: {
+    //     'Content-Type':
+    //       'multipart/form-data; boundary=<calculated when request is sent>',
+    //   },
+    // };
     try {
-      const response = await axios.post(URL, bodyFormData, header);
-      console.log("===",response);
-      // if (response.data.success) {
-      //   clearAllStates();
-      //   navigation.navigate('HOME');
-      //   showMessage({
-      //     message: 'Posted!',
-      //     description: '',
-      //     type: 'success',
-      //   });
-      // } else {
-      //   showMessage({
-      //     message: 'Failed to Post!',
-      //     description: '',
-      //     type: 'success',
-      //   });
-      // }
+      // const response = await axios.post(URL, {bodyFormData}, header);
+
+      const response = await axios({
+        method: 'post',
+        url: `${api}/api/post/createpost`,
+        // data: {
+        //   post_id: 46,
+        //   post_desc: 'Test Descript',
+        //   post_file: [{
+        //     uri: images[0].uri,
+        //     type: 'image/jpeg',
+        //     name: `filename.jpg`,
+        //   }],
+        //   post_title: 'test',
+        // },
+        data: bodyFormData,
+        headers: {
+          // 'Content-Type':
+          // 'multipart/form-data; boundary=<calculated when request is sent>',
+          // 'application/x-www-form-urlencoded',
+          Accept: 'application/json',
+        },
+      });
+      console.log('===', response.data);
+      if (response.data.success) {
+        clearAllStates();
+        navigation.navigate('HOME');
+        showMessage({
+          message: 'Posted!',
+          description: '',
+          type: 'success',
+        });
+      } else {
+        showMessage({
+          message: 'Failed to Post!',
+          description: '',
+          type: 'success',
+        });
+        _onPostFailed();
+      }
     } catch (err) {
+      _onPostFailed();
       console.log('Cannot Post Now, Something went wrong.');
       console.log(err.message);
+      // console.log(err.response.data);
     }
   };
 
@@ -98,13 +132,15 @@ export const postAction =
 
 export const nearMeUsers = (latitude, longitude, userId) => async dispatch => {
   // console.log('FETCHING NEAR ME USERS !!!!!!!!!!!!!!!!!!!!!!');
+  console.log(latitude, longitude, userId);
   try {
-    const URL = `${api}/api/post/nearMe?kilometers=10&user_latitude=${latitude}&user_longitude=${longitude}&user_id=${userId}`;
+    const URL = `${api}/api/post/nearMe?kilometers=10&user_latitude=24.7931192&user_longitude=67.000000&user_id=${userId}`;
+    console.log(URL);
     const response = await axios.get(URL);
 
-    // console.log('Total Near Me Users: ', response.data.data.length);
+    console.log('Total Near Me Users: ', response.data.data.length);
     if (response.data.data.length > 0) {
-      // console.log('Near Me Users Fetched!');
+      console.log('Near Me Users Fetched!');
       dispatch({
         type: types.NEAR_ME_USERS,
         payload: response.data.data,
@@ -115,7 +151,7 @@ export const nearMeUsers = (latitude, longitude, userId) => async dispatch => {
       //   description: 'No Users Near You!',
       //   danger: 'error',
       // });
-      // console.log('No Near Me Users Found!');
+      console.log('No Near Me Users Found!');
       dispatch({
         type: types.NO_NEAR_ME_USERS,
         payload: [],
@@ -138,13 +174,14 @@ export const loginUser = (email, password) => async dispatch => {
       email: email,
       password: password,
     });
-    if (response.data.status) {
+    if (response.data.success) {
       console.log('testtttt logged inn');
       dispatch({
         type: types.USER_GET_INFO,
         payload: {
           token: response.data.token,
           data: response.data.data,
+          isLogin: true,
         },
       });
     } else {
@@ -162,6 +199,32 @@ export const loginUser = (email, password) => async dispatch => {
       danger: 'error',
     });
     console.log('Login Failed', error);
+    console.log('Login Failed', error.message);
+  }
+};
+
+export const forgotPassword = (data, onSuccess) => async dispatch => {
+  try {
+    const URL = `${api}/api/auth/forgotpasword`;
+    console.log(URL, data);
+    const response = await axios.post(URL, data);
+
+    if (response.data.status) {
+      showMessage({
+        message: 'Success!',
+        description: 'A reset password link has been sent this email.',
+        type: 'success',
+      });
+      onSuccess();
+    } else {
+      showMessage({
+        message: 'Oh Snaps!',
+        description: 'Something went wrong.',
+        danger: 'error',
+      });
+    }
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -222,9 +285,31 @@ export const Otp = (otp, number, fadeChange) => async dispatch => {
 };
 
 export const SignUpStepOne =
-  (username, email, phoneNumber, password, obj, gender, otp, navigation) =>
+  (
+    username,
+    email,
+    phoneNumber,
+    password,
+    obj,
+    gender,
+    otp,
+    navigation,
+    lat,
+    long,
+  ) =>
   async dispatch => {
-    console.log(username, email, phoneNumber, password, obj, gender, otp);
+    console.log(
+      'From Actions :::: ',
+      username,
+      email,
+      phoneNumber,
+      password,
+      obj,
+      gender,
+      otp,
+      "lat:",lat,
+      "long:",long
+    );
     try {
       const data = {
         user_name: username,
@@ -234,6 +319,8 @@ export const SignUpStepOne =
         user_reg_verify_code: otp,
         user_gender: gender,
         user_gender_interest: obj,
+        user_latitude: lat,
+        user_longitude: long,
       };
 
       navigation.navigate('YourInterests');
@@ -259,6 +346,7 @@ export const SignOut = () => async dispatch => {
       payload: {
         token: null,
         data: null,
+        isLogin: false,
       },
     });
     // await AsyncStorage.removeItem('token')
@@ -295,7 +383,8 @@ export const Favourite = favourite => async dispatch => {
 export const getFeedData = userId => async dispatch => {
   try {
     const response = await axios.get(`${api}/api/post/getfeed?id=${userId}`);
-    if (response?.data?.status) {
+    // console.log(response.data);
+    if (response?.data?.success) {
       dispatch({
         type: types.GET_ALL_FEED_DATA,
         payload: response.data.data,
@@ -318,44 +407,59 @@ export const coords = (lat, long) => async dispatch => {
 };
 
 export const SignupAll =
-  (userSignup, userFavourite, userInterest) => async dispatch => {
+  (userSignup, userFavourite, userInterest, _onSignUpFailed) =>
+  async dispatch => {
     try {
-      console.log(userSignup.user_gender_interest, '-----');
-      // console.log(userInterest, "-----")
-      // const intgend = [userSignup.user_gender_interest.male, userSignup.user_gender_interest.female]
-      const response = await axios.post(`${deploy_API}/api/auth/register`, {
-        user_name: userSignup.user_name,
-        user_email: userSignup.user_email,
-        user_password: userSignup.user_password,
-        user_contact: userSignup.user_contact,
-        user_reg_verify_code: userSignup.user_reg_verify_code,
-        user_gender: userSignup.user_gender,
-        user_gender_interest: JSON.stringify(userSignup.user_gender_interest),
-        user_interest: JSON.stringify(userInterest),
-        user_favorite: JSON.stringify(userFavourite),
+      const apiData = {
+        user_name: userSignup?.user_name,
+        user_email: userSignup?.user_email,
+        user_password: userSignup?.user_password,
+        user_contact: userSignup?.user_contact,
+        user_latitude: userSignup.user_latitude?.toString(),
+        user_longitude: userSignup.user_longitude?.toString(),
+        // user_reg_verify_code: userSignup.user_reg_verify_code,
+        user_gender: [userSignup?.user_gender],
+        user_gender_interest: userSignup?.user_gender_interest?.filter(
+          e => e !== '',
+        ),
+        user_interest: userInterest,
+        user_favorite: userFavourite,
         social_login: 'USER_AUTH',
-      });
-      console.log(response.data);
-      if (response.data.status) {
+      };
+      console.log(JSON.stringify(apiData, null, 2));
+      const URL = `${api}/api/auth/register`;
+      console.log(URL);
+      const response = await axios.post(URL, apiData);
+      if (response.data.success) {
         dispatch({
-          type: types.AUTH_ALL_SIGNUP,
+          type: types.USER_GET_INFO,
           payload: {
-            token: response.data.data.token,
+            isLogin: true,
             data: response.data.data,
           },
         });
-        const token = response.data.data.token;
-        const userData = response.data.data;
-        await AsyncStorage.setItem('token', token);
-        await AsyncStorage.setItem('userData', userData);
+      } else {
+        _onSignUpFailed();
+        showMessage({
+          message: 'Signup Failed',
+          description: response.data.msg,
+          danger: 'error',
+        });
       }
-      // console.log(favourite, "--fav--")
       // dispatch({
-      //     type: types.USER_FAVOURITE,
-      //     payload: favourite
-      // })
+      //   type: types.USER_FAVOURITE,
+      //   payload: favourite,
+      // });
     } catch (error) {
+      _onSignUpFailed();
+      showMessage({
+        message: 'Signup Failed',
+        description: 'Something went wrong.',
+        danger: 'error',
+      });
       console.log(error);
+      console.log(error.message);
+      console.log(error.response.data);
     }
   };
 
@@ -445,38 +549,43 @@ export const getAllCommentsOfPost = postId => async dispatch => {
 };
 
 // send request to drink buddy
-export const connectUser = (data, onSuccess, profileData) => async dispatch => {
-  console.log(data, ',,,,,,,,,,,,,,,,,,,,,,,');
-  try {
-    const response = await axios.post(`${api}/api/friends/friendRequest`, data);
-    console.log(response.data, 'Response of sending request');
-    if (response?.data?.success === true) {
+export const connectUser =
+  (data, onSuccess, profileData, _onRequestFialed) => async dispatch => {
+    try {
+      const response = await axios.post(
+        `${api}/api/friends/friendRequest`,
+        data,
+      );
+      console.log(response.data, 'Response of sending request');
+      if (response?.data?.success === true) {
+        showMessage({
+          message: 'Offer requested, Wait for his/her approval.',
+          type: 'success',
+        });
+        onSuccess();
+        dispatch({
+          type: types.AFTER_SENDING_REQ_FROM_PROFILE,
+          payload: profileData,
+        });
+      } else {
+        showMessage({
+          message: 'Ohhh Snap!',
+          description: 'Cann not offer drink at the moment, try again.',
+          danger: 'error',
+        });
+        console.log('fail');
+        _onRequestFialed();
+      }
+    } catch (error) {
       showMessage({
-        message: 'Offer requested, Wait for his/her approval.',
-        type: 'success',
-      });
-      onSuccess();
-      dispatch({
-        type: types.AFTER_SENDING_REQ_FROM_PROFILE,
-        payload: profileData,
-      });
-    } else {
-      showMessage({
-        message: 'Ohhh Snap!',
-        description: 'Cann not offer drink at the moment, try again.',
+        message: 'Oh Snap!',
+        description: 'Can not offer drink at the moment, try again.',
         danger: 'error',
       });
-      console.log('fail');
+      _onRequestFialed();
+      console.log('FAILED CONNECTING USER', error?.response?.message);
     }
-  } catch (error) {
-    showMessage({
-      message: 'Oh Snap!',
-      description: 'Can not offer drink at the moment, try again.',
-      danger: 'error',
-    });
-    console.log('FAILED CONNECTING USER', error?.response?.message);
-  }
-};
+  };
 
 export const getAllConnections = userId => async dispatch => {
   try {
@@ -506,23 +615,53 @@ export const getAllConnections = userId => async dispatch => {
   }
 };
 
-export const testFunc = userId => async dispatch => {
-  try {
-    const res = await axios.get(`${api}/api/friends/friendList/${userId}`);
-    console.log(res.data.data);
-    dispatch({
-      type: 'GET_ALL_CONNECTIONS',
-      pyaload: [],
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+// export const testFunc = userId => async dispatch => {
+//   // try {
+//   //   const res = await axios.get(`${api}/api/friends/friendList/${userId}`);
+//   //   console.log(res.data.data.length, "Length");
+//   //   dispatch({
+//   //     type: types.TEST,
+//   //     pyaload: [],
+//   //   });
+//   //   console.log("ttetetetettetetete==================================")
+//   // } catch (err) {
+//   //   console.log(err);
+//   // }
+
+//   try {
+//     const response = await axios.get(
+//       `${api}/api/friends/friendList/${userId}`,
+//     );
+//     if (response.data.success) {
+//       console.log(response.data.status, 'Connections Retrieved!!!');
+//       console.log('Total Connections: ', response.data.data);
+//       dispatch({
+//         type: types.GET_ALL_CONNECTIONS,
+//         payload: response.data.data,
+//       });
+//     } else {
+//       showMessage({
+//         message: 'Oh Snap!',
+//         description: 'Can not fetch Connections, swipe down to refresh.',
+//         danger: 'error',
+//       });
+//     }
+//   } catch (error) {
+//     showMessage({
+//       message: 'Oh Snap!',
+//       description: 'Can not fetch Connections, swipe down to refresh.',
+//       danger: 'error',
+//     });
+//     console.log('FAILED Fetching Connections', error.response.data.msg);
+//   }
+
+// };
 export const getInvites = userId => async dispatch => {
   try {
     const response = await axios.get(
       `${api}/api/friends/pendingList/${userId}`,
     );
+    console.log(response.data);
     if (response.data.success) {
       console.log(response.data.status, 'Invitations Retrieved!!!');
       console.log('Total Invitations: ', response.data.data);
@@ -710,7 +849,8 @@ export const cancelMyRequestSent = data => async dispatch => {
 export const buyMoreDrinks = (data, _closeStripeModal) => async dispatch => {
   try {
     const response = await axios.post(`${api}/api/checout/create`, data);
-    if (response.data.status) {
+    console.log(response.data);
+    if (response.data.success) {
       console.log(response.data, 'Bought Drinks!!!!!!!');
       dispatch({
         type: types.BUY_DRINKS,
@@ -731,6 +871,7 @@ export const buyMoreDrinks = (data, _closeStripeModal) => async dispatch => {
       danger: 'error',
     });
     console.log('FAILED BUYING DRINKS', error);
+    _closeStripeModal();
   }
 };
 
@@ -752,7 +893,7 @@ export const getNotifications = userId => async dispatch => {
     );
     if (response.data.status) {
       console.log(response.data.status, 'Notifications Retrieved!!!');
-      console.log('Total Notifications: ', response.data.data);
+      console.log('Total Notifications: ', response.data.data.length);
       dispatch({
         type: types.GET_NOTIFICATIONS,
         payload: response.data.data,

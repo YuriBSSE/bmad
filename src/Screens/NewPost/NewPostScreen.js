@@ -31,6 +31,7 @@ import {
 import ImagePickerMultiple from 'react-native-image-crop-picker';
 import AppText from '../../Components/AppText';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import TagInput from 'react-native-tags-input';
@@ -39,7 +40,13 @@ import {connect} from 'react-redux';
 
 const {width, height} = Dimensions.get('window');
 
-const NewPostScreen = ({navigation, userReducer, getNotifications,postAction}) => {
+const NewPostScreen = ({
+  navigation,
+  userReducer,
+  getFeedData,
+  getNotifications,
+  postAction,
+}) => {
   useEffect(() => {
     CheckPermission();
   }, []);
@@ -56,6 +63,7 @@ const NewPostScreen = ({navigation, userReducer, getNotifications,postAction}) =
   };
 
   const [filePath, setFilePath] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [caption, onChangeCaption] = useState('');
   const [tags, onChangeArrays] = useState({
     tag: '',
@@ -113,26 +121,23 @@ const NewPostScreen = ({navigation, userReducer, getNotifications,postAction}) =
 
   const SelectMultipleImage = () => {
     ImagePickerMultiple.openPicker({
-      multiple: false,
+      multiple: true,
       width: 300,
       height: 400,
-      selectionLimit: 1,
+      selectionLimit: 3,
       mediaType: 'photo',
       // cropping: true,
       includeBase64: true,
     })
 
       .then(response => {
-        console.log("RESPONSE: ")
-        
         var ImageArray = [];
-        for (var i = 0; i < 1; i++) {
-          // for (var i = 0; i < response.length; i++) {
+        for (var i = 0; i < response.length; i++) {
           let showImage = {
-            // uri: 'data:image/jpeg;base64,' + response[i].data,
-            uri: 'data:image/jpeg;base64,' + response.data,
+            uri: 'data:image/jpeg;base64,' + response[i].data,
+            path: response[i].path,
+            type: response[i].mime,
           };
-          // console.log(showImage);
           ImageArray.push(showImage);
         }
         setFilePath(ImageArray);
@@ -148,25 +153,32 @@ const NewPostScreen = ({navigation, userReducer, getNotifications,postAction}) =
 
   const newPost = () => {
     if (caption && filePath) {
+      setLoading(true)
       postAction(
         // tags,
         caption,
         filePath,
         userReducer?.data?.user_id,
         navigation,
-        clearAllStates,
+        clearAllStates,_onPostFailed
       );
+
     }
     // getNotifications(7)
   };
 
   const clearAllStates = () => {
+    getFeedData(userReducer?.data?.user_id);
     setFilePath(null);
     onChangeCaption('');
     onChangeArrays({
       tag: '',
       tagsArray: [],
     });
+  };
+
+  const _onPostFailed = () => {
+    setLoading(false);
   };
 
   return (
@@ -335,25 +347,41 @@ const NewPostScreen = ({navigation, userReducer, getNotifications,postAction}) =
                 keysForTag={', '}
               />
             </View> */}
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 50,
-              }}>
-              <TouchableOpacity
-                onPress={newPost}
-                style={styles.touchableOpacity}>
-                <AppText
-                  nol={1}
-                  textAlign="left"
-                  family="Poppins-SemiBold"
-                  size={hp('2%')}
-                  color="black"
-                  Label={'Post'}
-                />
-              </TouchableOpacity>
-            </View>
+            {!loading ? (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 50,
+                }}>
+                <TouchableOpacity
+                  onPress={newPost}
+                  style={styles.touchableOpacity}>
+                  <AppText
+                    nol={1}
+                    textAlign="left"
+                    family="Poppins-SemiBold"
+                    size={hp('2%')}
+                    color="black"
+                    Label={'Post'}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <LottieView
+                style={{
+                  position: 'absolute',
+                  top: height * 0.05,
+                  left: width * 0.15,
+                  // backgroundColor:'white',
+                  width: width * 0.4,
+                  height: height * 0.3,
+                }}
+                source={require('../../Assets/Lottie/white-loader.json')}
+                autoPlay
+                loop
+              />
+            )}
             <View style={{height: 100}}></View>
           </View>
         </ScrollView>

@@ -43,7 +43,13 @@ import Feather from 'react-native-vector-icons/Feather';
 import {connect} from 'react-redux';
 import {trueFunc} from 'boolbase';
 import {color} from 'react-native-elements/dist/helpers';
-const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
+const SignupScreen = ({
+  navigation,
+  SignUpStepOne,
+  Otp,
+  userOtp,
+  userCoordsReducer,
+}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [value, setValue] = useState('');
   const [otp, setOtp] = useState('');
@@ -66,6 +72,9 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
   const [genderImage, onChangeGenderImage] = React.useState(
     require('./../../Assets/Images/gender1.png'),
   );
+
+  const LAT = userCoordsReducer?.lat;
+  const LONG = userCoordsReducer?.long;
   const [open, setOpen] = useState(false);
   const [gender, setGender] = useState(null);
   const [confirm, setConfirm] = useState(null);
@@ -101,9 +110,13 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
     // onChangePhone(mobileNumber)
     // Otp(null, mobileNumber,fadeChange)
     // console.log(phoneInput.current.state.code)
+    if (password?.length === 0 || confirmPassword.length === 0) {
+      setValidation(true);
+      onChangeError('Incomplete Data');
+      return;
+    }
     if (emailRegex.test(email)) {
       if (usernameRegex.test(username)) {
-        console.log(value.length);
         if (value.length > 5) {
           const mobileNumber = phoneInput.current.state.code + value;
           onChangePhone(mobileNumber);
@@ -115,12 +128,12 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
             setValidation(true);
           }
         } else {
-          onChangeError('Invalid Mobile Number');
+          onChangeError('Invalid Phone');
           setValidation(true);
         }
       } else {
         setValidation(true);
-        onChangeError('Invalid User Name Address');
+        onChangeError('Invalid Username');
       }
     } else {
       setValidation(true);
@@ -131,8 +144,8 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
 
   const onSubmit2 = () => {
     // Otp(otp, phoneNumber, fadeChange);
-// this down line will be commented and above will be uncommented
-    fadeChange()
+    // this down line will be commented and above will be uncommented
+    fadeChange();
   };
 
   const fadeChange = () => {
@@ -319,145 +332,154 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
               </TouchableOpacity>
             </View>
           </ScrollView>
-        ) : stepTwo == false && stepOne == true ? (
-          <Animated.View style={{opacity: fadeAnim}}>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={styles.scrollView}>
-              <View style={{flexDirection: 'column', height: hp('90%')}}>
+        ) : (
+          stepTwo == false &&
+          stepOne == true && (
+            // (
+            //   <Animated.View style={{opacity: fadeAnim}}>
+            //     <ScrollView
+            //       showsVerticalScrollIndicator={false}
+            //       style={styles.scrollView}>
+            //       <View style={{flexDirection: 'column', height: hp('90%')}}>
+            //         <Logo />
+
+            //         <Heading Label="Verification" />
+
+            //         <TextSample Label="Verify Your Phone Number with OTP" />
+
+            //         <OTPTextView
+            //           inputCount={4}
+            //           handleTextChange={text => setOtp(text)}
+            //           containerStyle={styles.textInputContainer}
+            //           textInputStyle={[
+            //             styles.roundedTextInput,
+            //             {borderRadius: 100},
+            //           ]}
+            //           tintColor="#FF3D46"
+            //           offTintColor="#FF3D46"
+            //         />
+
+            //         <View
+            //           style={{
+            //             height: hp('20%'),
+            //             alignItems: 'center',
+            //             flexDirection: 'column',
+            //             alignContent: 'space-between',
+            //             marginTop: 30,
+            //           }}>
+            //           <TouchableOpacityBtn
+            //             onPress={() => onSubmit2()}
+            //             title="Continue"
+            //           />
+            //         </View>
+            //       </View>
+            //     </ScrollView>
+            //   </Animated.View>
+            // )
+
+            // :
+
+            <Animated.View style={{opacity: fadeAnim}}>
+              <View style={{flexDirection: 'column', height: hp('110%')}}>
                 <Logo />
 
-                <Heading Label="Verification" />
+                {!modalVisible ? (
+                  <Heading Label="I Am a" />
+                ) : (
+                  <Heading Label="Interested In" />
+                )}
+                {!modalVisible ? (
+                  <TextSample Label="Kindly Select Your Gender" />
+                ) : null}
 
-                <TextSample Label="Verify Your Phone Number with OTP" />
-
-                <OTPTextView
-                  inputCount={4}
-                  handleTextChange={text => setOtp(text)}
-                  containerStyle={styles.textInputContainer}
-                  textInputStyle={[
-                    styles.roundedTextInput,
-                    {borderRadius: 100},
-                  ]}
-                  tintColor="#FF3D46"
-                  offTintColor="#FF3D46"
-                />
-
-                <View
-                  style={{
-                    height: hp('20%'),
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    alignContent: 'space-between',
-                    marginTop: 30,
-                  }}>
-                  <TouchableOpacityBtn
-                    onPress={() => onSubmit2()}
-                    title="Continue"
-                  />
-                </View>
-              </View>
-            </ScrollView>
-          </Animated.View>
-        ) : (
-          <Animated.View style={{opacity: fadeAnim}}>
-            <View style={{flexDirection: 'column', height: hp('110%')}}>
-              <Logo />
-
-              {!modalVisible ? (
-                <Heading Label="I Am a" />
-              ) : (
-                <Heading Label="Interested In" />
-              )}
-              {!modalVisible ? (
-                <TextSample Label="Kindly Select Your Gender" />
-              ) : null}
-
-              {!modalVisible ? (
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    margin: 15,
-                  }}>
+                {!modalVisible ? (
                   <View
                     style={{
-                      flexDirection: 'row',
+                      flexDirection: 'column',
                       justifyContent: 'center',
-                      alignItems: 'center',
-                      margin: 0,
+                      margin: 15,
                     }}>
-                    <DropDownPicker
-                      labelProps={{
-                        numberOfLines: 2,
-                      }}
-                      min={0}
-                      max={2}
-                      open={open}
-                      value={gender}
-                      items={items}
-                      setOpen={setOpen}
-                      setValue={setGender}
-                      setItems={setItems}
-                      maxHeight={200}
-                      containerStyle={{
-                        width: wp('80%'),
-                      }}
-                      arrowColor="#ffffff"
-                      labelStyle={{
-                        fontSize: 15,
-                        textAlign: 'left',
-                        color: '#ffffff',
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                      }}
-                      placeholder="Select Your Gender"
-                      placeholderStyle={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                        textAlign: 'left',
-                        color: 'white',
-                      }}
-                      textStyle={{color: 'white'}}
-                      dropDownContainerStyle={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                        borderColor: 'rgba(0, 0, 0, 0.0)',
-                        top: 60,
-                      }}
+                    <View
                       style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                        borderColor: 'rgba(0, 0, 0, 0.0)',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      itemStyle={{
-                        top: 10,
-                        justifyContent: 'space-between',
                         flexDirection: 'row',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                      }}
-                      dropDownStyle={{
-                        justifyContent: 'space-between',
-                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
-                        borderColor: 'rgba(0, 0, 0, 0.0)',
-                        width: '80%',
-                      }}
-                    />
+                        margin: 0,
+                      }}>
+                      <DropDownPicker
+                        labelProps={{
+                          numberOfLines: 2,
+                        }}
+                        min={0}
+                        max={2}
+                        open={open}
+                        value={gender}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setGender}
+                        setItems={setItems}
+                        maxHeight={200}
+                        containerStyle={{
+                          width: wp('80%'),
+                        }}
+                        arrowColor="#ffffff"
+                        labelStyle={{
+                          fontSize: 15,
+                          textAlign: 'left',
+                          color: '#ffffff',
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                        }}
+                        placeholder="Select Your Gender"
+                        placeholderStyle={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                          textAlign: 'left',
+                          color: 'white',
+                        }}
+                        textStyle={{color: 'white'}}
+                        dropDownContainerStyle={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                          borderColor: 'rgba(0, 0, 0, 0.0)',
+                          top: 60,
+                        }}
+                        style={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                          borderColor: 'rgba(0, 0, 0, 0.0)',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        itemStyle={{
+                          top: 10,
+                          justifyContent: 'space-between',
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                        }}
+                        dropDownStyle={{
+                          justifyContent: 'space-between',
+                          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                          borderColor: 'rgba(0, 0, 0, 0.0)',
+                          width: '80%',
+                        }}
+                      />
+                    </View>
+                    <Underline />
+                    <View
+                      style={{
+                        height: hp('20%'),
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        alignContent: 'space-between',
+                        marginTop: 100,
+                      }}>
+                      <TouchableOpacityBtn
+                        onPress={showModal}
+                        title="Continue"
+                      />
+                    </View>
                   </View>
-                  <Underline />
-                  <View
-                    style={{
-                      height: hp('20%'),
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                      alignContent: 'space-between',
-                      marginTop: 100,
-                    }}>
-                    <TouchableOpacityBtn onPress={showModal} title="Continue" />
-                  </View>
-                </View>
-              ) : null}
-              {/*                         
+                ) : null}
+                {/*                         
                         <View style={{ height:hp('20%'), alignItems:'center' ,flexDirection: 'column', alignContent:'space-between', marginTop: 100}}>
                     
                             <TouchableOpacityBtn  
@@ -465,11 +487,13 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
                                 title="Continue"
                             />
                          </View> */}
-            </View>
-          </Animated.View>
+              </View>
+            </Animated.View>
+          )
         )}
         {/* </KeyboardAvoidingView> */}
 
+        {/* User Interested In Modal  */}
         <Modal
           animationType="fade"
           transparent={true}
@@ -610,6 +634,8 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
                     gender,
                     otp,
                     navigation,
+                    LAT,
+                    LONG,
                   );
                   setModalVisible(!modalVisible);
                   //  navigation.navigate('YourInterests')
@@ -636,7 +662,10 @@ const SignupScreen = ({navigation, SignUpStepOne, Otp, userOtp}) => {
 //       return {userOtp}
 // }
 
-export default connect(null, actions)(SignupScreen);
+const mapStateToProps = ({userCoordsReducer}) => {
+  return {userCoordsReducer};
+};
+export default connect(mapStateToProps, actions)(SignupScreen);
 
 var styles = StyleSheet.create({
   textElement: {

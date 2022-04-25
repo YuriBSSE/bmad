@@ -59,7 +59,12 @@ const DrawerContent = ({
                 fontSize: hp('2%'),
               }}
               label="Home"
-              onPress={() => navigation.navigate('HOME')}
+              onPress={() =>
+                navigation.navigate('HOME', {
+                  screen: 'home',
+                  initial: false,
+                })
+              }
             />
             {/* <DrawerItem
               icon={({ color, size }) => (

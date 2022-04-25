@@ -130,7 +130,12 @@ function MyTabs() {
                 style={{}}
                 size={size}
                 color={color}
-                onPress={() => navigation.navigate('nearme')}
+                onPress={() => {
+                  navigation.navigate('nearme', {
+                    screen: 'nearme',
+                    initial: false,
+                  });
+                }}
               />
             );
           },
@@ -226,9 +231,9 @@ const BottomTab = ({navigation}) => {
   return <MyTabs Navi={navigation} />;
 };
 
-const MainAppScreens = ({userGet, userReducer}) => {
+const MainAppScreens = ({userGet, userReducer, getNotifications}) => {
   const [animatedValue, setAnimatedValue] = useState(new Animated.Value(0));
-
+  const USER_ID = userReducer?.data?.user_id;
   useEffect(() => {
     // registerAppWithFCM()
     messaging()
@@ -264,9 +269,10 @@ const MainAppScreens = ({userGet, userReducer}) => {
       const unsubscribe = messaging().onMessage(async remoteMessage => {
         console.log(remoteMessage, 'sadasdasd');
 
-        // Call api to get current booking data
-        // if (remoteMessage?.data?.type == 'accepted') {
-        // }
+        // Call api to get notifications data
+        if (remoteMessage?.data?.type == 'likePost') {
+          getNotifications(USER_ID);
+        }
         // if (remoteMessage?.data?.type == 'reject') {
         // }
 

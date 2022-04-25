@@ -2,6 +2,8 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import MessageIcon from '../../Components/MessageIcon';
+import MessageIcon1 from '../../Components/MessageIcon1';
+import Test from './Test';
 import Connections from './Connections';
 import ProfileScreen from '../NearMe/ProfileScreen';
 
@@ -91,4 +93,3 @@ const ConnectionStack = ({navigation}) => {
 };
 
 export default ConnectionStack;
-

@@ -121,8 +121,8 @@ const NearMeScreen = ({
             _map.current.animateToRegion(
               {
                 ...coordinate,
-                latitudeDelta: state.region.latitudeDelta,
-                longitudeDelta: state.region.longitudeDelta,
+                latitudeDelta: state?.region?.latitudeDelta,
+                longitudeDelta: state?.region?.longitudeDelta,
               },
               350,
             );
@@ -132,8 +132,15 @@ const NearMeScreen = ({
     }
   });
 
+  useEffect(() => {
+    if (userCoordsReducer?.lat !== null && userCoordsReducer?.long !== null) {
+      console.log(userCoordsReducer)
+      nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
+    }
+  }, [userCoordsReducer]);
+
   const GETNearPlace = () => {
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${state.region?.latitude},${state.region?.longitude}&radius=300&type=restaurant&key=${googleMapKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${state?.region?.latitude},${state?.region?.longitude}&radius=300&type=restaurant&key=${googleMapKey}`;
     fetch(url)
       .then(response => response.json())
       .then(JsonResponse => {
@@ -153,7 +160,7 @@ const NearMeScreen = ({
     _scrollView.current.scrollTo({x: x, y: 0, animated: true});
   };
 
-  const interpolations = state?.users.map((marker, index) => {
+  const interpolations = state?.users?.map((marker, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
       index * CARD_WIDTH,
@@ -187,7 +194,7 @@ const NearMeScreen = ({
           minZoomLevel={16} // revert it back to 16 !!
           onMarkerDragEnd={onRegionChange}
           ref={_map}
-          initialRegion={state.region}
+          initialRegion={state?.region}
           style={{flex: 1}}
           provider={Platform.OS == 'android' ? PROVIDER_GOOGLE : null}>
           <Marker
@@ -214,8 +221,8 @@ const NearMeScreen = ({
             )}
           </Marker>
           <MapView.Circle
-            key={(state.region.latitude + state.region.longitude).toString()}
-            center={state.region}
+            key={(state?.region?.latitude + state?.region?.longitude).toString()}
+            center={state?.region}
             radius={300}
             strokeWidth={0}
             strokeColor={'#1a66ff'}
@@ -308,7 +315,7 @@ const NearMeScreen = ({
             ],
             {useNativeDriver: true},
           )}>
-          {state.users.map((marker, index) => {
+          {state?.users?.map((marker, index) => {
             const userInfo = {
               image: marker?.user_image,
               name: marker?.user_name,
@@ -409,6 +416,8 @@ const NearMeScreen = ({
     );
   } else {
     return (
+      // <View style={{ backgroundColor:'#ffd95e', width:width,height:height}}>
+
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -418,15 +427,17 @@ const NearMeScreen = ({
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              alignSelf: 'center',
+              alignSelf: 'center', marginTop:height * 0.2,
+              // backgroundColor:'red'
             }}>
             <LottieView
               style={{
                 width: width * 0.3,
-                height: height * 0.4,
+                height: height * 0.3,
                 alignItems: 'center',
+                // backgroundColor:'green'
               }}
-              source={require('./../../Assets/Lottie/notfound.json')}
+              source={require('./../../Assets/Lottie/test2.json')}
               autoPlay
               loop
             />
@@ -440,7 +451,7 @@ const NearMeScreen = ({
                 nol={1}
                 textAlign="left"
                 family="Poppins-SemiBold"
-                size={hp('2.5%')}
+                size={hp('2.7%')}
                 color="black"
                 Label={'No People Around You :('}
               />
@@ -456,6 +467,8 @@ const NearMeScreen = ({
           </View>
         )}
       />
+      // </View>
+
     );
   }
 };

@@ -53,7 +53,7 @@ export const NotificationList = ({
       <View style={Styles.contentOuterView}>
         <View style={Styles.contentInnerView}>
           <View style={Styles.imageView}>
-            <Avatar size="medium" source={{uri: Img}} />
+            <Avatar size="medium" source={Img !== undefined && Img !== null? {uri: `${imageUrl}/${Img}`} : require("../../Assets/Images/placeholderImage.jpg")} />
             {/* <Badge
               badgeStyle={{
                 height: 15,
@@ -75,7 +75,7 @@ export const NotificationList = ({
                 family="Poppins-SemiBold"
                 size={hp('1.7%')}
                 color="#757575"
-                Label={`${Name} Khan Niazi ${type === 'like' ? "Liked" : "Commented On"} your post.`}
+                Label={`${Name} ${type === 'like' ? "Liked" : "Commented On"} your post.`}
               />
               <View style={Styles.postImagesView}>
                 {Assets == null ? (

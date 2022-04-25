@@ -61,12 +61,16 @@ const HomeScreen = ({
   const USER_ID = userReducer?.data?.user_id;
   const [posts, setPosts] = useState(postsReducer?.feedPosts);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => {
+    wait(2000).then(async () => {
       setRefreshing(false);
-      getFeedData(USER_ID);
-      nearMeUsers(userCoordsReducer.lat, userCoordsReducer.long, USER_ID);
+      setLoading(true);
+      await getFeedData(USER_ID);
+      await nearMeUsers(userCoordsReducer.lat, userCoordsReducer.long, USER_ID);
+      
+      setLoading(false)
     });
   }, []);
 
@@ -119,16 +123,18 @@ const HomeScreen = ({
     }
   }, []);
 
-  const getOneTimeLocation = () => {
+  const getOneTimeLocation = async () => {
     Geolocation.getCurrentPosition(
-      position => {
-        nearMeUsers(
+      async position => {
+        setLoading(true);
+        coords(position.coords.latitude, position.coords.longitude);
+        await nearMeUsers(
           position.coords.latitude,
           position.coords.longitude,
           USER_ID,
         );
-        getFeedData(USER_ID);
-        coords(position.coords.latitude, position.coords.longitude);
+        await getFeedData(USER_ID);
+        setLoading(false);
       },
       error => {
         console.log(error.message);
@@ -149,11 +155,41 @@ const HomeScreen = ({
     likePost(apiData);
   };
 
+  // useEffect(() => {
+  //   if (userCoordsReducer?.lat !== null && userCoordsReducer?.long !== null) {
+  //     nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
+
+  //     getFeedData(USER_ID);
+
+  //     coords(userCoordsReducer?.lat, userCoordsReducer?.long);
+  //   }
+  // }, [userReducer?.data?.id,userCoordsReducer]);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <LottieView
+          style={{
+            width: width * 0.3,
+            height: height * 0.35,
+          }}
+          source={require('../../Assets/Lottie/loading-heart.json')}
+          autoPlay
+          loop
+        />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
 
-      {/* <View style={{}}> */}
       {
         <FlatList
           refreshControl={
@@ -162,7 +198,7 @@ const HomeScreen = ({
           scrollEnabled
           showsVerticalScrollIndicator={false}
           data={posts}
-          contentContainerStyle={{paddingBottom:100,}}
+          contentContainerStyle={{paddingBottom: 100}}
           ListFooterComponentStyle={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -177,17 +213,34 @@ const HomeScreen = ({
                       width: width * 0.5,
                       height: height * 0.35,
                     }}
-                    source={require('./../../Assets/Lottie/notfound.json')}
+                    source={require('./../../Assets/Lottie/no-posts.json')}
                     autoPlay
                     loop
                   />
-                  <View style={{marginTop: height * -0.07}}>
-                    <AppText
+                  <View style={{marginTop: height * -0.07,width:width*0.7, justifyContent:'center',alignItems:'center'}}>
+                  <AppText
                       nol={1}
                       family="Poppins-Bold"
-                      size={width * 0.07}
+                      size={width * 0.06}
+                      style={{alignSelf:'center',}}
                       color="black"
                       Label={'No Posts'}
+                    />
+                    <AppText
+                      nol={3}
+                      family="Poppins-Medium"
+                      size={width * 0.05}
+                      style={{alignSelf:'center',}}
+                      color="black"
+                      Label={'Offer drinks and connect'}
+                    />
+                     <AppText
+                     style={{marginTop:-5}}
+                      nol={1}
+                      family="Poppins-Medium"
+                      size={width * 0.05}
+                      color="black"
+                      Label={' to see their posts.'}
                     />
                   </View>
                 </View>
@@ -242,7 +295,7 @@ const HomeScreen = ({
                         <Avatar
                           size="medium"
                           rounded
-                          containerStyle={{borderColor: 'grey', borderWidth: 1}}
+                          containerStyle={{borderColor: 'grey',}}
                           source={{
                             uri: `${imageUrl}/${item?.user_image}`,
                           }}
@@ -309,7 +362,6 @@ const HomeScreen = ({
           }}
         />
       }
-      {/* </View> */}
     </View>
   );
 };
@@ -377,33 +429,3 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-{
-  /* <FlatList
-contentContainerStyle={{alignSelf: 'flex-start', margin: 5,alignContent:'flex-start',alignItems:'flex-start', flexDirection:'row'}}
-showsHorizontalScrollIndicator={false}
-
-data={usersNearmeReducer}
-horizontal
-keyExtractor={(item, index) => index}
-renderItem={({ item, index }) => 
-    <View style={{padding: 10, justifyContent:'center', flexDirection: 'column', alignItems:'center'}}>
-            <View style={{bottom: 10, width: 50}}>
-                    <AppText  nol={2}  textAlign="center"  family="Poppins-Regular" size={hp("1.5%")} color="black" Label={item.user_name} />
-            </View>
-            {
-                item.user_image == "" ?
-                <Avatar
-                size='medium'
-                rounded
-                source={require('./../../Assets/Images/dp.png')}
-                />:
-                <Avatar
-                size='medium'
-                rounded
-                source={{
-                    uri: item.user_image
-                }}
-               
-              /> */
-}

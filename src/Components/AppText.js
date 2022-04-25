@@ -4,18 +4,30 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-const AppText = ({Label, color, size,textTransform, family, textAlign, nol}) => {
+const AppText = ({
+  Label,
+  color,
+  size,
+  textTransform,
+  family,
+  textAlign,
+  nol,
+  style,
+}) => {
   return (
     <Text
       numberOfLines={nol}
-      style={{
-        color: color,
-        fontFamily: family,
-        fontSize: size,
-        textAlign: textAlign,
-        flexShrink: 1,
-        textTransform: textTransform || 'capitalize',
-      }}>
+      style={[
+        style && style,
+        {
+          color: color,
+          fontFamily: family,
+          fontSize: size,
+          textAlign: textAlign,
+          flexShrink: 1,
+          textTransform: textTransform || 'capitalize',
+        },
+      ]}>
       {Label}
     </Text>
   );

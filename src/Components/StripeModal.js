@@ -25,10 +25,10 @@ const StripeModal = ({
         <AppText
           nol={2}
           textAlign="center"
-          family="Poppins-Black"
+          family="Poppins-Bold"
           size={height * 0.028}
-          color="black"
-          Label={'Card Credentials'}
+          color="white"
+          Label={'Card   Credentials'}
         />
         <CardField
           postalCodeEnabled={true}
@@ -75,23 +75,19 @@ const StripeModal = ({
 
         {/* Buttons Container  */}
         {isLoading ? (
-          <View style={styles.loadingComponent} activeOpacity={1}>
-            <AppText
-              nol={2}
-              textAlign="center"
-              family="Poppins-SemiBold"
-              size={height * 0.028}
-              color="black"
-              Label={'Please Wait'}
-            />
-            <LottieView
-              speed={1}
-              style={styles.lottieStyles}
-              autoPlay
-              loop
-              source={require('../Assets/Lottie/loading-heart.json')}
-            />
-          </View>
+          
+             <LottieView
+                style={{
+                  position:'absolute',
+                  top:height * 0.094,
+                  width: width * 0.4,
+                  height: height * 0.14,
+                }}
+                source={require('../Assets/Lottie/red-loader.json')}
+                autoPlay
+                loop
+              />
+              
         ) : (
           <View style={styles.flexRow}>
             <TouchableOpacity
@@ -108,7 +104,7 @@ const StripeModal = ({
                 textAlign="center"
                 family="Poppins-SemiBold"
                 size={height * 0.024}
-                color="white"
+                color={themeRed}
                 Label={'Buy'}
               />
             </TouchableOpacity>
@@ -136,7 +132,7 @@ export default StripeModal;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: themeRed,
     width: width * 0.9,
     justifyContent: 'center',
     alignItems: 'center',
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   buyButton: {
-    backgroundColor: themeRed,
+    backgroundColor: 'white',
     width: width * 0.35,
     height: height * 0.07,
     borderRadius: width * 0.1,
@@ -218,7 +214,7 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.02,
     position: 'relative',
     alignSelf: 'center',
-    backgroundColor: themeRed,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     height: height * 0.08,

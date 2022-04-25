@@ -128,9 +128,9 @@ const MainPost = ({
                 <Avatar
                   size="medium"
                   // source={`${imageUrl}/${route.params.profileImg}`}
-                  source={{
+                  source={route?.params?.profileImg? {
                     uri: `${imageUrl}/${route?.params?.profileImg}`,
-                  }}
+                  }: require("../../Assets/Images/placeholderImage.jpg")}
                 />
                 <View
                   style={{
@@ -186,9 +186,9 @@ const MainPost = ({
             <View style={styles.commentBoxContainer}>
               <Avatar
                 size="small"
-                source={{
+                source={route?.params?.profileImg ? {
                   uri: `${imageUrl}/${route?.params?.profileImg}`,
-                }}
+                }:require("../../Assets/Images/placeholderImage.jpg")}
               />
               <TouchableWithoutFeedback>
                 <TextInput

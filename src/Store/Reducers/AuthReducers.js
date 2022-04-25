@@ -9,16 +9,26 @@ import {
   AUTH_ALL_SIGNUP,
   USER_GET_INFO,
 } from '../Actions/actionType';
-const initialState = {};
+const initialState = {
+  isLogin: false,
+};
+const signupInitialState = null;
+const initialInterestState = null;
+const initialFavoriteState = null;
 const initialStateOfUser = {
   token: null,
   data: null,
 };
 
 export function userLogin(state = initialState, action) {
+  // console.log("USER LOGIN REDUCER RUNNING")
+
   switch (action.type) {
     case AUTH_LOGGED_IN:
-      return action.payload;
+      return {
+        ...action.payload,
+        isLogin: true,
+      };
     case AUTH_LOGOUT:
       return action.payload;
     default:
@@ -27,7 +37,9 @@ export function userLogin(state = initialState, action) {
 }
 
 // For Signup Data Get to 3 steps
-export function userSignup(state = initialState, action) {
+export function userSignup(state = signupInitialState, action) {
+  // console.log("USER SIGNUP REDUCER RUNNING")
+
   switch (action.type) {
     case AUTH_SIGNUP:
       return action.payload;
@@ -37,6 +49,7 @@ export function userSignup(state = initialState, action) {
 }
 
 export function userOtp(state = initialState, action) {
+  // console.log("OTP REDUCER RUNNING")
   switch (action.type) {
     case AUTH_OTP:
       return action.payload;
@@ -46,6 +59,8 @@ export function userOtp(state = initialState, action) {
 }
 
 export function userOtpVerify(state = initialState, action) {
+  // console.log("USER OTP VERIFY REDUCER RUNNING")
+
   switch (action.type) {
     case AUTH_OTP_VERIFY:
       return action.payload;
@@ -54,7 +69,9 @@ export function userOtpVerify(state = initialState, action) {
   }
 }
 
-export function userInterest(state = initialState, action) {
+export function userInterest(state = initialInterestState, action) {
+  // console.log("USER INTEREST REDUCER RUNNING")
+
   switch (action.type) {
     case USER_INTEREST:
       return action.payload;
@@ -63,7 +80,9 @@ export function userInterest(state = initialState, action) {
   }
 }
 
-export function userFavourite(state = initialState, action) {
+export function userFavourite(state = initialFavoriteState, action) {
+  // console.log("USER FAVORITE REDUCER RUNNING")
+
   switch (action.type) {
     case USER_FAVOURITE:
       return action.payload;
@@ -73,6 +92,8 @@ export function userFavourite(state = initialState, action) {
 }
 
 export function userAuthSignUp(state = initialStateOfUser, action) {
+  // console.log("USER AUTH SIGNUP REDUCER RUNNING")
+
   switch (action.type) {
     case AUTH_ALL_SIGNUP:
       return action.payload;

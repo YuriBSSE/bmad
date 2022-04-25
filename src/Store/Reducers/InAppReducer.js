@@ -11,6 +11,7 @@ import {
   GET_POST_COMMENTS,
   CANCEL_REQUEST_SENT,
   GET_ALL_CONNECTIONS,
+  TEST,
   CANCEL_OFFER_FROM_PROFILE,
   SAVE_NEAR_ME_USER_DATA,
   UNFRIEND,
@@ -30,9 +31,9 @@ const coordsState = {
 
 const INITIAL_USER_DATA = {
   data: null,
+  isLogin: false,
   accessToken: '',
-  connections: [],
-  invitations: [],
+  
 };
 
 const INITIAL_STATE_POSTS = {
@@ -44,65 +45,30 @@ const INITIAL_NOTI_DATA = {
   notifications: [],
 };
 
+const INITIAL_CONNECTIONS_DATA = {
+  connections: [],
+  invitations: [],
+}
+
 export function userReducer(state = INITIAL_USER_DATA, action) {
   switch (action.type) {
-    case GET_ALL_CONNECTIONS:
-      console.log('----------------------------');
-      return {
-        ...state,
-        // connections: action.payload,
-      };
-
     case USER_GET_INFO:
       return {
         ...state,
         data: action.payload.data,
         accessToken: action.payload.token,
+        isLogin: action.payload.isLogin,
       };
 
-    case BUY_DRINKS:
+      case BUY_DRINKS:
+      console.log(state?.data,"------")
       return {
         ...state,
         data: {
           ...state.data,
-          coins: Number(state.data.coins) + Number(action.payload),
+          coins: Number(state?.data?.coins) + Number(action?.payload),
         },
       };
-
-    case UNFRIEND:
-      let index = 0;
-      let copyArr = [...state.connections];
-      copyArr.map((ele, idx) => {
-        if (ele.user_id === action.payload.friend) {
-          index = idx;
-        }
-      });
-      copyArr.splice(index, 1);
-      return {
-        ...state,
-        connections: copyArr,
-      };
-
-    case CANCEL_REQUEST_SENT:
-      let indx = 0;
-      let copyAr = [...state.invitations];
-      copyAr.map((ele, idx) => {
-        if (ele.user_id === action.payload.friend) {
-          index = idx;
-        }
-      });
-      copyAr.splice(index, 1);
-      return {
-        ...state,
-        invitations: copyAr,
-      };
-
-    case GET_INVITATIONS:
-      return {
-        ...state,
-        invitations: action.payload,
-      };
-
     default:
       return state;
   }
@@ -213,6 +179,54 @@ export function notificationsReducer(state = INITIAL_NOTI_DATA, action) {
         notifications: action.payload,
       };
 
+    default:
+      return state;
+  }
+}
+
+export function connectionsReducer(state = INITIAL_CONNECTIONS_DATA, action) {
+  switch (action.type) {
+    case GET_ALL_CONNECTIONS:
+      return {
+        ...state,
+        connections: action.payload,
+      };
+
+    
+
+    case UNFRIEND:
+      let index = 0;
+      let copyArr = [...state.connections];
+      copyArr.map((ele, idx) => {
+        if (ele.user_id === action.payload.friend) {
+          index = idx;
+        }
+      });
+      copyArr.splice(index, 1);
+      return {
+        ...state,
+        connections: copyArr,
+      };
+
+    case CANCEL_REQUEST_SENT:
+      let indx = 0;
+      let copyAr = [...state.invitations];
+      copyAr.map((ele, idx) => {
+        if (ele.user_id === action.payload.friend) {
+          index = idx;
+        }
+      });
+      copyAr.splice(index, 1);
+      return {
+        ...state,
+        invitations: copyAr,
+      };
+
+    case GET_INVITATIONS:
+      return {
+        ...state,
+        invitations: action.payload,
+      };
     default:
       return state;
   }

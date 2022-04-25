@@ -10,9 +10,10 @@ import {
     const [check, setCheck] = useState(false)
     
     const SelectInterest = (value, name) => {
-
+// console.log(name)
         if(check == true){ 
-            interests = interests.filter(function(e) { return e !== name })
+            // interests = interests.filter(function(e) { return e !== name })
+            interests = interests.filter(function(e) { console.log(e); return e !== name })
             setCheck(false)
         }else{
             interests.push(name)
@@ -35,6 +36,10 @@ import {
         // console.log(interests)
         
     }
+
+//     useEffect(() => {
+// console.log(interests,"/././././")
+//     },[interests])
     return(   
         <View style={{margin: 10,}}>
           

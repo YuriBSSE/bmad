@@ -27,7 +27,7 @@ const BMAD = ({navigation, userReducer, buyMoreDrinks}) => {
   const [showBuyDrinksModal, setShowBuyDrinksModal] = useState(false);
   const [drinks, setDrinks] = useState('');
 
-  const _onPressBuyDrinks = () => {
+  const _onPressBuyDrinks = async () => {
     console.log(drinks, '.... drinkssssss');
     const apiData = {
       user_id: userReducer?.data?.user_id,
@@ -36,7 +36,7 @@ const BMAD = ({navigation, userReducer, buyMoreDrinks}) => {
       token: stripeGeneratedKey,
     };
     console.log(apiData)
-    buyMoreDrinks(apiData, _closeStripeModal);
+    await buyMoreDrinks(apiData, _closeStripeModal);
   };
 
   // Close Stripe Modal
@@ -76,7 +76,7 @@ const BMAD = ({navigation, userReducer, buyMoreDrinks}) => {
               family="Poppins-SemiBold"
               size={height * 0.028}
               color="black"
-              Label={`Available Drinks: ${userReducer?.data.coins}`}
+              Label={`Available Drinks: ${userReducer?.data?.coins}`}
             />
           </View>
 

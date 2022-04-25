@@ -83,9 +83,7 @@ const ProceedToPay = ({navigation}) => {
               family="Poppins-Regular"
               size={hp('2%')}
               color="white"
-              Label={
-                'Your drink offer for has been sent to your drink buddy.'
-              }
+              Label={'Your drink offer for has been sent to your drink buddy.'}
             />
             <View
               style={{
@@ -94,7 +92,13 @@ const ProceedToPay = ({navigation}) => {
                 marginTop: 50,
               }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('HOME')}
+                onPress={() => {
+                  // navigation.navigate('nearme');
+                  navigation.navigate('nearme', {
+                    screen: 'nearme',
+                    initial: false,
+                  });
+                }}
                 style={styles.touchableOpacity}>
                 <AppText
                   nol={1}

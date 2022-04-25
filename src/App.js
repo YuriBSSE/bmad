@@ -21,7 +21,7 @@ const App = () => {
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     const remote = await messaging().registerDeviceForRemoteMessages();
-    console.log(remote, 'await messaging().registerDeviceForRemoteMessages();');
+    // console.log(remote, 'await messaging().registerDeviceForRemoteMessages();');
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;

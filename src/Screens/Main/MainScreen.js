@@ -32,19 +32,9 @@ if (
 }
 
 const MainScreen = ({navigation}) => {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
   const moveToTop = useRef(new Animated.ValueXY({x: 10, y: 300})).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  function onAuthStateChanged(user) {
-    setUser(user);
-    console.log(user);
-    if (initializing) setInitializing(false);
-  }
-
-  const [expanded, setExpanded] = useState(false);
-  // const [position, setposition] = useState('center');
 
   useEffect(() => {
     SplashScreen.hide();
@@ -187,11 +177,12 @@ const MainScreen = ({navigation}) => {
                   nonceIOS={'my_nonce'}
                 /> */}
               <TouchableOpacity
-                onPress={() =>
+                onPress={() => {
+                  return
                   onFacebookButtonPress().then(() =>
                     console.log('Signed in with Facebook!'),
-                  )
-                }>
+                  );
+                }}>
                 <Image
                   style={styles.icons}
                   resizeMode="contain"

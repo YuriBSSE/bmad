@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View,Dimensions} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,6 +16,7 @@ import Preview from './Preview';
 import {imageUrl} from '../../Config/Apis.json';
 import moment from 'moment';
 import {connect} from 'react-redux';
+const {width,height} = Dimensions.get('window')
 //  heart heart-o FontAwesome
 // const Img = [
 //   {image: require('./../../Assets/Images/post1.png')},
@@ -37,11 +38,10 @@ const PostList = ({
   _onPressHeart,
 }) => {
   const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
-
   return (
     <View
       style={{
-        height: hp('50%'),
+        height: height*0.55,
         flexDirection: 'column',
         justifyContent: 'center',
         padding: 4,
@@ -54,9 +54,9 @@ const PostList = ({
         <View style={{justifyContent: 'flex-start', flexDirection: 'row'}}>
           <Avatar
             size="medium"
-            source={{
+            source={ ProfileImg ? {
               uri: `${imageUrl}/${ProfileImg}`
-            }}
+            }: require("../../Assets/Images/placeholderImage.jpg")}
           />
           <View
             style={{

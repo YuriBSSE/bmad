@@ -1,5 +1,12 @@
 import React, {Component, useEffect, useState} from 'react';
-import {View, TouchableOpacity, Image, Text} from 'react-native';
+import {
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from './Screens/Main/MainScreen';
 import LoginScreen from './Screens/Login/LoginScreen';
@@ -11,7 +18,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import * as actions from './Store/Actions';
 import {NavigationContainer} from '@react-navigation/native';
+import {themeRed} from './Assets/Colors/Colors';
 const AuthStack = createStackNavigator();
+const {width, height} = Dimensions.get('window');
 
 const SignUpFunction = (userSignup, userFavourite, userInterest, SignupAll) => {
   SignupAll(userSignup, userFavourite, userInterest);
@@ -27,7 +36,7 @@ const AuthRootStackScreen = ({
 }) => (
   <AuthStack.Navigator
     headerMode="float"
-    screenOptions={{gestureEnabled: 'true', headerShown:false}}
+    screenOptions={{gestureEnabled: 'true', headerShown: true}}
     initialRouteName="main">
     <AuthStack.Screen
       name="main"
@@ -60,7 +69,7 @@ const AuthRootStackScreen = ({
           <Text
             style={{
               textAlign: 'center',
-              fontSize: 18,
+              fontSize: width * 0.05,
               color: 'black',
               fontFamily: 'Poppins-SemiBold',
             }}>
@@ -69,33 +78,25 @@ const AuthRootStackScreen = ({
         ),
         headerTransparent: false,
         headerLeft: () => (
-          <View style={{left: 20}}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name="arrow-back" size={25} color="#B01125" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.leftIconStyle}>
+            <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
+          </TouchableOpacity>
         ),
         headerRight: () => (
-          <View style={{right: 20}}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('FavoriteDrinks')}>
-              <View
-                style={{
-                  backgroundColor: '#B01125',
-                  width: 30,
-                  height: 30,
-                  borderRadius: 50,
-                  borderColor: 'white',
-                  borderWidth: 1,
-                }}>
-                <Image
-                  resizeMode="contain"
-                  source={require('./Assets/Images/Check.png')}
-                  style={{width: 20, height: 20, margin: 4}}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FavoriteDrinks')}
+            style={styles.rightIconStyle}>
+            <Image
+              resizeMode="contain"
+              source={require('./Assets/Images/Check.png')}
+              style={{
+                width: width * 0.08,
+                height: height * 0.04,
+              }}
+            />
+          </TouchableOpacity>
         ),
       })}
       component={InterestScreen}
@@ -107,7 +108,7 @@ const AuthRootStackScreen = ({
           <Text
             style={{
               textAlign: 'center',
-              fontSize: 18,
+              fontSize: width * 0.05,
               color: 'black',
               fontFamily: 'Poppins-SemiBold',
             }}>
@@ -116,40 +117,27 @@ const AuthRootStackScreen = ({
         ),
         headerTransparent: false,
         headerLeft: () => (
-          <View style={{left: 20}}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name="arrow-back" size={25} color="#B01125" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.leftIconStyle}>
+            <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
+          </TouchableOpacity>
         ),
         headerRight: () => (
-          <View style={{right: 20}}>
-            <TouchableOpacity
-              onPress={() =>
-                SignUpFunction(
-                  userSignup,
-                  userFavourite,
-                  userInterest,
-                  SignupAll,
-                )
-              }>
-              <View
-                style={{
-                  backgroundColor: '#B01125',
-                  width: 30,
-                  height: 30,
-                  borderRadius: 50,
-                  borderColor: 'white',
-                  borderWidth: 1,
-                }}>
-                <Image
-                  resizeMode="contain"
-                  source={require('./Assets/Images/Check.png')}
-                  style={{width: 20, height: 20, margin: 4}}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            // onPress={() =>
+            //   SignUpFunction(userSignup, userFavourite, userInterest, SignupAll)
+            // }
+            style={styles.rightIconStyle}>
+            {/* <Image
+              resizeMode="contain"
+              source={require('./Assets/Images/Check.png')}
+              style={{
+                width: width * 0.08,
+                height: height * 0.04,
+              }}
+            /> */}
+          </TouchableOpacity>
         ),
       })}
       component={FavoriteDScreen}
@@ -161,3 +149,26 @@ const mapStatetoProps = ({userSignup, userFavourite, userInterest}) => {
   return {userSignup, userFavourite, userInterest};
 };
 export default connect(mapStatetoProps, actions)(AuthRootStackScreen);
+
+const styles = StyleSheet.create({
+  leftIconStyle: {
+    width: width * 0.1,
+    height: height * 0.04,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 1,
+    marginLeft: width * 0.05,
+  },
+  rightIconStyle: {
+    width: width * 0.1,
+    height: height * 0.04,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 1,
+    marginRight: width * 0.05,
+  },
+});

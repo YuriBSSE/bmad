@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import AppText from '../../Components/AppText';
+import { themeRed } from '../../Assets/Colors/Colors';
 const {width, height} = Dimensions.get('window');
 
 const ConnectionButtonsMapper = ({item, index, onPress,choice}) => {
@@ -15,7 +16,7 @@ const ConnectionButtonsMapper = ({item, index, onPress,choice}) => {
       style={[
         styles.buttonContainer,
         choice === index && {
-          backgroundColor: '#EA2C2E',
+          backgroundColor: themeRed,
           color: 'white',
         },
       ]}>
@@ -24,7 +25,7 @@ const ConnectionButtonsMapper = ({item, index, onPress,choice}) => {
         textAlign="left"
         family="Poppins-SemiBold"
         size={height * 0.017}
-        color={choice === index ? 'white' : '#EA2C2E'}
+        color={choice === index ? 'white' : themeRed}
         Label={item?.label}
       />
     </TouchableOpacity>
@@ -43,6 +44,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 3,
     borderRadius: width * 0.1,
-    borderColor: '#EA2C2E',
+    borderColor: themeRed,
   },
 });

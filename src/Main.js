@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AuthRootStackScreen from './AuthRootStackScreen';
 import {connect} from 'react-redux';
-import {PermissionsAndroid,Platform} from 'react-native';
+import {PermissionsAndroid, Platform,BackHandler} from 'react-native';
 import * as actions from './Store/Actions';
 import {NavigationContainer} from '@react-navigation/native';
 import MainAppScreens from './InApp';
@@ -9,7 +9,7 @@ import Geolocation from '@react-native-community/geolocation';
 
 const Main = ({userReducer, userCoordsReducer, nearMeUsers, coords}) => {
   const USER_ID = userReducer?.data?.user_id;
-
+  const [watchId, setWatchId] = useState(null);
   // const [token, onChangeToken] = useState(null);
   // useEffect(() => {
   //   console.log();
@@ -77,8 +77,12 @@ const Main = ({userReducer, userCoordsReducer, nearMeUsers, coords}) => {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
-              title: 'Location Access Required',
-              message: 'This App needs to Access your location',
+              title: 'Location Access Required!',
+              message:
+                'BMAD requires location access to see people around you.',
+              // buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
             },
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -95,9 +99,10 @@ const Main = ({userReducer, userCoordsReducer, nearMeUsers, coords}) => {
       }
     };
     requestLocationPermission();
-    // return () => {
-    //   Geolocation.clearWatch(watchID);
-    // };
+    return () => {
+      Geolocation.clearWatch(watchId);
+      console.log("clearing watch id...")
+    };
   }, []);
 
   const getOneTimeLocation = () => {
@@ -108,6 +113,7 @@ const Main = ({userReducer, userCoordsReducer, nearMeUsers, coords}) => {
         // setLocationStatus('You are Here');
         // console.log("----------------- get one time")
         coords(position.coords.latitude, position.coords.longitude);
+        console.log("getting one time location coords...")
       },
       error => {
         console.log(error.message);
@@ -121,34 +127,39 @@ const Main = ({userReducer, userCoordsReducer, nearMeUsers, coords}) => {
   };
 
   const subscribeLocationLocation = () => {
-    // watchID = Geolocation.watchPosition(
-    //   position => {
-    //     coords(position.coords.latitude, position.coords.longitude);
-    //   },
-    //   error => {
-    //     console.log(error.message);
-    //   },
-    //   {
-    //     enableHighAccuracy: false,
-    //     maximumAge: 1000,
-    //   },
-    // );
-  };
+    let watchID = Geolocation.watchPosition(
+      position => {
+        coords(position.coords.latitude, position.coords.longitude);
 
+        console.log("printing coords from watch postion.")
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        maximumAge: 1000,
+      },
+    );
+
+    setWatchId(watchID);
+  };
   useEffect(() => {
     if (
-      userReducer?.accessToken &&
-      userCoordsReducer.lat !== '' &&
-      userCoordsReducer.long !== '' &&
+      userReducer?.isLogin &&
+      userCoordsReducer?.lat !== '' &&
+      userCoordsReducer?.long !== '' &&
       USER_ID !== undefined
     ) {
-      // nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
-      nearMeUsers('24.7931192', '67.000000', USER_ID);
+  console.log(userCoordsReducer,USER_ID)
+
+      nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
+      // nearMeUsers('24.7931192', '67.000000', USER_ID);
     }
   }, [userCoordsReducer]);
   return (
     <>
-      {userReducer?.accessToken ? (
+      {userReducer?.isLogin ? (
         <MainAppScreens />
       ) : (
         <NavigationContainer>

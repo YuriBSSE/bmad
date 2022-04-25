@@ -28,6 +28,7 @@ import {
 } from 'react-native-responsive-screen';
 import SplashScreen from 'react-native-splash-screen';
 import * as actions from '../../Store/Actions/index';
+import LottieView from 'lottie-react-native';
 import {imageUrl} from '../../Config/Apis.json';
 
 const {width, height} = Dimensions.get('window');
@@ -39,18 +40,23 @@ const OfferADrink = ({
   connectUser,
 }) => {
   const NEARME_USERDATA = usersNearmeReducer?.user;
-console.log(NEARME_USERDATA)
+  const [loading, setLoading] = useState(false);
   // send request to drink buddy
-  const _onPressConfirm = () => {
+  const _onPressConfirm = async () => {
+    setLoading(true);
     const apiData = {
       user: userReducer?.data?.user_id,
       friend: NEARME_USERDATA?.id,
     };
-    connectUser(apiData, onSuccess,NEARME_USERDATA);
+    await connectUser(apiData, onSuccess, NEARME_USERDATA,_onRequestFialed);
   };
 
   const onSuccess = () => {
     navigation.navigate('ProceedToPay');
+  };
+
+  const _onRequestFialed = () => {
+    setLoading(false);
   };
   return (
     <View
@@ -61,12 +67,12 @@ console.log(NEARME_USERDATA)
         backgroundColor: '#EA2C2E',
       }}>
       <StatusBar translucent backgroundColor="transparent" />
-      <View style={{top: -150}}>
+      <View style={{top: height * -0.2}}>
         <AppText
           nol={1}
           textAlign="left"
           family="Poppins-SemiBold"
-          size={hp('4%')}
+          size={width * 0.13}
           color="white"
           Label={'Cheers!'}
         />
@@ -99,7 +105,12 @@ console.log(NEARME_USERDATA)
                 borderColor: '#EA2C2E',
               }}
               // resizeMethod="auto"
-              source={{uri: `${imageUrl}/${userReducer?.data?.user_image}`}}
+              source={
+                userReducer?.data?.user_image !== null &&
+                userReducer?.data?.user_image !== undefined
+                  ? {uri: `${imageUrl}/${userReducer?.data?.user_image}`}
+                  : require('../../Assets/Images/placeholderImage.jpg')
+              }
             />
           </View>
           <View style={{position: 'absolute'}}>
@@ -119,7 +130,7 @@ console.log(NEARME_USERDATA)
       </View>
       <View
         style={{
-          top: 120,
+          top: height * 0.17,
           justifyContent: 'center',
           alignItems: 'center',
           width: '70%',
@@ -128,45 +139,70 @@ console.log(NEARME_USERDATA)
           nol={5}
           textAlign="center"
           family="Poppins-SemiBold"
-          size={hp('2%')}
+          size={width * 0.045}
           color="white"
           Label={`Proceed to Offer a Drink to ${NEARME_USERDATA?.name} Today!`}
         />
       </View>
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          bottom: 0,
-          marginBottom: height * 0.05,
-        }}>
-        <TouchableOpacity
-          onPress={() => _onPressConfirm()}
-          style={styles.touchableOpacity}>
-          <AppText
-            nol={1}
-            textAlign="left"
-            family="Poppins-SemiBold"
-            size={hp('2.5%')}
-            color="black"
-            Label={'Confirm'}
-          />
-        </TouchableOpacity>
+      {loading ? (
+        <>
+        <LottieView
+          style={{
+            position: 'absolute',
+            bottom: height * 0.05,
+            left: width * 0.15,
+            // backgroundColor:'white',
+            width: width * 0.4,
+            height: height * 0.3,
+          }}
+          source={require('../../Assets/Lottie/white-loader.json')}
+          autoPlay
+          loop
+        />
+        <Text style={{color:'white', fontSize:width* 0.04,
+       position: 'absolute',
+       bottom: height * 0.16,
+       left: width * 0.37,
+       fontFamily:'Poppins-Bold'
+      }}>Please Wait</Text>
+        </>
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate('HOME')}
-          style={[styles.touchableOpacity, {marginTop: height * 0.02}]}>
-          <AppText
-            nol={1}
-            textAlign="left"
-            family="Poppins-SemiBold"
-            size={hp('2.5%')}
-            color="black"
-            Label={'Later'}
-          />
-        </TouchableOpacity>
-      </View>
+      ) : (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            bottom: 0,
+            marginBottom: height * 0.05,
+          }}>
+          <TouchableOpacity
+            onPress={() => _onPressConfirm()}
+            style={styles.touchableOpacity}>
+            <AppText
+              nol={1}
+              textAlign="left"
+              family="Poppins-SemiBold"
+              size={hp('2.5%')}
+              color="black"
+              Label={'Confirm'}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('HOME')}
+            style={[styles.touchableOpacity, {marginTop: height * 0.02}]}>
+            <AppText
+              nol={1}
+              textAlign="left"
+              family="Poppins-SemiBold"
+              size={hp('2.5%')}
+              color="black"
+              Label={'Later'}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

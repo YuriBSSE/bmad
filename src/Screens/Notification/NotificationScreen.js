@@ -30,7 +30,8 @@ import * as actions from '../../Store/Actions/index';
 import LottieView from 'lottie-react-native';
 import {connect} from 'react-redux';
 import Noti from './../../../model/Notifications';
-import {imageUrl} from "../../Config/Apis.json"
+import {imageUrl} from '../../Config/Apis.json';
+import { themeRed } from '../../Assets/Colors/Colors';
 
 const {width, height} = Dimensions.get('window');
 
@@ -49,7 +50,11 @@ const NotificationScreen = ({
 
   const USER_ID = userReducer?.data?.user_id;
   const [refreshing, setRefreshing] = useState(false);
-
+  const [notifications, setNotifications] = useState(
+    notificationsReducer?.notifications
+      ? notificationsReducer?.notifications
+      : [],
+  );
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => {
@@ -68,6 +73,16 @@ const NotificationScreen = ({
     );
   };
 
+  useEffect(() => {
+    setNotifications([
+      ...notifications,
+      ...notificationsReducer?.notifications,
+    ]);
+  }, [notificationsReducer?.notifications]);
+
+  useEffect(() => {
+    getNotifications(USER_ID);
+  },[])
   return (
     <View style={styles.container}>
       <FlatList
@@ -78,50 +93,51 @@ const NotificationScreen = ({
         }
         // maintainVisibleContentPosition
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingVertical: 20}}
         data={notificationsReducer?.notifications}
-        ListHeaderComponent={<View style={{height: 50}}></View>}
+        ListHeaderComponent={<View style={{height: 30}}></View>}
         scrollEnabled
         style={{width: '100%'}}
         ItemSeparatorComponent={Separater}
         showsHorizontalScrollIndicator={false}
-        renderItem={({item, index}) => 
-        
-        {
-          console.log(item?.post?.post_url)
+        renderItem={({item, index}) => {
           return (
-          <NotificationList
-            Time={item?.created_at}
-            Img={`${imageUrl}/${item?.user?.user_coverImage}`}
-            Name={item?.user?.user_name}
-            Message={item.details}
-            OnlineStatus={item.OnlineStatus}
-            Navigation={navigation}
-            Assets={item?.post?.post_url}
-            Action={item.Action}
-            type={item.type}
-          />
-        )}}
+            <NotificationList
+              Time={item?.created_at}
+              Img={item?.user?.user_coverImage}
+              Name={item?.user?.user_name}
+              Message={item.details}
+              OnlineStatus={item.OnlineStatus}
+              Navigation={navigation}
+              Assets={item?.post?.post_url}
+              Action={item.Action}
+              type={item.type}
+            />
+          );
+        }}
         keyExtractor={(item, index) => index}
         ListFooterComponent={() =>
           notificationsReducer?.notifications?.length === 0 && (
             <>
-              <View style={{height: 30}}></View>
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              {/* <View style={{height: 30}}></View> */}
+              <View style={{justifyContent: 'center', alignItems: 'center', marginTop:height * 0.1}}>
                 <LottieView
                   style={{
                     width: width * 0.5,
                     height: height * 0.35,
                   }}
-                  source={require('./../../Assets/Lottie/notfound.json')}
+                  source={require('./../../Assets/Lottie/no-noti.json')}
                   autoPlay
                   loop
                 />
-                <View style={{marginTop: height * -0.07}}>
+                <View 
+                // style={{marginTop: height * -0.07}}
+                >
                   <AppText
                     nol={1}
                     family="Poppins-Bold"
                     size={width * 0.07}
-                    color="black"
+                    color={themeRed}
                     Label={'No Notifications'}
                   />
                 </View>

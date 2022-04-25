@@ -1,13 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {
-
-  View,
- 
-  StyleSheet,
-
-  Dimensions,
-
-} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -34,23 +26,37 @@ const Comment = ({img, name, time, message}) => {
         marginRight: width * 0.03,
         marginVertical: height * 0.01,
         // padding: 5,
+        borderRadius: 5,
+        paddingHorizontal: 5,
+        backgroundColor: 'white',
         justifyContent: 'center',
         flexDirection: 'column',
+        paddingVertical: 4,
+
         alignSelf: 'flex-end',
         alignItems: 'center',
       }}>
-      <View style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
+      <View
+        style={{
+          justifyContent: 'flex-start',
+          flexDirection: 'column',
+          // paddingHorizontal: 10,
+        }}>
         <View
           style={{
             justifyContent: 'flex-start',
             flexDirection: 'row',
-            width: width * 0.85,
+            width: width * 0.8,
           }}>
           <Avatar
             size="small"
-            source={{
-              uri: `${imageUrl}/${img}`,
-            }}
+            source={
+              img !== undefined && img !== null
+                ? {
+                    uri: `${imageUrl}/${img}`,
+                  }
+                : require('../../Assets/Images/placeholderImage.jpg')
+            }
           />
           <View
             style={{
@@ -58,7 +64,7 @@ const Comment = ({img, name, time, message}) => {
               padding: 4,
               justifyContent: 'space-between',
               alignContent: 'center',
-              left: 5,
+              left: -3,
               width: width * 0.75,
             }}>
             <View
