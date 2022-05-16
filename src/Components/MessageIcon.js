@@ -6,25 +6,26 @@ import {
 } from 'react-native-responsive-screen';
 import {Badge} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { themeRed } from '../Assets/Colors/Colors';
 const MessageIcon = ({navigation}) => {
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('message')}
+      // onPress={() => navigation.navigate('message')}
       style={{right: 17}}>
       <View
         style={{
-          backgroundColor: '#EA2C2E',
+          // backgroundColor: 'white',
           borderWidth: 0,
           borderRadius: 50,
           padding: 8,
           zIndex: 99999,
-          elevation: 4,
+          // elevation: 4,
           justifyContent: 'center',
           flexDirection: 'column',
           alignItems: 'center',
         }}>
-        <Badge
-          status="#B01125"
+        {/* <Badge
+          status={themeRed}
           value={1}
           containerStyle={{
             position: 'absolute',
@@ -33,15 +34,15 @@ const MessageIcon = ({navigation}) => {
             borderWidth: 1,
             borderColor: 'white',
             borderRadius: 50,
-            backgroundColor: '#B01125',
+            backgroundColor: themeRed,
           }}
-        />
-        <Icon
-          name="md-paper-plane-outline"
+        /> */}
+        {/* <Icon
+          name="paper-plane"
           style={{top: 1}}
           size={20}
-          color="white"
-        />
+          color={themeRed}
+        /> */}
       </View>
     </TouchableOpacity>
   );

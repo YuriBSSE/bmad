@@ -29,17 +29,22 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 export const NotificationList = ({
+  Item,
   Img,
   Name,
   Message,
   Navigation,
   Time,
   OnlineStatus,
-  Assets,type,
+  Assets,
+  type,
   Action,
 }) => {
   return (
-    <View style={Styles.container}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => Navigation.navigate('post', {notificationData: Item})}
+      style={Styles.container}>
       <View style={Styles.dateContainer}>
         <AppText
           nol={1}
@@ -53,7 +58,14 @@ export const NotificationList = ({
       <View style={Styles.contentOuterView}>
         <View style={Styles.contentInnerView}>
           <View style={Styles.imageView}>
-            <Avatar size="medium" source={Img !== undefined && Img !== null? {uri: `${imageUrl}/${Img}`} : require("../../Assets/Images/placeholderImage.jpg")} />
+            <Avatar
+              size="medium"
+              source={
+                Img !== undefined && Img !== null
+                  ? {uri: `${imageUrl}/${Img}`}
+                  : require('../../Assets/Images/maroon-dp2.jpeg')
+              }
+            />
             {/* <Badge
               badgeStyle={{
                 height: 15,
@@ -75,7 +87,9 @@ export const NotificationList = ({
                 family="Poppins-SemiBold"
                 size={hp('1.7%')}
                 color="#757575"
-                Label={`${Name} ${type === 'like' ? "Liked" : "Commented On"} your post.`}
+                Label={`${Name} ${
+                  type === 'like' ? 'Liked' : 'Commented On'
+                } your post.`}
               />
               <View style={Styles.postImagesView}>
                 {Assets == null ? (
@@ -110,7 +124,7 @@ export const NotificationList = ({
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

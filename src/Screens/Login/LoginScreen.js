@@ -6,14 +6,15 @@ import {
   ImageBackground,
   StyleSheet,
   StatusBar,
-  KeyboardAvoidingView,
   ScrollView,
   DeviceEventEmitter,
   BackHandler,
   Alert,
+  Dimensions,
 } from 'react-native';
 import Logo from './../../Components/Logo';
 import TextInputFeild from './../../Components/TextFeild';
+import LottieView from 'lottie-react-native';
 import Underline from './../../Components/Underline';
 import Heading from './../../Components/Heading';
 import TouchableOpacityBtn from './../../Components/TouchableOpacity';
@@ -27,15 +28,14 @@ import {connect} from 'react-redux';
 import * as actions from '../../Store/Actions';
 import SplashScreen from 'react-native-splash-screen';
 import Feather from 'react-native-vector-icons/Feather';
+const {width, height} = Dimensions.get('window');
 
 const LoginScreen = ({navigation, route, loginUser}) => {
-  const [username, onChangeUsername] = React.useState('');
-  const [password, onChangePassword] = React.useState('');
-  const loginHandle = (userName, password) => {
-    const foundUser = Users.filter(item => {
-      return userName == item.username && password == item.password;
-    });
+  const [username, onChangeUsername] = useState('');
+  const [password, onChangePassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  const loginHandle = async () => {
     if (username.length == 0 || password.length == 0) {
       Alert.alert(
         'Wrong Input!',
@@ -45,13 +45,18 @@ const LoginScreen = ({navigation, route, loginUser}) => {
       return;
     }
 
-    if (foundUser.length == 0) {
-      Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-        {text: 'Okay'},
-      ]);
-      return;
-    }
-    // signIn(foundUser);
+    // if (foundUser.length == 0) {
+    //   Alert.alert('Invalid User!', 'Username or password is incorrect.', [
+    //     {text: 'Okay'},
+    //   ]);
+    //   return;
+    // }
+    setLoading(true);
+    await loginUser(username, password, onLoginFailed);
+  };
+
+  const onLoginFailed = () => {
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -158,23 +163,23 @@ const LoginScreen = ({navigation, route, loginUser}) => {
               <Underline />
             </View>
           </View>
-          <View
-            style={{
-              height: hp('20%'),
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexDirection: 'column',
-              alignContent: 'space-between',
-              bottom: 30,
-            }}>
-            <TouchableOpacityBtn
-              onPress={() => {
-                // console.log("testtt")
-                loginUser(username, password);
-              }}
-              title="Sign In"
-            />
+          <View style={styles.btnContainer}>
+            {loading ? (
+              <LottieView
+                style={{
+                  marginTop:-10,
+                  width: width * 0.2,
+                  height: height * 0.1,
+                }}
+                source={require('../../Assets/Lottie/red-loader.json')}
+                autoPlay
+                loop
+              />
+            ) : (
+              <TouchableOpacityBtn onPress={loginHandle} title="Sign In" />
+            )}
             <TouchableOpacity
+              activeOpacity={0.9}
               onPress={() => {
                 // return;
                 navigation.navigate('forgot');
@@ -190,6 +195,7 @@ const LoginScreen = ({navigation, route, loginUser}) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.9}
               onPress={() => {
                 navigation.navigate('signup');
                 // return;
@@ -216,6 +222,14 @@ const LoginScreen = ({navigation, route, loginUser}) => {
 // export default LoginScreen;
 
 var styles = StyleSheet.create({
+  btnContainer: {
+    height: hp('20%'),
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'column',
+    alignContent: 'space-between',
+    bottom: 30,
+  },
   textElement: {
     flexDirection: 'column',
     justifyContent: 'space-around',

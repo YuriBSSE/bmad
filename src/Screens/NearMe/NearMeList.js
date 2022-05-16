@@ -33,29 +33,31 @@ const NearMeList = ({
   Id,
   UserID,
 }) => {
-  const userInfo = {
-    image: Img,
-    name: Name,
-    age: Age,
-    profession: Profession,
-    status: Status,
-    city: City,
-    interest: Interest,
-    favorite: Favorite,
-    distance: Distance,
-    navigation: Navigation,
-    relation: Relation,
-    address: Address,
-    genderInterest: GenderInterest,
-    email: Email,
-    connect: Connect,
-    totalLike: TotalLike,
-    like: Like,
-    id: Id,
-    userId: UserID,
-  };
+  // const userInfo = {
+  //   image: Img,
+  //   name: Name,
+  //   age: Age,
+  //   profession: Profession,
+  //   status: Status,
+  //   city: City,
+  //   interest: Interest,
+  //   favorite: Favorite,
+  //   distance: Distance,
+  //   navigation: Navigation,
+  //   relation: Relation,
+  //   address: Address,
+  //   genderInterest: GenderInterest,
+  //   email: Email,
+  //   connect: Connect,
+  //   totalLike: TotalLike,
+  //   like: Like,
+  //   id: Id,
+  //   userId: UserID,
+  // };
   return (
-    <View
+    // <View
+    //   style={}>
+      <TouchableOpacity onPress={() => Navigation.push('profile', userInfo)} activeOpacity={0.9}
       style={{
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -65,18 +67,18 @@ const NearMeList = ({
         elevation: 3,
         margin: 5,
         height: 250,
-      }}>
-      <TouchableOpacity onPress={() => Navigation.push('profile', userInfo)}>
+      }}
+      >
         <View style={{margin: 0}}>
           {Img == '' ? (
             <Image
-              source={require('../../Assets/Images/placeholderImage.jpg')}
+              source={require('../../Assets/Images/maroon-dp.png')}
               resizeMode="contain"
               style={{height: 150, width: 160}}
             />
           ) : Img?.includes('ngrok') ? (
             <Image
-              source={require('../../Assets/Images/placeholderImage.jpg')}
+              source={require('../../Assets/Images/maroon-dp.png')}
               resizeMode="contain"
               style={{height: 150, width: 160}}
             />
@@ -131,7 +133,7 @@ const NearMeList = ({
           </View>
         </View>
       </TouchableOpacity>
-    </View>
+    // </View>
   );
 };
 export default NearMeList;

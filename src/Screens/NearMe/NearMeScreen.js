@@ -32,6 +32,7 @@ import YourImage from './../../Assets/Images/pic5.png';
 import {Avatar} from 'react-native-elements';
 import {googleMapKey, deploy_API} from './../../Config/Apis.json';
 import LottieView from 'lottie-react-native';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 const {width, height} = Dimensions.get('window');
 const CARD_HEIGHT = 220;
@@ -100,7 +101,7 @@ const NearMeScreen = ({
       };
       setState(initialMapState);
     }
-  }, []);
+  }, [usersNearmeReducer?.allUsers]);
 
   useEffect(() => {
     if (state?.users?.length > 0) {
@@ -134,7 +135,7 @@ const NearMeScreen = ({
 
   useEffect(() => {
     if (userCoordsReducer?.lat !== null && userCoordsReducer?.long !== null) {
-      console.log(userCoordsReducer)
+      // console.log(userCoordsReducer)
       nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
     }
   }, [userCoordsReducer]);
@@ -187,11 +188,11 @@ const NearMeScreen = ({
   // const size = zoomLevel <= 10 ? 40 : 80;
 
   if (state?.users?.length > 0) {
-    // alert("AAAA")
     return (
       <View style={styles.container}>
         <MapView
-          minZoomLevel={16} // revert it back to 16 !!
+          optimizeWaypoints={true}
+          minZoomLevel={18} // revert it back to 16 !!
           onMarkerDragEnd={onRegionChange}
           ref={_map}
           initialRegion={state?.region}
@@ -204,28 +205,32 @@ const NearMeScreen = ({
               latitude: state?.region?.latitude,
               longitude: state?.region?.longitude,
             }}
+            // image={require('./../../Assets/Images/maroon-dp2.jpeg')}
             title={'Your Location'}>
-            {userReducer?.data?.user_image?.includes('ngrok') ? (
+            {userReducer?.data?.user_image == null ||
+            userReducer?.data?.user_image == undefined ? (
               <Avatar
                 rounded
                 size="medium"
-                containerStyle={{borderWidth: 1}}
-                source={require('./../../Assets/Images/placeholderImage.jpg')}
+                // containerStyle={{borderWidth: 1, borderColor: themeRed}}
+                source={require('./../../Assets/Images/maroon-dp2.jpeg')}
               />
             ) : (
               <Avatar
                 rounded
-                size="medium"
+                size="small"
                 source={{uri: `${imageUrl}/${userReducer?.data?.user_image}`}}
               />
             )}
           </Marker>
           <MapView.Circle
-            key={(state?.region?.latitude + state?.region?.longitude).toString()}
+            key={(
+              state?.region?.latitude + state?.region?.longitude
+            ).toString()}
             center={state?.region}
-            radius={300}
-            strokeWidth={0}
-            strokeColor={'#1a66ff'}
+            radius={100}
+            strokeWidth={2}
+            strokeColor={themeRed}
             fillColor={'rgba(176,17,37,0.2)'}
           />
           {/* Maps Users Location on Map  */}
@@ -252,15 +257,15 @@ const NearMeScreen = ({
                 }}
                 title={marker.user_name}
                 onPress={e => onMarkerPress(e)}>
-                <Animated.View style={styles.markerWrap}>
+                {/* <Animated.View style={styles.markerWrap}>
                   <Animated.View
                     style={{
                       borderColor: '#EA2C2E',
                       borderRadius: 50,
                       padding: 0,
                       alignItems: 'center',
-                      width: 40,
-                      height: 40,
+                      // width: width *0.02,
+                      // height: '100%',
                       justifyContent: 'center',
                     }}>
                     {marker?.user_image ? (
@@ -271,13 +276,13 @@ const NearMeScreen = ({
                       />
                     ) : (
                       <Animated.Image
-                        source={require('./../../Assets/Images/placeholderImage.jpg')}
+                        source={require('./../../Assets/Images/maroon-dp2.jpeg')}
                         style={[styles.marker, scaleStyle]}
                         resizeMode="cover"
                       />
                     )}
                   </Animated.View>
-                </Animated.View>
+                </Animated.View> */}
               </MapView.Marker>
             );
           })}
@@ -316,52 +321,30 @@ const NearMeScreen = ({
             {useNativeDriver: true},
           )}>
           {state?.users?.map((marker, index) => {
-            const userInfo = {
-              image: marker?.user_image,
-              name: marker?.user_name,
-              age: marker?.user_age,
-              profession: marker?.user_title,
-              status: marker?.user_status,
-              city: marker?.user_lives,
-              interest: marker?.user_interest,
-              favorite: marker?.user_favorite,
-              distance: marker?.distance,
-              navigation: navigation,
-              relation: marker?.user_relation,
-              address: marker?.user_address,
-              genderInterest: marker?.user_gender_interest,
-              email: marker?.user_email,
-              connected: marker?.connected,
-              totalLike: marker?.like,
-              like: marker?.is_like,
-              id: marker?.user_id,
-              userId: userReducer?.data?.user_id,
-            };
-
             return (
               <TouchableOpacity
                 key={index}
+                activeOpacity={0.9}
                 onPress={() => {
                   // Save User Profile Data In Redux
-                  saveNearmeUserData(userInfo);
-                  navigation.push('profile');
-                }}>
-                <View style={styles.card}>
-                  <View style={styles.imageView}>
-                    {/* {console.log(marker.user_image)} */}
-                    {marker?.user_image ? (
-                      <Image
-                        source={{uri: `${imageUrl}/${marker?.user_image}`}}
-                        style={{width: width * 0.5, height: height * 0.18}}
-                      />
-                    ) : (
-                      <Image
-                        source={require('./../../Assets/Images/placeholderImage.jpg')}
-                        style={{width: width * 0.5, height: height * 0.18}}
-                      />
-                    )}
+                  // saveNearmeUserData(marker);
+                  navigation.push('profile', {userData: marker});
+                }}
+                style={styles.card}>
+                <View style={styles.imageView}>
+                  {marker?.user_image ? (
+                    <Image
+                      source={{uri: `${imageUrl}/${marker?.user_image}`}}
+                      style={{width: width * 0.5, height: height * 0.18}}
+                    />
+                  ) : (
+                    <Image
+                      source={require('./../../Assets/Images/placeholderImage.png')}
+                      style={{width: width * 0.53, height: height * 0.18}}
+                    />
+                  )}
 
-                    {/* <Badge
+                  {/* <Badge
                     badgeStyle={{
                       height: 12,
                       width: 12,
@@ -373,40 +356,34 @@ const NearMeScreen = ({
                     status="success"
                     containerStyle={{position: 'absolute', top: height * 0.042, right: 55}}
                   /> */}
-                  </View>
-                  <View style={styles.textContent}>
+                </View>
+                <View style={styles.textContent}>
+                  <AppText
+                    nol={1}
+                    textAlign="left"
+                    family="Poppins-Medium"
+                    size={height * 0.02}
+                    color="black"
+                    Label={marker?.user_name}
+                  />
+                  <View style={styles.addressAndDist}>
                     <AppText
-                      nol={1}
-                      textAlign="left"
+                      nol={3}
                       family="Poppins-Regular"
-                      size={height * 0.02}
-                      color="black"
-                      Label={marker?.user_name}
-                    />
-                    <View
-                      style={{
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <AppText
-                        nol={3}
-                        family="Poppins-Regular"
-                        size={hp('1.4%')}
-                        color="grey"
-                        Label={marker?.user_address}
-                      />
-                    </View>
-                    <AppText
-                      nol={1}
-                      family="Poppins-Regular"
-                      size={height * 0.017}
+                      size={hp('1.4%')}
                       color="grey"
-                      Label={
-                        parseFloat(marker?.distance).toFixed(2) + ' Km far away'
-                      }
+                      Label={marker?.user_address}
                     />
                   </View>
+                  <AppText
+                    nol={1}
+                    family="Poppins-Regular"
+                    size={height * 0.017}
+                    color={"grey"}
+                    Label={
+                      parseFloat(marker?.distance*1000).toFixed(2) + 'm far away'
+                    }
+                  />
                 </View>
               </TouchableOpacity>
             );
@@ -416,37 +393,19 @@ const NearMeScreen = ({
     );
   } else {
     return (
-      // <View style={{ backgroundColor:'#ffd95e', width:width,height:height}}>
-
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListFooterComponent={() => (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              alignSelf: 'center', marginTop:height * 0.2,
-              // backgroundColor:'red'
-            }}>
+          <View style={styles.lottieStyleView}>
             <LottieView
-              style={{
-                width: width * 0.3,
-                height: height * 0.3,
-                alignItems: 'center',
-                // backgroundColor:'green'
-              }}
+              style={styles.lottie}
               source={require('./../../Assets/Lottie/test2.json')}
               autoPlay
               loop
             />
-            <View
-              style={{
-                marginTop: height * -0.07,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+            <View style={styles.noPeopleFound}>
               <AppText
                 nol={1}
                 textAlign="left"
@@ -467,8 +426,6 @@ const NearMeScreen = ({
           </View>
         )}
       />
-      // </View>
-
     );
   }
 };
@@ -482,6 +439,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  noPeopleFound: {
+    marginTop: height * -0.07,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottieStyleView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: height * 0.2,
+    // backgroundColor:'red'
+  },
   imageView: {
     padding: 5,
     borderRadius: 6,
@@ -490,12 +459,16 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: 'red',
+    backgroundColor: themeRed,
     width: '100%',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
-
+  addressAndDist: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   chipsScrollView: {
     position: 'absolute',
     top: Platform.OS === 'ios' ? 90 : 80,
@@ -503,6 +476,12 @@ const styles = StyleSheet.create({
   },
   chipsIcon: {
     marginRight: 5,
+  },
+  lottie: {
+    width: width * 0.3,
+    height: height * 0.3,
+    alignItems: 'center',
+    // backgroundColor:'green'
   },
   chipsItem: {
     flexDirection: 'row',
@@ -537,8 +516,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.3,
     shadowOffset: {x: 2, y: -2},
-    height: CARD_HEIGHT,
-    width: 150,
+    height: height * 0.27,
+    width: width * 0.35,
     overflow: 'hidden',
     marginBottom: 100,
     borderRadius: 8,
@@ -567,17 +546,17 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // width:50,
     // height:50,
-    backgroundColor: '#EA2C2E',
+    backgroundColor: themeRed,
     borderWidth: 1,
-    borderColor: '#EA2C2E',
+    borderColor: themeRed,
     borderRadius: 50,
     padding: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
   marker: {
-    width: 30,
-    height: 30,
+    // width: 10,
+    // height: 10,
     borderRadius: 50,
   },
   button: {

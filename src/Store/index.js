@@ -15,7 +15,7 @@ import {
   postsReducer,
   usersNearmeReducer,
   userCoordsReducer,
-  notificationsReducer,connectionsReducer
+  notificationsReducer,connectionsReducer,messagesReducer
 } from './Reducers/InAppReducer';
 
 const reducers = combineReducers({
@@ -28,13 +28,14 @@ const reducers = combineReducers({
   usersNearmeReducer,
   userCoordsReducer,
   postsReducer,
-  notificationsReducer,connectionsReducer
+  notificationsReducer,connectionsReducer,messagesReducer
 });
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: ['userReducer', 'userCoordsReducer'],
+  timeout: null
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

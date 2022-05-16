@@ -1,31 +1,28 @@
-import React, {Component, useEffect, useState} from 'react';
-import {Dimensions, TouchableOpacity, Text, View, Image} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React from 'react';
+import {TouchableOpacity, Text, View, Image} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ProfileScreen from './ProfileScreens';
 import PasswordChange from './PasswordChange';
+import Icon from 'react-native-vector-icons/Ionicons';
 import BMAD from './BMAD';
 import EditProfile from './EditProfile';
-import AppText from '../../../Components/AppText';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Icon from 'react-native-vector-icons/Ionicons';
 import MessageIcon from '../../../Components/MessageIcon';
 import MaterialIcons from 'react-native-vector-icons/Feather';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {themeRed} from '../../../Assets/Colors/Colors';
+
 function ProfileStack({navigation}) {
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator initialRouteName="BMAD">
+    <Stack.Navigator initialRouteName="Drinks">
       <Stack.Screen
-        name="BMAD"
+        name="Drinks"
         options={({route}) => ({
           headerStyle: {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
             height: 110,
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -33,10 +30,10 @@ function ProfileStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
-              BMAD
+              Drinks
             </Text>
           ),
           headerTransparent: false,
@@ -48,7 +45,7 @@ function ProfileStack({navigation}) {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../../Assets/Images/menu.png')}
+                  source={require('./../../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>
@@ -58,7 +55,7 @@ function ProfileStack({navigation}) {
         component={BMAD}
       />
       <Stack.Screen
-        name="Profile"
+        name="MyProfile"
         options={({route, navigation}) => ({
           headerShown: true,
 
@@ -83,6 +80,11 @@ function ProfileStack({navigation}) {
                 />
               </View>
             </TouchableOpacity>
+            // <View style={{left: 20}}>
+            //   <TouchableOpacity onPress={() => navigation.goBack()}>
+            //     <Icon name="arrow-back" size={25} color="white" />
+            //   </TouchableOpacity>
+            // </View>
           ),
           headerRight: () => (
             <View
@@ -91,7 +93,7 @@ function ProfileStack({navigation}) {
                 right: 30,
                 alignContent: 'space-around',
               }}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate('EditProfile')}>
                 <MaterialIcons
                   name="edit-3"
@@ -99,16 +101,16 @@ function ProfileStack({navigation}) {
                   size={25}
                   style={{}}
                 />
-              </TouchableOpacity>
-              <View style={{marginLeft: 20}}></View>
-              <TouchableOpacity onPress={() => navigation.navigate('newpost')}>
+              </TouchableOpacity> */}
+              {/* <View style={{marginLeft: 20}}></View> */}
+              {/* <TouchableOpacity onPress={() => navigation.navigate('newpost')}>
                 <FontAwesome
                   name="plus-square-o"
                   color="white"
                   size={25}
                   style={{}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           ),
         })}

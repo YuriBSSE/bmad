@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {TouchableOpacity, View,Dimensions} from 'react-native';
+import {TouchableOpacity, View, Dimensions} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,7 +16,9 @@ import Preview from './Preview';
 import {imageUrl} from '../../Config/Apis.json';
 import moment from 'moment';
 import {connect} from 'react-redux';
-const {width,height} = Dimensions.get('window')
+import {useRoute} from '@react-navigation/native';
+
+const {width, height} = Dimensions.get('window');
 //  heart heart-o FontAwesome
 // const Img = [
 //   {image: require('./../../Assets/Images/post1.png')},
@@ -38,13 +40,18 @@ const PostList = ({
   _onPressHeart,
 }) => {
   const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
+
+  const route = useRoute();
+  const routeName = route?.name;
   return (
     <View
       style={{
-        height: height*0.55,
+        // height: height*0.5,
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: 4,
+        paddingHorizontal: width * 0.008,
+        // padding: 4,
+        paddingVertical: height * 0.02,
         width: '95%',
         alignItems: 'center',
         alignContent: 'center',
@@ -54,9 +61,13 @@ const PostList = ({
         <View style={{justifyContent: 'flex-start', flexDirection: 'row'}}>
           <Avatar
             size="medium"
-            source={ ProfileImg ? {
-              uri: `${imageUrl}/${ProfileImg}`
-            }: require("../../Assets/Images/placeholderImage.jpg")}
+            source={
+              ProfileImg
+                ? {
+                    uri: `${imageUrl}/${ProfileImg}`,
+                  }
+                : require('../../Assets/Images/maroon-dp2.jpeg')
+            }
           />
           <View
             style={{
@@ -124,7 +135,10 @@ const PostList = ({
           </View>
         </View>
         <TouchableOpacity
-          onPress={() =>
+          onPress={() => {
+            if (routeName === 'post') {
+              return;
+            }
             Navigation.navigate('mainpost', {
               name: Name,
               description: Description,
@@ -134,8 +148,8 @@ const PostList = ({
               comment: Comment,
               img: Img,
               item: item,
-            })
-          }>
+            });
+          }}>
           <View
             style={{justifyContent: 'flex-start', alignItems: 'flex-start'}}>
             <AppText
@@ -177,7 +191,7 @@ const PostList = ({
         />
         <View style={{marginTop: 20}} />
         <View
-          style={{width: '95%', height: 0.5, backgroundColor: 'grey', top: -3}}
+          style={{width: '95%', height: 0.4, backgroundColor: 'grey', top: -3}}
         />
       </View>
     </View>

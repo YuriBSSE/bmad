@@ -35,6 +35,7 @@ import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItems';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import Comment from './Comments';
+import LottieView from 'lottie-react-native';
 import {imageUrl} from '../../Config/Apis.json';
 import {connect} from 'react-redux';
 import Preview from './Preview';
@@ -62,6 +63,7 @@ const MainPost = ({
   const [commentText, setCommentText] = useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const postId = route?.params?.item?.post_id;
+  const [isCommenting, setIsCommenting] = useState(false);
   const userId = userReducer?.data?.user_id;
   const [postComments, setPostComments] = useState([]);
 
@@ -75,16 +77,18 @@ const MainPost = ({
     });
   }, []);
 
-  const _onPressComment = () => {
+  const _onPressComment = async () => {
     const apiData = {
       user_id: userId,
       post_id: postId,
       comment: commentText,
     };
-    commentOnPost(apiData, onSuccess);
+    setIsCommenting(true);
+    await commentOnPost(apiData, onSuccess);
   };
 
   const onSuccess = () => {
+    setIsCommenting(false);
     setCommentText('');
     getAllCommentsOfPost(postId).then(() => {
       setPostComments(postsReducer?.postComments);
@@ -104,6 +108,7 @@ const MainPost = ({
     <View
       style={{
         // height: hp('100%'),
+        backgroundColor: '#F7F3F2',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         // width: '100%',
@@ -122,15 +127,20 @@ const MainPost = ({
                 style={{
                   justifyContent: 'flex-start',
                   flexDirection: 'row',
-                  width: '80%',
-                  margin: 8,
+                  width: width * 0.9,
+
+                  marginVertical: height * 0.01,
                 }}>
                 <Avatar
                   size="medium"
                   // source={`${imageUrl}/${route.params.profileImg}`}
-                  source={route?.params?.profileImg? {
-                    uri: `${imageUrl}/${route?.params?.profileImg}`,
-                  }: require("../../Assets/Images/placeholderImage.jpg")}
+                  source={
+                    route?.params?.profileImg
+                      ? {
+                          uri: `${imageUrl}/${route?.params?.profileImg}`,
+                        }
+                      : require('../../Assets/Images/maroon-dp2.jpeg')
+                  }
                 />
                 <View
                   style={{
@@ -169,8 +179,8 @@ const MainPost = ({
                 style={{
                   justifyContent: 'flex-start',
                   alignItems: 'flex-start',
-                  width: '95%',
-                  margin: 10,
+                  marginVertical: height * 0.015,
+                  width:width * 0.9,
                 }}>
                 <AppText
                   nol={12}
@@ -186,9 +196,13 @@ const MainPost = ({
             <View style={styles.commentBoxContainer}>
               <Avatar
                 size="small"
-                source={route?.params?.profileImg ? {
-                  uri: `${imageUrl}/${route?.params?.profileImg}`,
-                }:require("../../Assets/Images/placeholderImage.jpg")}
+                source={
+                  route?.params?.profileImg
+                    ? {
+                        uri: `${imageUrl}/${route?.params?.profileImg}`,
+                      }
+                    : require('../../Assets/Images/maroon-dp2.jpeg')
+                }
               />
               <TouchableWithoutFeedback>
                 <TextInput
@@ -205,35 +219,48 @@ const MainPost = ({
                 />
               </TouchableWithoutFeedback>
             </View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.commentBtn}
-              onPress={_onPressComment}>
-              <AppText
-                nol={1}
-                family="Poppins-SemiBold"
-                size={hp('1.7%')}
-                color="white"
-                Label={'Comment'}
+            {isCommenting ? (
+              <LottieView
+                style={{
+                  width: width * 0.2,
+                  height: height * 0.1,
+                  marginLeft: width * 0.38,
+                }}
+                source={require('../../Assets/Lottie/red-loader.json')}
+                autoPlay
+                loop
               />
-            </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.commentBtn}
+                onPress={_onPressComment}>
+                <AppText
+                  nol={1}
+                  family="Poppins-SemiBold"
+                  size={hp('1.7%')}
+                  color="white"
+                  Label={'Comment'}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         }
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: height * 0.12}}
+        contentContainerStyle={{paddingBottom: height * 0.14}}
         data={postComments}
         keyExtractor={(item, index) => index}
-        renderItem={({item, index}) =>{
-          console.log(item)
+        renderItem={({item, index}) => {
           return (
-          <Comment
-            img={item?.user_image}
-            name={item?.user_name}
-            time={moment(item?.created_at).fromNow()}
-            message={item?.comment}
-          />
-        )}}
+            <Comment
+              img={item?.user_image}
+              name={item?.user_name}
+              time={moment(item?.created_at).fromNow()}
+              message={item?.comment}
+            />
+          );
+        }}
       />
     </View>
   );
@@ -254,12 +281,13 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 10,
     borderColor: 'gray',
-    borderWidth: 1,
+    // borderWidth: 1,
     backgroundColor: 'white',
     alignItems: 'flex-start',
     alignSelf: 'center',
     justifyContent: 'center',
     //  height:100
+    marginBottom: height * 0.01,
   },
   textInputStyles: {
     marginLeft: width * 0.03,
@@ -277,7 +305,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#B01125',
     alignSelf: 'flex-end',
-    marginRight: width * 0.03,
+    // marginRight: width * 0.01,
     marginTop: height * 0.01,
+    marginBottom: height * 0.01,
   },
 });

@@ -6,6 +6,7 @@ import MessageIcon1 from '../../Components/MessageIcon1';
 import Test from './Test';
 import Connections from './Connections';
 import ProfileScreen from '../NearMe/ProfileScreen';
+import { themeRed } from '../../Assets/Colors/Colors';
 
 const ConnectionStack = ({navigation}) => {
   const Stack = createStackNavigator();
@@ -17,6 +18,7 @@ const ConnectionStack = ({navigation}) => {
           headerStyle: {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
+            backgroundColor:themeRed,
             height: 110,
           },
           headerStatusBarHeight: 32,
@@ -25,7 +27,7 @@ const ConnectionStack = ({navigation}) => {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               Connections
@@ -40,7 +42,7 @@ const ConnectionStack = ({navigation}) => {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu.png')}
+                  source={require('./../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>
@@ -54,9 +56,9 @@ const ConnectionStack = ({navigation}) => {
         name="profile"
         options={({route}) => ({
           headerStyle: {
-            borderBottomColor: '#EA2C2E',
+            borderBottomColor: themeRed,
             borderBottomWidth: 2,
-            backgroundColor: '#EA2C2E',
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (

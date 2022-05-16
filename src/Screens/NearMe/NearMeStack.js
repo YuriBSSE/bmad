@@ -8,6 +8,7 @@ import MessageIcon1 from './../../Components/MessageIcon1';
 import OfferADrink from './../Offer/OfferADrink';
 import OutOfDrink from './../Offer/OutOfDrink';
 import ProfileScreen from './ProfileScreen';
+import { themeRed } from '../../Assets/Colors/Colors';
 
 function NearMeStack({navigation}) {
   const Stack = createStackNavigator();
@@ -20,6 +21,7 @@ function NearMeStack({navigation}) {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
             height: 110,
+            backgroundColor:themeRed
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -27,7 +29,7 @@ function NearMeStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               Nearby People
@@ -42,7 +44,7 @@ function NearMeStack({navigation}) {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu.png')}
+                  source={require('./../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>
@@ -56,9 +58,9 @@ function NearMeStack({navigation}) {
         name="profile"
         options={({route}) => ({
           headerStyle: {
-            borderBottomColor: '#EA2C2E',
+            borderBottomColor: themeRed,
             borderBottomWidth: 2,
-            backgroundColor: '#EA2C2E',
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (

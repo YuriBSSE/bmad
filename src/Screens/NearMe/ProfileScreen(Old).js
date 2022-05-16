@@ -29,7 +29,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 //  import {useNavigation} from "@react-navigation/native"
 
 const ProfileScreen = ({navigation, route}) => {
-  console.log('Profile SCREEN-===---', JSON.stringify(route, null, 2));
+  // console.log('Profile SCREEN-===---', JSON.stringify(route, null, 2));
   // const [Data, onChangeData] = React.useState(route.params);
   // const navigation=useNavigation()
   const [lines, onChangeLines] = React.useState(2);

@@ -28,17 +28,22 @@ const BMAD = ({navigation, userReducer, buyMoreDrinks}) => {
   const [drinks, setDrinks] = useState('');
 
   const _onPressBuyDrinks = async () => {
-    console.log(drinks, '.... drinkssssss');
     const apiData = {
       user_id: userReducer?.data?.user_id,
-      coins: 3,
-      amount: 3,
+      coins: Number(drinks),
+      amount: Number(drinks),
       token: stripeGeneratedKey,
     };
     console.log(apiData)
+    setIsLoading(true)
     await buyMoreDrinks(apiData, _closeStripeModal);
+    
   };
 
+ 
+// useEffect(() => [
+
+// ],[userReducer?.data?.coins])
   // Close Stripe Modal
   const _closeStripeModal = () => {
     setIsStripeModalVisible(false);

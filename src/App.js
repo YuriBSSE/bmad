@@ -13,6 +13,7 @@ import messaging from '@react-native-firebase/messaging';
 import {PersistGate} from 'redux-persist/integration/react';
 import FlashMessage from 'react-native-flash-message';
 import Geolocation from '@react-native-community/geolocation';
+import SampleTesting from './Screens/testing';
 
 const App = () => {
   if (Text.defaultProps == null) Text.defaultProps = {};

@@ -306,9 +306,7 @@ const SignupScreen = ({
                 alignContent: 'space-between',
               }}>
               <TouchableOpacityBtn onPress={onSubmit} title="Sign Up" />
-              <TouchableOpacity
-                style={{top: 5}}
-                onPress={() => navigation.navigate('login')}>
+              <View style={{top: 5}}>
                 <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                   <Text
                     style={{
@@ -318,18 +316,20 @@ const SignupScreen = ({
                     }}>
                     Already a Member?{' '}
                   </Text>
-
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontFamily: 'Poppins-Regular',
-                      fontSize: hp('1.8%'),
-                      textDecorationLine: 'underline',
-                    }}>
-                    Sign In
-                  </Text>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('login')}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: hp('1.8%'),
+                        textDecorationLine: 'underline',
+                      }}>
+                      Sign In
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
         ) : (
@@ -590,6 +590,66 @@ const SignupScreen = ({
                     }}>
                     {' '}
                     Female{' '}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginLeft: 15,
+                    marginRight: 15,
+                    width: wp('50%'),
+                    alignContent: 'flex-end',
+                  }}>
+                  <RNCheckboxCard
+                    circleSize={30}
+                    isChecked={checkedFemale}
+                    checkedTextColor="#ffffff"
+                    width={50}
+                    checkImageSource={require('./../../Assets/Images/Check.png')}
+                    circleBorderColor="#EFEFEF"
+                    circleBackgroundColor="#B01125"
+                    onPress={() => {
+                      if (checkedFemale) {
+                        onChangeCheckFemale(false);
+                        onChangeCheckFemaleText('');
+                      } else {
+                        onChangeCheckFemale(true);
+                        onChangeCheckFemaleText('Female');
+                      }
+                    }}
+                    rightIconComponent={<View></View>}
+                  />
+                </View>
+              </View>
+              {/* btw men women  */}
+              <View
+                style={{
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  width: wp('100%'),
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  alignContent: 'center',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    width: wp('30%'),
+                  }}>
+                  <IconImage
+                    source={require('./../../Assets/Images/lgbt.png')}
+                  />
+                  <View style={{marginLeft: 12}}></View>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontFamily: 'Poppins-Regular',
+                      fontSize: hp('2%'),
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    LGBTQ+{' '}
                   </Text>
                 </View>
                 <View

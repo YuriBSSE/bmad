@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import NewPostScreen from './NewPostScreen';
 import MessageIcon from '../../Components/MessageIcon';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 const NewPostStack = ({navigation}) => {
   const Stack = createStackNavigator();
@@ -13,14 +14,14 @@ const NewPostStack = ({navigation}) => {
       <Stack.Screen
         name="newpost"
         options={({route}) => ({
-          headerStyle: {height: 110},
+          headerStyle: {height: 110, backgroundColor: themeRed},
           headerStatusBarHeight: 32,
           headerTitle: props => (
             <Text
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               New Post
@@ -30,16 +31,16 @@ const NewPostStack = ({navigation}) => {
           headerLeft: () => (
             <View style={{left: 20}}>
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="arrow-back" size={25} color="#B01125" />
+                <Icon name="arrow-back" size={25} color="white" />
               </TouchableOpacity>
             </View>
           ),
           headerRight: () => (
             <View
               style={{
-                backgroundColor: '#B01125',
+                backgroundColor: themeRed,
                 borderRadius: 50,
-                borderColor: 'white',
+                borderColor: themeRed,
                 borderWidth: 1,
                 right: 20,
               }}>

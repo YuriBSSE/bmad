@@ -31,7 +31,10 @@ const Test = ({
   userReducer,
   testFunc,
   cancelMyRequestSent,
-  getNotifications,navigation
+  getNotifications,
+  navigation,
+  acceptInvite,
+  ignoreInvite,
 }) => {
   const [choice, setChoice] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -61,7 +64,6 @@ const Test = ({
   };
 
   const _onPressToggleButton = (item, index) => {
-    console.log(index, '==============');
     setChoice(index);
   };
 
@@ -74,14 +76,30 @@ const Test = ({
   };
 
   const _onPressCancelMyRequestSent = (item, index) => {
-    console.log('test');
     const data = {
       user: USER_ID,
       friend: item?.user_id,
     };
+    console.log(data, 'Cance data');
     cancelMyRequestSent(data);
   };
 
+  const _onPressIgnoreInvite = (item, index) => {
+    const data = {
+      user: USER_ID,
+      friend: item?.user_id,
+    };
+    console.log(data, 'Ignore data');
+    ignoreInvite(data);
+  };
+  const _onPressAcceptButton = (item, index) => {
+    const data = {
+      user: USER_ID,
+      friend: item?.user_id,
+    };
+    console.log(data, 'accept data');
+    acceptInvite(data);
+  };
   useEffect(() => {
     if (choice === 0) {
       console.log('connection length: ', connections?.length);
@@ -137,7 +155,7 @@ const Test = ({
           />
         )}
         data={choice === 0 ? connections : choice === 1 ? invitation : requests}
-        keyExtractor={item => item?.user_id?.toString()}
+        keyExtractor={(item, index) => index}
         renderItem={({item, index}) => (
           <ConnectionsMapper
             item={item}
@@ -145,6 +163,8 @@ const Test = ({
             index={index}
             unFriendThisPerson={unFriendThisPerson}
             _onPressCancelMyRequestSent={_onPressCancelMyRequestSent}
+            _onPressAcceptButton={_onPressAcceptButton}
+            _onPressIgnoreInvite={_onPressIgnoreInvite}
           />
         )}
       />
@@ -210,7 +230,7 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: height * 0.01,
+    paddingVertical: height * 0.02,
     paddingHorizontal: width * 0.02,
     // backgroundColor: 'grey',
     // height: height * 0.06,

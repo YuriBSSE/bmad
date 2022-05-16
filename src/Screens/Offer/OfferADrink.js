@@ -30,6 +30,7 @@ import SplashScreen from 'react-native-splash-screen';
 import * as actions from '../../Store/Actions/index';
 import LottieView from 'lottie-react-native';
 import {imageUrl} from '../../Config/Apis.json';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 const {width, height} = Dimensions.get('window');
 
@@ -38,20 +39,27 @@ const OfferADrink = ({
   navigation,
   userReducer,
   connectUser,
+  deductDrinksAfterRequestSent,
 }) => {
   const NEARME_USERDATA = usersNearmeReducer?.user;
   const [loading, setLoading] = useState(false);
+
   // send request to drink buddy
   const _onPressConfirm = async () => {
+    if (0 <= 0) {
+      alert("You don't have enough coins to send a request.");
+    }
     setLoading(true);
     const apiData = {
       user: userReducer?.data?.user_id,
-      friend: NEARME_USERDATA?.id,
+      friend: NEARME_USERDATA?.user_id,
     };
-    await connectUser(apiData, onSuccess, NEARME_USERDATA,_onRequestFialed);
+    await connectUser(apiData, onSuccess, NEARME_USERDATA, _onRequestFialed);
   };
 
   const onSuccess = () => {
+    deductDrinksAfterRequestSent();
+    setLoading(false);
     navigation.navigate('ProceedToPay');
   };
 
@@ -59,13 +67,7 @@ const OfferADrink = ({
     setLoading(false);
   };
   return (
-    <View
-      style={{
-        justifyContent: 'center',
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#EA2C2E',
-      }}>
+    <View style={styles.mainContainer}>
       <StatusBar translucent backgroundColor="transparent" />
       <View style={{top: height * -0.2}}>
         <AppText
@@ -77,105 +79,55 @@ const OfferADrink = ({
           Label={'Cheers!'}
         />
       </View>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          flexDirection: 'column',
-          position: 'relative',
-          alignContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center',
-        }}>
-        <View
-          style={{
-            justifyContent: 'center',
-            flexDirection: 'row',
-            alignContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            right: 50,
-          }}>
-          <View style={{position: 'absolute', left: 10}}>
+      <View style={styles.contentContainer}>
+        <View style={styles.userInfoContainer}>
+          <View style={styles.imageContainer}>
             <Image
-              style={{
-                width: 200,
-                height: 200,
-                borderRadius: 100,
-                borderWidth: 10,
-                borderColor: '#EA2C2E',
-              }}
+              style={styles.imageStyles}
               // resizeMethod="auto"
               source={
                 userReducer?.data?.user_image !== null &&
                 userReducer?.data?.user_image !== undefined
                   ? {uri: `${imageUrl}/${userReducer?.data?.user_image}`}
-                  : require('../../Assets/Images/placeholderImage.jpg')
+                  : require('../../Assets/Images/placeholderImage.png')
               }
             />
           </View>
-          <View style={{position: 'absolute'}}>
+          <View style={styles.loaderContainer}>
             <Image
-              style={{
-                width: 200,
-                height: 200,
-                borderRadius: 100,
-                borderWidth: 10,
-                borderColor: '#EA2C2E',
-              }}
-              // resizeMethod="auto"
-              source={{uri: `${imageUrl}/${NEARME_USERDATA?.image}`}}
+              style={styles.imageStyles}
+              source={
+                userReducer?.data?.user_image !== null &&
+                userReducer?.data?.user_image !== undefined
+                  ? {uri: `${imageUrl}/${NEARME_USERDATA?.user_image}`}
+                  : require('../../Assets/Images/placeholderImage.png')
+              }
             />
           </View>
         </View>
       </View>
-      <View
-        style={{
-          top: height * 0.17,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '70%',
-        }}>
+      <View style={styles.actionContainer}>
         <AppText
           nol={5}
           textAlign="center"
           family="Poppins-SemiBold"
           size={width * 0.045}
           color="white"
-          Label={`Proceed to Offer a Drink to ${NEARME_USERDATA?.name} Today!`}
+          Label={`Proceed to Offer a Drink to ${NEARME_USERDATA?.user_name} Today!`}
         />
       </View>
       {loading ? (
         <>
-        <LottieView
-          style={{
-            position: 'absolute',
-            bottom: height * 0.05,
-            left: width * 0.15,
-            // backgroundColor:'white',
-            width: width * 0.4,
-            height: height * 0.3,
-          }}
-          source={require('../../Assets/Lottie/white-loader.json')}
-          autoPlay
-          loop
-        />
-        <Text style={{color:'white', fontSize:width* 0.04,
-       position: 'absolute',
-       bottom: height * 0.16,
-       left: width * 0.37,
-       fontFamily:'Poppins-Bold'
-      }}>Please Wait</Text>
+          <LottieView
+            style={styles.lottieStyles}
+            source={require('../../Assets/Lottie/white-loader.json')}
+            autoPlay
+            loop
+          />
+          <Text style={styles.pleaseWait}>Please Wait</Text>
         </>
-
       ) : (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            bottom: 0,
-            marginBottom: height * 0.05,
-          }}>
+        <View style={styles.buttonsContainer}>
           <TouchableOpacity
             onPress={() => _onPressConfirm()}
             style={styles.touchableOpacity}>
@@ -213,6 +165,71 @@ const mapStateToProps = ({userReducer, usersNearmeReducer}) => {
 export default connect(mapStateToProps, actions)(OfferADrink);
 
 var styles = StyleSheet.create({
+  buttonsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: height * 0.05,
+  },
+  pleaseWait: {
+    color: 'white',
+    fontSize: width * 0.04,
+    position: 'absolute',
+    bottom: height * 0.16,
+    left: width * 0.37,
+    fontFamily: 'Poppins-Bold',
+  },
+  lottieStyles: {
+    position: 'absolute',
+    bottom: height * 0.05,
+    left: width * 0.15,
+    // backgroundColor:'white',
+    width: width * 0.4,
+    height: height * 0.3,
+  },
+  actionContainer: {
+    top: height * 0.17,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '70%',
+  },
+  loaderContainer: {
+    position: 'absolute',
+  },
+  imageStyles: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: themeRed,
+  },
+  imageContainer: {
+    position: 'absolute',
+    left: 10,
+  },
+  userInfoContainer: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    right: 50,
+  },
+  contentContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    position: 'relative',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  mainContainer: {
+    justifyContent: 'center',
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: themeRed,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

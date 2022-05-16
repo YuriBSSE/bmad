@@ -181,7 +181,7 @@ const UserMap = ({
                 rounded
                 size="medium"
                 containerStyle={{borderWidth: 1}}
-                source={require('./../../Assets/Images/placeholderImage.jpg')}
+                source={require('./../../Assets/Images/maroon-dp2.jpeg')}
               />
             ) : (
               <Avatar
@@ -229,7 +229,7 @@ const UserMap = ({
                       />
                     ) : (
                       <Animated.Image
-                        source={require('./../../Assets/Images/placeholderImage.jpg')}
+                        source={require('./../../Assets/Images/maroon-dp2.jpeg')}
                         style={[styles.marker, scaleStyle]}
                         resizeMode="cover"
                       />
@@ -285,7 +285,7 @@ const UserMap = ({
                     <Avatar
                       rounded
                       size="large"
-                      source={require('./../../Assets/Images/placeholderImage.jpg')}
+                      source={require('./../../Assets/Images/maroon-dp2.jpeg')}
                     />
                   ) : (
                     <Avatar

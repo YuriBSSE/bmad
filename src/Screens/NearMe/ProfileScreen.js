@@ -9,30 +9,22 @@ import {
   SafeAreaView,
   FlatList,
   Image,
-  KeyboardAvoidingView,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-  Animated,
   Dimensions,
-  TouchableHighlight,
-  TextInput,
   ScrollView,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import LottieView from 'lottie-react-native';
 import AppText from '../../Components/AppText';
-import {api, deploy_API} from '../../Config/Apis.json';
-import {showMessage, hideMessage} from 'react-native-flash-message';
 import {connect} from 'react-redux';
 import {imageUrl} from '../../Config/Apis.json';
-import axios from 'axios';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useRoute, StackActions, useIsFocused} from '@react-navigation/native';
 import * as actions from '../../Store/Actions/index';
+import {themeRed} from '../../Assets/Colors/Colors';
 //  import {useNavigation} from "@react-navigation/native"
-
+// import { NavigationActions } from 'react-navigation';
 const {width, height} = Dimensions.get('window');
 
 const ProfileScreen = ({
@@ -42,11 +34,22 @@ const ProfileScreen = ({
   route,
   usersNearmeReducer,
   cancelOfferFromProfile,
+  createConversation,
+  saveCurrentChatObject,
+  messagesReducer,
+  getUserData,
 }) => {
-  const [lines, onChangeLines] = React.useState(2);
-  const [linesCondition, onChangeLinesCondition] = React.useState(false);
-  const [earMeUserData, setNearMeUserData] = useState(null);
-  const nearMeUserData = usersNearmeReducer?.user;
+  const [lines, onChangeLines] = useState(2);
+  const [linesCondition, onChangeLinesCondition] = useState(false);
+  const [nearMeUserData, setNearMeUserData] = useState(null);
+  const isFocused = useIsFocused();
+  // const nearMeUserData = usersNearmeReducer?.user;
+  const USER_ID = userReducer?.data?.user_id;
+  const profileData = route.params.userData;
+
+  const [loading, setLoading] = useState(false);
+
+  // console.log(navigation);
   const ReadMore = () => {
     onChangeLines(20);
     onChangeLinesCondition(true);
@@ -60,7 +63,7 @@ const ProfileScreen = ({
   const _cancelOfferRequest = async () => {
     const apiData = {
       user: userReducer?.data?.user_id,
-      friend: nearMeUserData.id,
+      friend: nearMeUserData.user_id,
     };
     console.log('cancelling ...');
     cancelOfferFromProfile(apiData);
@@ -69,31 +72,26 @@ const ProfileScreen = ({
   const _onPressRemoveFriend = () => {
     const apiData = {
       user: userReducer?.data?.user_id,
-      friend: nearMeUserData.id,
+      friend: nearMeUserData.user_id,
     };
     console.log('removing');
     unfriendUserFromProfile(apiData);
   };
-  const requestFunction = () => {
-    // request
-    console.log('request');
+
+  const _onPressMessageButton = async () => {
+    //below two lines tab tak k liye hen jb tk profile se messages kr rahe hen phr hatadnaa
+    saveCurrentChatObject(nearMeUserData);
+    navigation.navigate('chats');
+
+    // const apiData = {
+    //   sender: USER_ID,
+    //   receiver: nearMeUserData?.user_id,
+    // };
+    // await createConversation(apiData, nearMeUserData, _onSuccess);
   };
 
-  const connectedFunction = () => {
-    // unfollow
-    console.log('unfollow');
-  };
-
-  const like = () => {
-    console.log('like');
-  };
-
-  const unlike = () => {
-    console.log('unlike');
-  };
-
-  const error = () => {
-    console.log('Network Error');
+  const _onSuccess = () => {
+    navigation.navigate('chats');
   };
 
   useEffect(() => {
@@ -101,28 +99,60 @@ const ProfileScreen = ({
       usersNearmeReducer?.user !== null &&
       usersNearmeReducer?.user !== undefined
     ) {
-      console.log('After Cancelling Request: Data Changed');
-      console.log(usersNearmeReducer?.user);
+      // console.log('After Cancelling Request: Data Changed');
+      // console.log(usersNearmeReducer?.user);
       setNearMeUserData(usersNearmeReducer?.user);
     }
   }, [usersNearmeReducer?.user]);
 
+  const getProfileData = async () => {
+    setLoading(true);
+    await getUserData(
+      userReducer?.data?.user_id,
+      route?.params?.userData?.user_id,
+    );
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      getProfileData();
+    }
+  }, [isFocused]);
+
+  if (loading) {
+    return (
+      <View style={styles.loaderView}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <LottieView
+          style={{
+            width: width * 0.3,
+            height: height * 0.35,
+          }}
+          source={require('../../Assets/Lottie/loading-heart.json')}
+          autoPlay
+          loop
+        />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
 
       {/* User Profile Section  */}
-      {nearMeUserData?.image === undefined ? (
+      {nearMeUserData?.user_image === undefined ||
+      nearMeUserData?.user_image == null ? (
         <Image
           style={styles.userProfilePic}
-          source={require('./../../Assets/Images/dp.png')}
+          source={require('./../../Assets/Images/userr.jpeg')}
           resizeMode="cover"
           resizeMethod="auto"
         />
       ) : (
         <Image
           style={styles.userProfilePic}
-          source={{uri: `${imageUrl}/${nearMeUserData?.image}`}}
+          source={{uri: `${imageUrl}/${nearMeUserData?.user_image}`}}
           // resizeMode=""
           // resizeMethod="auto"
         />
@@ -131,7 +161,7 @@ const ProfileScreen = ({
       {/* Total Profile Likes  */}
       {/* <View style={styles.heartContainer}>
         <AntDesign name="heart" style={{padding: 2}} size={width * 0.1} color="red" />
-        <Text style={styles.totalLike}>{nearMeUserData?.totalLike}</Text>
+        <Text style={styles.totalLike}>{nearMeUserData?.is_like}</Text>
       </View> */}
 
       {/* User Info Section  */}
@@ -145,23 +175,25 @@ const ProfileScreen = ({
               family="Poppins-SemiBold"
               size={hp('3%')}
               color="white"
-              Label={nearMeUserData?.name}
+              Label={nearMeUserData?.user_name?.substring(0, 20)}
             />
-            <AppText
+            {/* <AppText
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
               size={hp('3%')}
               color="white"
               Label={'26'}
-              // Label={nearMeUserData?.age}
-            />
+              // Label={nearMeUserData?.user_age}
+            /> */}
           </View>
 
           {/* Profession View  */}
           <View style={styles.professionView}>
-            {nearMeUserData?.profession != null &&
-              nearMeUserData?.city != null && (
+            {nearMeUserData?.user_title != null &&
+              nearMeUserData?.user_title !== undefined &&
+              nearMeUserData?.user_lives != null &&
+              nearMeUserData?.user_lives != undefined && (
                 <View style={styles.professionInnerView}>
                   <AppText
                     nol={1}
@@ -170,10 +202,12 @@ const ProfileScreen = ({
                     size={hp('2%')}
                     color="white"
                     Label={'Lecturer'}
-                    // Label={nearMeUserData?.profession}
+                    // Label={nearMeUserData?.user_title}
                   />
-                  {(nearMeUserData?.profession != null ||
-                    nearMeUserData?.city != null) && (
+                  {(nearMeUserData?.user_title != null ||
+                    (nearMeUserData?.user_title !== undefined &&
+                      nearMeUserData?.user_lives != null &&
+                      nearMeUserData?.user_lives != undefined)) && (
                     <View style={styles.noProfessions} />
                   )}
                   <AppText
@@ -183,13 +217,13 @@ const ProfileScreen = ({
                     size={hp('2%')}
                     color="white"
                     Label={'New York City'}
-                    // Label={nearMeUserData?.city}
+                    // Label={nearMeUserData?.user_lives}
                   />
                 </View>
               )}
 
             {/* Address View */}
-            {nearMeUserData?.address != null && (
+            {nearMeUserData?.user_address != null && (
               <View style={styles.addressView}>
                 <AppText
                   nol={3}
@@ -200,13 +234,13 @@ const ProfileScreen = ({
                   Label={
                     'New York, Times Square 1st Block 1st Cross Street# 43'
                   }
-                  // Label={nearMeUserData?.address}
+                  // Label={nearMeUserData?.user_address}
                 />
               </View>
             )}
 
             {/* Kilometers Far Away  */}
-            <View style={styles.kilometerView}>
+            {/* <View style={styles.kilometerView}>
               <AppText
                 nol={1}
                 textAlign="left"
@@ -218,7 +252,7 @@ const ProfileScreen = ({
                   ' Km far away'
                 }
               />
-            </View>
+            </View> */}
           </View>
 
           {/* Buttons View  */}
@@ -226,6 +260,7 @@ const ProfileScreen = ({
             {/* Connect Button  */}
             {nearMeUserData?.connected !== 'pending' && (
               <TouchableOpacity
+                activeOpacity={0.8}
                 onPress={() => {
                   if (nearMeUserData?.connected === 'null') {
                     navigation.navigate('OfferADrink');
@@ -243,39 +278,39 @@ const ProfileScreen = ({
                   size={width * 0.03}
                   color="black"
                   Label={
+                    // status = send
                     nearMeUserData?.connected == 'null'
                       ? 'Offer A Drink'
-                      : nearMeUserData?.connected == 'send'
+                      : nearMeUserData?.connected == 'send' ||
+                        nearMeUserData?.status === 'send'
                       ? 'Cancel Offer'
                       : 'Remove Friend'
                   }
                 />
+                {console.log(nearMeUserData?.connected, '...')}
               </TouchableOpacity>
             )}
             <View style={{width: 10}} />
 
             {/* Like Button  */}
-            {/* <TouchableOpacity
-              onPress={
-                likeStatus == false ? like : likeStatus == true ? unlike : error
-              }
-              // onPress={() => navigation.navigate('OfferADrink')}
+            {nearMeUserData?.status === 'accepted' && (
+            <TouchableOpacity
+              // onPress={
+              //   likeStatus == false ? is_like : likeStatus == true ? unlike : error
+              // }
+              activeOpacity={0.8}
+              onPress={() => _onPressMessageButton()}
               style={styles.touchableOpacity}>
               <AppText
                 nol={1}
                 textAlign="left"
                 family="Poppins-SemiBold"
-                size={hp('1.4%')}
+                size={width * 0.03}
                 color="black"
-                Label={
-                  likeStatus == false
-                    ? 'Like'
-                    : likeStatus == true
-                    ? 'Liked'
-                    : 'Error'
-                }
+                Label={'Message'}
               />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
+            )}
           </View>
 
           {/* Favorite Heading  */}
@@ -295,7 +330,7 @@ const ProfileScreen = ({
             <FlatList
               contentContainerStyle={styles.contentContainerStyle}
               showsHorizontalScrollIndicator={false}
-              data={nearMeUserData?.favorite}
+              data={nearMeUserData?.user_favorite}
               horizontal
               keyExtractor={(item, index) => index}
               renderItem={({item, index}) => (
@@ -351,10 +386,11 @@ const ProfileScreen = ({
 
           {/* Interest FlatList  */}
           <View style={styles.favoritesFlatlistView}>
+            {/* {console.log(nearMeUserData, '...')} */}
             <FlatList
               contentContainerStyle={styles.contentContainerStyle}
               showsHorizontalScrollIndicator={false}
-              data={nearMeUserData?.interest}
+              data={nearMeUserData?.user_interest}
               horizontal
               keyExtractor={(item, index) => index}
               renderItem={({item, index}) => (
@@ -400,12 +436,21 @@ const ProfileScreen = ({
   );
 };
 
-const mapStateToProps = ({userReducer, usersNearmeReducer}) => {
-  return {userReducer, usersNearmeReducer};
+const mapStateToProps = ({
+  userReducer,
+  usersNearmeReducer,
+  messagesReducer,
+}) => {
+  return {userReducer, usersNearmeReducer, messagesReducer};
 };
 export default connect(mapStateToProps, actions)(ProfileScreen);
 
 var styles = StyleSheet.create({
+  loaderView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -451,7 +496,7 @@ var styles = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
   },
   userInfoSection: {
-    backgroundColor: '#EA2C2E',
+    backgroundColor: themeRed,
     height: 500,
     bottom: 0,
     justifyContent: 'flex-end',

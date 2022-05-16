@@ -20,19 +20,24 @@ import {
 } from 'react-native';
 import {Badge} from 'react-native-elements';
 import AppText from '../../Components/AppText';
+import moment from 'moment';
+import {imageUrl} from '../../Config/Apis.json';
 import Avatar from './../../Components/Avatar';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 export const MessageList = ({
+  item,
   Image,
   Name,
   Message,
   Navigation,
   Time,
+  onPress,
   OnlineStatus,
 }) => {
+  // console.log(item?.messageId, '--');
   return (
     <View
       style={{
@@ -40,11 +45,16 @@ export const MessageList = ({
         flexDirection: 'row',
         justifyContent: 'center',
         margin: 20,
+        marginVertical: 10,
         alignItems: 'center',
         alignContent: 'center',
         alignSelf: 'center',
       }}>
-      <TouchableOpacity onPress={() => Navigation.navigate('chats')}>
+      <TouchableOpacity
+        onPress={() =>
+          // Navigation.navigate('chats', {item: item})
+          onPress(item)
+        }>
         <View
           style={{
             flexDirection: 'row',
@@ -62,7 +72,14 @@ export const MessageList = ({
                 alignItems: 'center',
                 alignSelf: 'center',
               }}>
-              <Avatar size="large" source={Image} />
+              <Avatar
+                size="large"
+                source={
+                  Image !== undefined && Image !== null && Image !== ''
+                    ? `${imageUrl}/${Image}`
+                    : require('../../Assets/Images/maroon-dp2.jpeg')
+                }
+              />
               {/* <Badge 
                     badgeStyle={{height:15,width: 15, borderRadius:50, borderColor: 'white', borderWidth: 1, position: 'absolute'}}
                     status={OnlineStatus ? 'success': 'warning'}
@@ -78,19 +95,19 @@ export const MessageList = ({
               <AppText
                 nol={1}
                 textAlign="left"
-                family="Poppins-SemiBold"
-                size={hp('1.8%')}
+                family="Poppins-Bold"
+                size={hp('1.9%')}
                 color="#757575"
-                Label={Name}
+                Label={Name === 'Sbdhdh' ? 'Daniyal Ahmed Khan' : Name}
               />
               <View style={{width: wp('60%')}}>
                 <AppText
                   nol={2}
                   textAlign="left"
                   family="Poppins-SemiBold"
-                  size={hp('1.8%')}
+                  size={hp('1.7%')}
                   color="#757575"
-                  Label={Message}
+                  Label={item?.lastMessage?.message}
                 />
               </View>
             </View>
@@ -103,7 +120,7 @@ export const MessageList = ({
               family="Poppins-Regular"
               size={hp('1.5%')}
               color="#757575"
-              Label={Time}
+              Label={moment(item?.user_created_at).format('hh:mm A')}
             />
           </View>
         </View>

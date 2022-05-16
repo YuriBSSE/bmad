@@ -300,7 +300,7 @@ const NewPostScreen = ({
               Label={'Write a short description about your post:'}
             />
             <TextInput
-              placeholder="Describe your post"
+              placeholder="Your text here..."
               value={caption}
               placeholderTextColor="white"
               keyboardType="default"

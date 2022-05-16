@@ -11,31 +11,37 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItems';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import {useRoute} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
 const Comment = ({img, name, time, message}) => {
   //  console.log(Name)
-
+  const route = useRoute();
+  const routeName = route?.name;
+  // console.log(route.name);
   //  console.log(route.params)
   return (
     <View
-      style={{
-        flexDirection: 'row',
-        width: width * 0.85,
-        marginRight: width * 0.03,
-        marginVertical: height * 0.01,
-        // padding: 5,
-        borderRadius: 5,
-        paddingHorizontal: 5,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        paddingVertical: 4,
+      style={[
+        routeName == 'post' && {marginRight: width * 0.03},
+        {
+          flexDirection: 'row',
+          width: width * 0.9,
 
-        alignSelf: 'flex-end',
-        alignItems: 'center',
-      }}>
+          marginVertical: height * 0.01,
+          // padding: 5,
+          borderRadius: 5,
+          paddingHorizontal: 5,
+          backgroundColor: 'rgba(1,1,1,0.05)',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          paddingVertical: 4,
+
+          alignSelf: 'flex-end',
+          alignItems: 'center',
+        },
+      ]}>
       <View
         style={{
           justifyContent: 'flex-start',
@@ -46,7 +52,7 @@ const Comment = ({img, name, time, message}) => {
           style={{
             justifyContent: 'flex-start',
             flexDirection: 'row',
-            width: width * 0.8,
+            // width: width * 0.8,
           }}>
           <Avatar
             size="small"
@@ -55,16 +61,16 @@ const Comment = ({img, name, time, message}) => {
                 ? {
                     uri: `${imageUrl}/${img}`,
                   }
-                : require('../../Assets/Images/placeholderImage.jpg')
+                : require('../../Assets/Images/maroon-dp2.jpeg')
             }
           />
           <View
             style={{
               flexDirection: 'row',
-              padding: 4,
+              // padding: 4,
               justifyContent: 'space-between',
               alignContent: 'center',
-              left: -3,
+              // left: -3,
               width: width * 0.75,
             }}>
             <View

@@ -13,14 +13,14 @@ import HomeScreen from './HomeScreen';
 import MainPost from './MainPost';
 import MessageIcon from '../../Components/MessageIcon';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {themeRed} from '../../Assets/Colors/Colors';
 LogBox.ignoreAllLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 function HomeStack({navigation}) {
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator
-    initialRouteName="home">
+    <Stack.Navigator initialRouteName="home">
       <Stack.Screen
         name="home"
         options={({route}) => ({
@@ -28,6 +28,7 @@ function HomeStack({navigation}) {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
             height: 110,
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -35,12 +36,13 @@ function HomeStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               News Feed
             </Text>
           ),
+          // 'start'
           headerTransparent: false,
           headerLeft: () => (
             <TouchableOpacity
@@ -50,7 +52,7 @@ function HomeStack({navigation}) {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu.png')}
+                  source={require('./../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>
@@ -66,6 +68,7 @@ function HomeStack({navigation}) {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
             height: 110,
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -73,7 +76,7 @@ function HomeStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               Post
@@ -88,7 +91,7 @@ function HomeStack({navigation}) {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu.png')}
+                  source={require('./../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>

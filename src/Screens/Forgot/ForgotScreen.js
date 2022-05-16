@@ -40,19 +40,25 @@ const ForgotScreen = ({navigation, forgotPassword}) => {
     onChangeEmail('');
   };
   return (
-    <View style={styles.container}>
+    // <View style={styles.container}>
+    <ImageBackground
+      style={styles.backgroundImage}
+      source={require('./../../Assets/Images/Bg1.png')}>
       <StatusBar translucent backgroundColor="transparent" />
-      <ImageBackground
-        style={styles.backgroundImage}
-        source={require('./../../Assets/Images/Bg1.png')}>
-        <KeyboardAvoidingView
+        {/* <KeyboardAvoidingView
           styles={{height: hp('10%')}}
           behavior="padding"
-          enabled>
+          enabled> */}
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={styles.scrollView}>
-            <View style={{flexDirection: 'column', height: hp('80%'), top: 20}}>
+            <View
+              style={{
+                flexDirection: 'column',
+                height: hp('80%'),
+                top: 20,
+                // backgroundColor: 'red',
+              }}>
               <Logo />
               <Heading Label="Forgot" />
               <Heading Label="Password" />
@@ -86,19 +92,20 @@ const ForgotScreen = ({navigation, forgotPassword}) => {
                 alignItems: 'center',
                 flexDirection: 'column',
                 alignContent: 'space-between',
-                bottom: 30,
+                bottom: 30, 
+                // backgroundColor:'blue'
               }}>
               <TouchableOpacityBtn
                 onPress={() => {
-                  forgotPassword({email: email, },onSuccess);
+                  forgotPassword({email: email}, onSuccess);
                 }}
                 title="Continue"
               />
             </View>
           </ScrollView>
-        </KeyboardAvoidingView>
+        {/* </KeyboardAvoidingView> */}
       </ImageBackground>
-    </View>
+    // </View>
   );
 };
 

@@ -31,7 +31,7 @@ import LottieView from 'lottie-react-native';
 import {connect} from 'react-redux';
 import Noti from './../../../model/Notifications';
 import {imageUrl} from '../../Config/Apis.json';
-import { themeRed } from '../../Assets/Colors/Colors';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 const {width, height} = Dimensions.get('window');
 
@@ -82,7 +82,7 @@ const NotificationScreen = ({
 
   useEffect(() => {
     getNotifications(USER_ID);
-  },[])
+  }, []);
   return (
     <View style={styles.container}>
       <FlatList
@@ -103,6 +103,7 @@ const NotificationScreen = ({
         renderItem={({item, index}) => {
           return (
             <NotificationList
+              Item={item}
               Time={item?.created_at}
               Img={item?.user?.user_coverImage}
               Name={item?.user?.user_name}
@@ -120,7 +121,12 @@ const NotificationScreen = ({
           notificationsReducer?.notifications?.length === 0 && (
             <>
               {/* <View style={{height: 30}}></View> */}
-              <View style={{justifyContent: 'center', alignItems: 'center', marginTop:height * 0.1}}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: height * 0.1,
+                }}>
                 <LottieView
                   style={{
                     width: width * 0.5,
@@ -130,7 +136,7 @@ const NotificationScreen = ({
                   autoPlay
                   loop
                 />
-                <View 
+                <View
                 // style={{marginTop: height * -0.07}}
                 >
                   <AppText

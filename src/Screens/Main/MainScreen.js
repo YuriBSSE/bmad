@@ -35,7 +35,6 @@ const MainScreen = ({navigation}) => {
   const moveToTop = useRef(new Animated.ValueXY({x: 10, y: 300})).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-
   useEffect(() => {
     SplashScreen.hide();
     changePosition();
@@ -136,21 +135,54 @@ const MainScreen = ({navigation}) => {
                 title="Sign In"
               />
             </Animated.View>
-            <Animated.View style={styles.innerContainer}>
-              <TouchableOpacityBtn
+            <Animated.View
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                marginTop: 30,
+                // backgroundColor: 'blue',
+                borderWidth: 1,
+                borderRadius: 25,
+                borderColor: 'white',
+              }}>
+              <TouchableOpacity
+               onPress={() => {
+                // return
+                navigation.navigate('signup');
+              }}
+                style={{
+                  borderWidth: 0,
+                  borderColor: 'white',
+                  width: wp('60%'),
+                  height: hp('6%'),
+                  justifyContent: 'center',
+                  borderRadius: 25,
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    //   fontFamily: ''
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: hp('2'),
+                    textAlign: 'center',
+                  }}>
+                  {'Sign Up'}
+                </Text>
+              </TouchableOpacity>
+              {/* <TouchableOpacityBtn
                 onPress={() => {
                   // return
                   navigation.navigate('signup');
                 }}
                 title="Sign Up"
-              />
+              /> */}
             </Animated.View>
             <Animated.View style={{padding: 30}}>
-              <Text style={styles.touchableOpacityText}>Or</Text>
+              <Text style={styles.touchableOpacityText}>OR</Text>
             </Animated.View>
             <Animated.View
               style={{
-                padding: 30,
+                // padding: 30,
                 justifyContent: 'space-between',
                 flexDirection: 'row',
               }}>
@@ -178,7 +210,7 @@ const MainScreen = ({navigation}) => {
                 /> */}
               <TouchableOpacity
                 onPress={() => {
-                  return
+                  return;
                   onFacebookButtonPress().then(() =>
                     console.log('Signed in with Facebook!'),
                   );
@@ -258,8 +290,8 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   icons: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
   },
 });
 

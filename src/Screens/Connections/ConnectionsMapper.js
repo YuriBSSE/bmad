@@ -23,39 +23,46 @@ const ConnectionsMapper = ({
   _onPressCancelMyRequestSent,
   saveNearmeUserData,
   userReducer,
+  _onPressAcceptButton,
+  _onPressIgnoreInvite,
 }) => {
   // console.log(navigation,"----")
-  const userInfo = {
-    image: item?.user_image,
-    name: item?.user_name,
-    age: item?.user_age,
-    profession: item?.user_title,
-    status: item?.user_status,
-    city: item?.user_lives,
-    interest: item?.user_interest,
-    favorite: item?.user_favorite,
-    distance: item?.distance,
-    navigation: navigation,
-    relation: item?.user_relation,
-    address: item?.user_address,
-    genderInterest: item?.user_gender_interest,
-    email: item?.user_email,
-    connected: item?.connected,
-    totalLike: item?.like,
-    like: item?.is_like,
-    id: item?.user_id,
-    userId: userReducer?.data?.user_id,
-  };
+  // const userInfo = {
+  //   image: item?.user_image,
+  //   name: item?.user_name,
+  //   age: item?.user_age,
+  //   profession: item?.user_title,
+  //   status: item?.user_status,
+  //   city: item?.user_lives,
+  //   interest: item?.user_interest,
+  //   favorite: item?.user_favorite,
+  //   distance: item?.distance,
+  //   navigation: navigation,
+  //   relation: item?.user_relation,
+  //   address: item?.user_address,
+  //   genderInterest: item?.user_gender_interest,
+  //   email: item?.user_email,
+  //   connected: item?.connected,
+  //   totalLike: item?.like,
+  //   like: item?.is_like,
+  //   id: item?.user_id,
+  //   userId: userReducer?.data?.user_id,
+  // };
+  // console.log(item.user_id)
   return (
     <View style={styles.container}>
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => {
-          saveNearmeUserData(userInfo);
-          navigation.navigate('profile');
+          // saveNearmeUserData(item);
+          navigation.navigate('profile',{userData:item});
         }}>
         <Image
-          source={{uri: `${imageUrl}/${item.user_image}`}}
+          source={
+            item.user_image == null || item.user_image == undefined
+              ? require('../../Assets/Images/maroon-dp2.jpeg')
+              : {uri: `${imageUrl}/${item.user_image}`}
+          }
           style={{
             width: width * 0.16,
             height: height * 0.09,
@@ -68,23 +75,23 @@ const ConnectionsMapper = ({
           nol={1}
           textAlign="left"
           family="Poppins-SemiBold"
-          size={height * 0.018}
+          size={width * 0.04}
           color={themeRed}
           Label={item?.user_name}
         />
-        <AppText
+        {/* <AppText
           nol={1}
           textAlign="left"
           family="Poppins-Regular"
           size={height * 0.017}
           color={'grey'}
           Label={'22 years old'}
-        />
+        /> */}
         <AppText
           nol={1}
           textAlign="left"
           family="Poppins-Regular"
-          size={height * 0.017}
+          size={height * 0.018}
           color={'black'}
           Label={item?.user_gender}
         />
@@ -93,7 +100,10 @@ const ConnectionsMapper = ({
         <View style={styles.btnContainer}>
           {item?.status === 'pending' && (
             <>
-              <TouchableOpacity activeOpacity={0.7} style={styles.connectBtn}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.connectBtn}
+                onPress={() => _onPressAcceptButton(item, index)}>
                 <AppText
                   nol={1}
                   textAlign="left"
@@ -103,7 +113,10 @@ const ConnectionsMapper = ({
                   Label={'Accept'}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.ignorebtn} activeOpacity={0.7}>
+              <TouchableOpacity
+                style={styles.ignorebtn}
+                activeOpacity={0.7}
+                onPress={() => _onPressIgnoreInvite(item, index)}>
                 <AppText
                   nol={1}
                   textAlign="left"
@@ -116,7 +129,7 @@ const ConnectionsMapper = ({
             </>
           )}
 
-          {item?.connected === 'accepted' && (
+          {item?.status === 'accepted' && (
             <TouchableOpacity
               style={styles.ignorebtn}
               activeOpacity={0.7}

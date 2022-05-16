@@ -1,24 +1,12 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  TouchableOpacity,
   View,
-  Text,
-  ImageBackground,
   StyleSheet,
   StatusBar,
-  SafeAreaView,
   FlatList,
   DeviceEventEmitter,
   BackHandler,
-  Image,
-  KeyboardAvoidingView,
-  LayoutAnimation,
   Platform,
-  UIManager,
-  Animated,
-  TouchableHighlight,
-  TextInput,
-  ScrollView,
   Dimensions,
   RefreshControl,
 } from 'react-native';
@@ -27,17 +15,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-// import Avatara from '../../Components/Avatar';
 import LottieView from 'lottie-react-native';
 import {Avatar} from 'react-native-elements';
 import {imageUrl} from '../../Config/Apis.json';
-
-// import Posts from './../../../model/Posts';
 import PostList from './PostList';
 import Geolocation from '@react-native-community/geolocation';
 import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
 import * as actions from '../../Store/Actions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
 
 const {width, height} = Dimensions.get('window');
@@ -56,12 +40,14 @@ const HomeScreen = ({
   usersNearmeReducer,
   userCoordsReducer,
   likePost,
-  getAllConnections,
 }) => {
   const USER_ID = userReducer?.data?.user_id;
   const [posts, setPosts] = useState(postsReducer?.feedPosts);
   const [refreshing, setRefreshing] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(2000).then(async () => {
@@ -69,13 +55,12 @@ const HomeScreen = ({
       setLoading(true);
       await getFeedData(USER_ID);
       await nearMeUsers(userCoordsReducer.lat, userCoordsReducer.long, USER_ID);
-      
-      setLoading(false)
+
+      setLoading(false);
     });
   }, []);
 
   useEffect(() => {
-    // console.log(JSON.stringify(postsReducer?.feedPosts, null, 2));
     setPosts(postsReducer?.feedPosts);
   }, [postsReducer?.feedPosts]);
 
@@ -167,12 +152,7 @@ const HomeScreen = ({
 
   if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View style={styles.loaderView}>
         <StatusBar translucent backgroundColor="transparent" />
         <LottieView
           style={{
@@ -217,12 +197,18 @@ const HomeScreen = ({
                     autoPlay
                     loop
                   />
-                  <View style={{marginTop: height * -0.07,width:width*0.7, justifyContent:'center',alignItems:'center'}}>
-                  <AppText
+                  <View
+                    style={{
+                      marginTop: height * -0.07,
+                      width: width * 0.7,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <AppText
                       nol={1}
                       family="Poppins-Bold"
                       size={width * 0.06}
-                      style={{alignSelf:'center',}}
+                      style={{alignSelf: 'center'}}
                       color="black"
                       Label={'No Posts'}
                     />
@@ -230,12 +216,12 @@ const HomeScreen = ({
                       nol={3}
                       family="Poppins-Medium"
                       size={width * 0.05}
-                      style={{alignSelf:'center',}}
+                      style={{alignSelf: 'center'}}
                       color="black"
                       Label={'Offer drinks and connect'}
                     />
-                     <AppText
-                     style={{marginTop:-5}}
+                    <AppText
+                      style={{marginTop: -5}}
                       nol={1}
                       family="Poppins-Medium"
                       size={width * 0.05}
@@ -253,18 +239,18 @@ const HomeScreen = ({
                 <View style={styles.peopleNearContainer}>
                   <AppText
                     nol={1}
-                    family="Poppins-Regular"
+                    family="Poppins-Bold"
                     size={hp('2%')}
                     color="black"
-                    Label={'People Near You'}
+                    Label={'People Near You'} 
                   />
-                  <AppText
+                  {/* <AppText
                     nol={1}
                     family="Poppins-Regular"
                     size={hp('1.5%')}
                     color="black"
                     Label={'View More'}
-                  />
+                  /> */}
                 </View>
                 <FlatList
                   contentContainerStyle={styles.innerFlatlistContentStyle}
@@ -272,9 +258,11 @@ const HomeScreen = ({
                   data={usersNearmeReducer?.allUsers}
                   horizontal
                   keyExtractor={(item, index) => index}
-                  renderItem={({item, index}) => (
-                    <View key={index} style={styles.cardHeaderStyle}>
-                      {/* <View style={{bottom: 10, width: 50}}>
+                  renderItem={({item, index}) => {
+                    // console.log(`${imageUrl}/${item?.user_image}`)
+                    return (
+                      <View key={index} style={styles.cardHeaderStyle}>
+                        {/* <View style={{bottom: 10, width: 50}}>
                       <AppText
                         nol={1}
                         textAlign="center"
@@ -284,37 +272,45 @@ const HomeScreen = ({
                         Label={item?.user_name}
                       />
                     </View> */}
-                      {item?.user_image === undefined ? (
-                        <Avatar
-                          size="medium"
-                          rounded
-                          source={require('./../../Assets/Images/placeholderImage.jpg')}
-                          containerStyle={{borderColor: 'grey', borderWidth: 1}}
-                        />
-                      ) : (
-                        <Avatar
-                          size="medium"
-                          rounded
-                          containerStyle={{borderColor: 'grey',}}
-                          source={{
-                            uri: `${imageUrl}/${item?.user_image}`,
-                          }}
-                        />
-                      )}
-                      {item?.distance != undefined ? (
-                        <View style={{top: 7}}>
-                          <AppText
-                            nol={1}
-                            textAlign="left"
-                            family="Poppins-Regular"
-                            size={hp('1.3%')}
-                            color="black"
-                            Label={item?.distance?.toPrecision(2) + ' km'}
+                        {item?.user_image === undefined ||
+                        item?.user_image === null ? (
+                          <Avatar
+                            size="medium"
+                            rounded
+                            source={require('./../../Assets/Images/maroon-dp2.jpeg')}
+                            containerStyle={
+                              {
+                                // borderColor: 'grey',
+                                // borderWidth: 1,
+                              }
+                            }
                           />
-                        </View>
-                      ) : null}
-                    </View>
-                  )}
+                        ) : (
+                          <Avatar
+                            size="medium"
+                            rounded
+                            containerStyle={{borderColor: 'grey'}}
+                            source={{
+                              uri: `${imageUrl}/${item?.user_image}`,
+                            }}
+                          />
+                        )}
+                        {item?.distance != undefined ? (
+                          <View style={{top: 7}}>
+                            <AppText
+                              nol={1}
+                              textAlign="left"
+                              family="Poppins-Regular"
+                              size={hp('1.3%')}
+                              color="black"
+                              Label={((item?.distance * 1000).toPrecision(2)) + 'm'}
+                              // Label={item?.distance?.toPrecision(2) + ' km'}
+                            />
+                          </View>
+                        ) : null}
+                      </View>
+                    );
+                  }}
                 />
               </View>
             ) : (
@@ -383,7 +379,12 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     height: height,
-    backgroundColor: 'white',
+    backgroundColor: '#F7F3F2',
+  },
+  loaderView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardContainer: {
     alignSelf: 'center',
@@ -396,14 +397,15 @@ var styles = StyleSheet.create({
     // borderWidth: 1,
     borderColor: 'white',
     zIndex: 4,
-    elevation: 1,
-    shadowColor: 'black',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 0,
+      height: 4,
     },
-    width: width,
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.30,
+    shadowRadius: 4.65,
+    
+    elevation: 8,
     backgroundColor: 'white',
     height: height * 0.17,
     marginBottom: 10,
@@ -417,13 +419,15 @@ var styles = StyleSheet.create({
   },
   innerFlatlistContentStyle: {
     alignSelf: 'flex-start',
-    margin: 5,
+    marginVertical: 5,
     alignContent: 'flex-start',
     alignItems: 'flex-start',
     flexDirection: 'row',
+    backgroundColor: 'white',
   },
   cardHeaderStyle: {
-    padding: 10,
+    paddingBottom: 6,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',

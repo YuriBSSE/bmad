@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MessageScreen from './MessageScreen';
 import MessageIcon from '../../Components/MessageIcon';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 function MessageStack({navigation}) {
   const Stack = createStackNavigator();
@@ -17,6 +18,7 @@ function MessageStack({navigation}) {
             borderBottomColor: 'grey',
             borderBottomWidth: 0.7,
             height: 110,
+            backgroundColor: themeRed,
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -24,7 +26,7 @@ function MessageStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               Messages
@@ -39,13 +41,13 @@ function MessageStack({navigation}) {
                 <Image
                   resizeMode="contain"
                   style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu.png')}
+                  source={require('./../../Assets/Images/menu1.png')}
                 />
               </View>
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <Icon name="dots-vertical" size={35} color="#B01125" />
+            <Icon name="dots-vertical" size={35} color="white" />
           ),
         })}
         component={MessageScreen}
