@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback,Platform
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import PostList from '../Home/PostList';
@@ -41,6 +41,7 @@ const PostScreen = ({
   const notificationData = route?.params?.notificationData;
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isIOS = Platform.OS === 'ios';
   const [refreshing, setRefreshing] = useState(false);
   const postId = notificationData?.post?.post_id;
   const [commentText, setCommentText] = useState('');
@@ -155,16 +156,15 @@ const PostScreen = ({
             </TouchableWithoutFeedback>
           </View>
           {isCommenting ? (
-            <LottieView
-              style={{
-                width: width * 0.2,
-                height: height * 0.1,
-                marginLeft: width * 0.39,
-              }}
-              source={require('../../Assets/Lottie/red-loader.json')}
-              autoPlay
-              loop
-            />
+            <View style={[styles.commentBtn, (isCommenting && isIOS && {width:width *0.35})]}>
+              <AppText
+                nol={1}
+                family="Poppins-SemiBold"
+                size={hp('1.7%')}
+                color="white"
+                Label={'Commenting...'}
+              />
+            </View>
           ) : (
             <TouchableOpacity
               activeOpacity={0.7}

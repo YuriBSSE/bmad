@@ -3,6 +3,7 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
+#import <FBSDKCoreKit.h>
 #import <React/RCTRootView.h>
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
@@ -28,6 +29,7 @@ static void InitializeFlipper(UIApplication *application) {
   [client start];
 }
 #endif
+
 
 @implementation AppDelegate
 

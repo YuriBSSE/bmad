@@ -16,7 +16,7 @@ import {
   Animated,
   TouchableHighlight,
   TextInput,
-  ScrollView,
+  ScrollView, Dimensions
 } from 'react-native';
 import {Badge} from 'react-native-elements';
 import {imageUrl} from '../../Config/Apis.json';
@@ -28,6 +28,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+const {width, height} = Dimensions.get('window');
+
 export const NotificationList = ({
   Item,
   Img,
@@ -137,7 +139,8 @@ const Styles = StyleSheet.create({
     width: 150,
   },
   container: {
-    width: '90%',
+    width: width * 0.95,
+    marginLeft:width * 0.05,
     alignSelf: 'center',
     // margin: 40,
     // marginVertical:10,
@@ -179,11 +182,11 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     zIndex: 4,
-    elevation: 9,
+    elevation: 5,
     shadowColor: 'black',
     shadowOffset: {
-      width: 2,
-      height: 3,
+      width: 1,
+      height: 1.5,
     },
     shadowOpacity: 3.22,
     backgroundColor: 'white',

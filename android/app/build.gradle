@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 import com.android.build.OutputFile
 apply plugin: 'com.google.gms.google-services'
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -158,9 +159,9 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('my_key.keystore')
+            storeFile file('my-release-key.keystore')
             storePassword '123456'
-            keyAlias 'my_key_alias'
+            keyAlias 'key1'
             keyPassword '123456'
         }
     }
@@ -206,9 +207,13 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-push-notification')
     implementation project(':react-native-splash-screen')
+
+    implementation "com.google.android.gms:play-services-auth:20.2.0"
     implementation project(':react-native-android-location-services-dialog-box')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':react-native-vector-icons')
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation project(':react-native-fbsdk')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

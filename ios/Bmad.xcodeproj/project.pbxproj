@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		42F1EF15E9E4A4885F1AA218 /* libPods-Bmad-BmadTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43A922F72203A3B672F5A960 /* libPods-Bmad-BmadTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C530B88627F1E85400DE197C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C530B88527F1E7E800DE197C /* GoogleService-Info.plist */; };
@@ -33,6 +31,8 @@
 		C56BDB8327D0DE5D00D100A0 /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99E4CAE875234BBB84140EDB /* Poppins-Thin.ttf */; };
 		C56BDB8527D0DE6000D100A0 /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52D141C827EF4573ACE3C6DA /* Poppins-ThinItalic.ttf */; };
 		C56BDBAA27D248C800D100A0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56BDBA927D248C800D100A0 /* MapKit.framework */; };
+		C5E26016283B9EFB008E0B6C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		C5E26017283B9EFB008E0B6C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		F5B06640434D731A29567C3E /* libPods-Bmad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD4DB81FC5C10CEB6259345 /* libPods-Bmad.a */; };
 /* End PBXBuildFile section */
 
@@ -283,8 +283,6 @@
 			dependencies = (
 			);
 			name = Bmad;
-			packageProductDependencies = (
-			);
 			productName = Bmad;
 			productReference = 13B07F961A680F5B00A75B9A /* Bmad.app */;
 			productType = "com.apple.product-type.application";
@@ -554,8 +552,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				C5E26016283B9EFB008E0B6C /* AppDelegate.m in Sources */,
+				C5E26017283B9EFB008E0B6C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,11 +587,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7BD75JC5BK;
+				DEVELOPMENT_TEAM = UZ4THV58BR;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Bmad/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -603,7 +601,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.Bmad;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Bmad;
 				PRODUCT_NAME = Bmad;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -623,10 +621,10 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7BD75JC5BK;
+				DEVELOPMENT_TEAM = UZ4THV58BR;
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Bmad/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -636,7 +634,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.Bmad;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Bmad;
 				PRODUCT_NAME = Bmad;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -680,7 +678,7 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -693,7 +691,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -743,14 +741,14 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

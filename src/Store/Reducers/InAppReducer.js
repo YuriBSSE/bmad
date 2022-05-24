@@ -113,10 +113,11 @@ export function userReducer(state = INITIAL_USER_DATA, action) {
       };
 
     case UPDATE_PROFILE:
-      console.log({
-        ...state.data,
-        ...action.payload,
-      })
+      // console.log({
+      //   ...state.data,
+      //   ...action.payload,
+      // })
+      console.log(action.payload.user_name,"USERNAME...")
       return {
         ...state,
         data: {
@@ -149,7 +150,7 @@ export function usersNearmeReducer(state = iNITIAL_NEAR_ME, action) {
       };
 
     case SAVE_NEAR_ME_USER_DATA:
-      console.log(action.payload, '+++++++++++++++++++++++++++++++');
+      console.log(action.payload?.status, '+++++++++++++++++++++++++++++++ from reducer');
       return {
         ...state,
         user: action.payload,

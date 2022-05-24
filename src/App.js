@@ -14,7 +14,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import FlashMessage from 'react-native-flash-message';
 import Geolocation from '@react-native-community/geolocation';
 import SampleTesting from './Screens/testing';
-
+// console.log(persistor, 'persistor');
 const App = () => {
   if (Text.defaultProps == null) Text.defaultProps = {};
   Text.defaultProps.allowFontScaling = false;
@@ -34,6 +34,25 @@ const App = () => {
 
   useEffect(() => {
     requestUserPermission();
+  }, []);
+
+
+  useEffect(() => {
+    async function requestLocationPermission() {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        
+        } else {
+          BackHandler.exitApp();
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+    requestLocationPermission();
   }, []);
   // useEffect(() => {
   //   const requestLocationPermission = async () => {

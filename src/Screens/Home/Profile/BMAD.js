@@ -1,155 +1,114 @@
 import {
   StyleSheet,
+  Image,
+  View,
   SafeAreaView,
   StatusBar,
-  Image,
   Dimensions,
   TouchableOpacity,
-  Text,
-  View,
 } from 'react-native';
-import React, {useState} from 'react';
-import AppText from '../../../Components/AppText';
-import Notification from 'react-native-vector-icons/Ionicons';
-import StripeModal from '../../../Components/StripeModal';
+import React from 'react';
 import {themeRed} from '../../../Assets/Colors/Colors';
-import {connect} from 'react-redux';
-import * as actions from '../../../Store/Actions/index';
-import BuyDrinksModal from '../../../Components/BuyDrinksModal';
-import {PUB_KEY_STRIPE} from '../../../Config/Apis.json';
-import {StripeProvider} from '@stripe/stripe-react-native';
+import IconComp from '../../../Components/IconComp';
+import AppText from '../../../Components/AppText';
 const {width, height} = Dimensions.get('window');
 
-const BMAD = ({navigation, userReducer, buyMoreDrinks}) => {
-  const [isStripeModalVisible, setIsStripeModalVisible] = useState(false);
-  const [stripeGeneratedKey, setStripeGeneratedKey] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showBuyDrinksModal, setShowBuyDrinksModal] = useState(false);
-  const [drinks, setDrinks] = useState('');
-
-  const _onPressBuyDrinks = async () => {
-    const apiData = {
-      user_id: userReducer?.data?.user_id,
-      coins: Number(drinks),
-      amount: Number(drinks),
-      token: stripeGeneratedKey,
-    };
-    console.log(apiData)
-    setIsLoading(true)
-    await buyMoreDrinks(apiData, _closeStripeModal);
-    
-  };
-
- 
-// useEffect(() => [
-
-// ],[userReducer?.data?.coins])
-  // Close Stripe Modal
-  const _closeStripeModal = () => {
-    setIsStripeModalVisible(false);
-  };
-
+const BMAD = ({navigation}) => {
   return (
-    <StripeProvider publishableKey={PUB_KEY_STRIPE}>
-      <SafeAreaView style={styles.container}>
-        <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.container}>
-          {/* Images Container  */}
-          <View style={styles.imagesContainer}>
-            <Image
-              resizeMode="contain"
-              source={require('../../../Assets/Images/bmad-logo.png')}
-              style={styles.bmadLogo}
-            />
-            <Image
-              resizeMode="contain"
-              source={require('../../../Assets/Images/bmad.png')}
-              style={styles.bmadTextLogo}
-            />
-          </View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" />
 
-          <View style={styles.availableDrinksView}>
-            {/* <Notification
-              name="fast-food-outline"
-              style={{}}
-              size={size}
-              color={color}
-            /> */}
-            <AppText
-              nol={2}
-              textAlign="center"
-              family="Poppins-SemiBold"
-              size={height * 0.028}
-              color="black"
-              Label={`Available Drinks: ${userReducer?.data?.coins}`}
-            />
-          </View>
+      {/* Images Container  */}
+      <View style={styles.imagesContainer}>
+        <Image
+          resizeMode="contain"
+          source={require('../../../Assets/Images/bmad-logo.png')}
+          style={styles.bmadLogo}
+        />
+        <Image
+          resizeMode="contain"
+          source={require('../../../Assets/Images/bmad.png')}
+          style={styles.bmadTextLogo}
+        />
+      </View>
 
-          <TouchableOpacity
-            style={styles.buyView}
-            onPress={() => {
-              setShowBuyDrinksModal(true);
-            }}>
-            <Image
-              // resizeMode="contain"
-              blurRadius={4}
-              source={require('../../../Assets/Images/buy-mor.png')}
-              style={styles.buyMoreImage}
-            />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.btnWrapper}
+        onPress={() => navigation.navigate('MyProfile')}>
+        <AppText
+          nol={2}
+          textAlign="center"
+          family="Poppins-SemiBold"
+          size={height * 0.028}
+          color="white"
+          Label={`My Profile`}
+        />
+         <IconComp
+          type={'FontAwesome'}
+          iconName="user-circle-o"
+          passedStyle={{color: 'white', fontSize: width * 0.064}}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.btnWrapper}
+        onPress={() => navigation.navigate('Drinks')}>
+        <AppText
+          nol={2}
+          textAlign="center"
+          family="Poppins-SemiBold"
+          size={height * 0.028}
+          color="white"
+          Label={`Buy Drinks`}
+        />
+        <IconComp
+          type={'Entypo'}
+          iconName="drink"
+          passedStyle={{color: 'white', fontSize: width * 0.064}}
+        />
+      </TouchableOpacity>
 
-            <Text
-              style={{
-                fontFamily: 'Poppins-BoldItalic',
-                color: 'white',
-                position: 'absolute',
-                fontSize: width * 0.06,
-                top: height * 0.07,
-                alignSelf: 'center',
-              }}>
-              Buy More Drinks
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {isStripeModalVisible && (
-          <StripeModal
-            setId={setStripeGeneratedKey}
-            onPress={_onPressBuyDrinks}
-            isLoading={isLoading}
-            isModalVisible={isStripeModalVisible}
-            setIsModalVisible={setIsStripeModalVisible}
-          />
-        )}
-
-        {showBuyDrinksModal && (
-          <BuyDrinksModal
-            drinks={drinks}
-            setDrinks={setDrinks}
-            isModalVisible={showBuyDrinksModal}
-            setIsModalVisible={setShowBuyDrinksModal}
-            setIsStripeModalVisible={setIsStripeModalVisible}
-          />
-        )}
-      </SafeAreaView>
-    </StripeProvider>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.btnWrapper}
+        onPress={() => navigation.navigate('PasswordChange')}>
+        <AppText
+          nol={2}
+          textAlign="center"
+          family="Poppins-SemiBold"
+          size={height * 0.028}
+          color="white"
+          Label={`Change Password`}
+        />
+         <IconComp
+          type={'MaterialCommunityIcons'}
+          iconName="form-textbox-password"
+          passedStyle={{color: 'white', fontSize: width * 0.064}}
+        />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
-const mapStateToProps = ({userReducer}) => {
-  return {
-    userReducer,
-  };
-};
-export default connect(mapStateToProps, actions)(BMAD);
+export default BMAD;
 
 const styles = StyleSheet.create({
+  btnWrapper: {
+    width: width * 0.9,
+    marginVertical: height * 0.01,
+    paddingVertical: height * 0.02,
+    borderRadius: 10,
+    backgroundColor: themeRed,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal:width * 0.05,
+    alignSelf: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  bmadLogo: {
-    width: width * 0.3,
-    height: height * 0.08,
   },
   imagesContainer: {
     justifyContent: 'center',
@@ -158,28 +117,13 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
     flexDirection: 'row',
   },
+  bmadLogo: {
+    width: width * 0.3,
+    height: height * 0.08,
+  },
+
   bmadTextLogo: {
     width: width * 0.38,
     height: height * 0.1,
-  },
-  availableDrinksView: {
-    borderRadius: width * 0.03,
-    width: width * 0.8,
-    alignSelf: 'center',
-    borderWidth: 2,
-    borderColor: themeRed,
-  },
-  buyView: {
-    // backgroundColor: themeRed,
-    width: width * 0.8,
-    alignSelf: 'center',
-    borderRadius: width * 0.03,
-    marginVertical: height * 0.02,
-    // paddingVertical: height * 0.04,
-  },
-  buyMoreImage: {
-    width: width * 0.8,
-    height: height * 0.17,
-    borderRadius: width * 0.05,
   },
 });

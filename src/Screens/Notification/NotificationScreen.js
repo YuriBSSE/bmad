@@ -47,7 +47,7 @@ const NotificationScreen = ({
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
-
+  const isIos = Platform.OS === 'ios';
   const USER_ID = userReducer?.data?.user_id;
   const [refreshing, setRefreshing] = useState(false);
   const [notifications, setNotifications] = useState(
@@ -125,26 +125,39 @@ const NotificationScreen = ({
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: height * 0.1,
+                  marginTop: isIos ? height * 0.2 : height * 0.1,
                 }}>
                 <LottieView
                   style={{
                     width: width * 0.5,
-                    height: height * 0.35,
+                    height: isIos ? height * 0.2 : height * 0.35,
                   }}
                   source={require('./../../Assets/Lottie/no-noti.json')}
                   autoPlay
                   loop
                 />
                 <View
-                // style={{marginTop: height * -0.07}}
-                >
+                  style={{
+                    marginTop: isIos ? height * 0.02 : 0,
+                    width: width * 0.7,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <AppText
                     nol={1}
                     family="Poppins-Bold"
-                    size={width * 0.07}
-                    color={themeRed}
+                    size={width * 0.06}
+                    style={{alignSelf: 'center'}}
+                    color="black"
                     Label={'No Notifications'}
+                  />
+                  <AppText
+                    nol={3}
+                    family="Poppins-Medium"
+                    size={width * 0.05}
+                    style={{alignSelf: 'center'}}
+                    color="black"
+                    Label={'Swipe down to refresh.'}
                   />
                 </View>
               </View>

@@ -26,6 +26,8 @@ const ConnectionsMapper = ({
   _onPressAcceptButton,
   _onPressIgnoreInvite,
 }) => {
+  const USER_ID = userReducer?.data?.user_id;
+  const isIOS = Platform.OS === 'ios';
   // console.log(navigation,"----")
   // const userInfo = {
   //   image: item?.user_image,
@@ -55,7 +57,7 @@ const ConnectionsMapper = ({
         activeOpacity={0.7}
         onPress={() => {
           // saveNearmeUserData(item);
-          navigation.navigate('profile',{userData:item});
+          navigation.navigate('profile', {userData: item});
         }}>
         <Image
           source={
@@ -64,7 +66,7 @@ const ConnectionsMapper = ({
               : {uri: `${imageUrl}/${item.user_image}`}
           }
           style={{
-            width: width * 0.16,
+            width: isIOS ? width * 0.19 : width * 0.16,
             height: height * 0.09,
             borderRadius: width * 0.1,
           }}
@@ -96,10 +98,13 @@ const ConnectionsMapper = ({
           Label={item?.user_gender}
         />
       </View>
+
+      {/* BUTTONS  */}
       {
         <View style={styles.btnContainer}>
-          {item?.status === 'pending' && (
+          {item?.sendBy !== USER_ID && item?.status !== 'accepted' && (
             <>
+              {/* Accept Button  */}
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.connectBtn}
@@ -113,6 +118,8 @@ const ConnectionsMapper = ({
                   Label={'Accept'}
                 />
               </TouchableOpacity>
+
+              {/* Ignore Button  */}
               <TouchableOpacity
                 style={styles.ignorebtn}
                 activeOpacity={0.7}
@@ -145,7 +152,7 @@ const ConnectionsMapper = ({
             </TouchableOpacity>
           )}
 
-          {item?.status === 'send' && (
+          {item?.sendBy === USER_ID && (
             <TouchableOpacity
               style={styles.ignorebtn}
               activeOpacity={0.7}

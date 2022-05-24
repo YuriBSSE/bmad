@@ -21,9 +21,16 @@ import {
 } from 'react-native-responsive-screen';
 import TouchableOpacityBtn from './../../Components/TouchableOpacity';
 import auth from '@react-native-firebase/auth';
+import * as actions from '../../Store/Actions/index';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
-// import { LoginButton, AccessToken } from 'react-native-fbsdk-next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import {connect} from 'react-redux';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
 if (
   Platform.OS === 'android' &&
   UIManager.setLayoutAnimationEnabledExperimental
@@ -31,7 +38,7 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const MainScreen = ({navigation}) => {
+const MainScreen = ({navigation, coords, userCoordsReducer}) => {
   const moveToTop = useRef(new Animated.ValueXY({x: 10, y: 300})).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -107,6 +114,67 @@ const MainScreen = ({navigation}) => {
     return auth().signInWithCredential(facebookCredential);
   }
 
+  useEffect(() => {
+    if (userCoordsReducer?.lat == null) {
+      getOneTimeLocation();
+    }
+    console.log(userCoordsReducer, 'userCoordsReducer');
+  }, [userCoordsReducer]);
+
+  const getOneTimeLocation = () => {
+    // console.log('one time==================');
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      position => {
+        // setLocationStatus('You are Here');
+        // console.log("----------------- get one time")
+        coords(position.coords.latitude, position.coords.longitude);
+
+        console.log('getting one time location coords...');
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
+
+  // GoogleSignin.configure({
+  //   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // [Android] what API you want to access on behalf of the user, default is email and profile
+  //   webClientId: '254533762674-l02tkehr2okrsqbuh97vq0qu4150uodh.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+  //   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+  //   hostedDomain: '', // specifies a hosted domain restriction
+  //   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+  //   accountName: '', // [Android] specifies an account name on the device that should be used
+  //   iosClientId: '254533762674-ja1fgpm3i3a700ojtsa9totvb4o5eb4c.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+  //   googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+  //   openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+  //   profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+  // });
+
+  const signIn = async () => {
+    // console.log("dsdsdasdsad")
+    try {
+      // await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -146,10 +214,10 @@ const MainScreen = ({navigation}) => {
                 borderColor: 'white',
               }}>
               <TouchableOpacity
-               onPress={() => {
-                // return
-                navigation.navigate('signup');
-              }}
+                onPress={() => {
+                  // return
+                  navigation.navigate('signup');
+                }}
                 style={{
                   borderWidth: 0,
                   borderColor: 'white',
@@ -178,7 +246,7 @@ const MainScreen = ({navigation}) => {
               /> */}
             </Animated.View>
             <Animated.View style={{padding: 30}}>
-              <Text style={styles.touchableOpacityText}>OR</Text>
+              {/* <Text style={styles.touchableOpacityText}>OR</Text> */}
             </Animated.View>
             <Animated.View
               style={{
@@ -208,7 +276,7 @@ const MainScreen = ({navigation}) => {
                   loginTrackingIOS={'limited'}
                   nonceIOS={'my_nonce'}
                 /> */}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   return;
                   onFacebookButtonPress().then(() =>
@@ -220,8 +288,16 @@ const MainScreen = ({navigation}) => {
                   resizeMode="contain"
                   source={require('./../../Assets/Images/Facebook.png')}
                 />
-              </TouchableOpacity>
-              <TouchableOpacity>
+              </TouchableOpacity> */}
+              {/* <GoogleSigninButton
+                style={{width: 192, height: 48}}
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={signIn}
+                /> */}
+                {/* // disabled={this.state.isSigninInProgress} */}
+
+              {/* <TouchableOpacity>
                 <Image
                   style={styles.icons}
                   resizeMode="contain"
@@ -234,7 +310,7 @@ const MainScreen = ({navigation}) => {
                   resizeMode="contain"
                   source={require('./../../Assets/Images/twitter.png')}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </Animated.View>
           </Animated.View>
         </ScrollView>
@@ -295,4 +371,4 @@ var styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+export default connect(null, actions)(MainScreen);

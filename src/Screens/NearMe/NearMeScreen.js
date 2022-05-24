@@ -33,6 +33,7 @@ import {Avatar} from 'react-native-elements';
 import {googleMapKey, deploy_API} from './../../Config/Apis.json';
 import LottieView from 'lottie-react-native';
 import {themeRed} from '../../Assets/Colors/Colors';
+import {useIsFocused} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 const CARD_HEIGHT = 220;
@@ -59,6 +60,11 @@ const NearMeScreen = ({
   const _map = useRef(null);
   const USER_ID = userReducer?.data?.user_id;
   const _scrollView = useRef(null);
+  const isIOS = Platform.OS === 'ios';
+  const isFocused = useIsFocused();
+  const isIos = Platform.OS === 'ios';
+
+  const [nearmeUsers, setNearmeUsers] = useState([]);
   // const initialMapState = {
   //   users: usersNearmeReducer?.allUsers,
   //   region: {
@@ -186,7 +192,11 @@ const NearMeScreen = ({
   };
 
   // const size = zoomLevel <= 10 ? 40 : 80;
-
+  useEffect(() => {
+    if (isFocused) {
+      setNearmeUsers(usersNearmeReducer?.allUsers);
+    }
+  }, [isFocused, usersNearmeReducer?.allUsers]);
   if (state?.users?.length > 0) {
     return (
       <View style={styles.container}>
@@ -202,8 +212,8 @@ const NearMeScreen = ({
             stopPropagation={false}
             style={{position: 'absolute'}}
             coordinate={{
-              latitude: state?.region?.latitude,
-              longitude: state?.region?.longitude,
+              latitude: isIos ? parseFloat(state?.region?.latitude) : state?.region?.latitude,
+              longitude: isIos ? parseFloat(state?.region?.longitude) : state?.region?.longitude,
             }}
             // image={require('./../../Assets/Images/maroon-dp2.jpeg')}
             title={'Your Location'}>
@@ -225,6 +235,10 @@ const NearMeScreen = ({
           </Marker>
           <MapView.Circle
             key={(
+              isIos 
+              ? 
+              (parseFloat(state?.region?.latitude) + parseFloat(state?.region?.longitude))
+              :
               state?.region?.latitude + state?.region?.longitude
             ).toString()}
             center={state?.region}
@@ -321,6 +335,7 @@ const NearMeScreen = ({
             {useNativeDriver: true},
           )}>
           {state?.users?.map((marker, index) => {
+            // console.log(marker?.distance*1000)
             return (
               <TouchableOpacity
                 key={index}
@@ -369,19 +384,20 @@ const NearMeScreen = ({
                   <View style={styles.addressAndDist}>
                     <AppText
                       nol={3}
-                      family="Poppins-Regular"
+                      family="Poppins-SemiBold"
                       size={hp('1.4%')}
                       color="grey"
-                      Label={marker?.user_address}
+                      Label={marker?.user_gender}
                     />
                   </View>
                   <AppText
                     nol={1}
                     family="Poppins-Regular"
-                    size={height * 0.017}
-                    color={"grey"}
+                    size={isIOS ? width * 0.032 : width * 0.032}
+                    color={'grey'}
                     Label={
-                      parseFloat(marker?.distance*1000).toFixed(2) + 'm far away'
+                      parseFloat(marker?.distance * 1000).toFixed(2) +
+                      'm far away'
                     }
                   />
                 </View>
@@ -398,14 +414,22 @@ const NearMeScreen = ({
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListFooterComponent={() => (
-          <View style={styles.lottieStyleView}>
-            <LottieView
-              style={styles.lottie}
-              source={require('./../../Assets/Lottie/test2.json')}
-              autoPlay
-              loop
-            />
-            <View style={styles.noPeopleFound}>
+          <View
+          style={[
+            styles.lottieStyleView,
+            isIos && {marginTop: height * 0.33},
+          ]}>
+          <LottieView
+            style={[styles.lottie, isIos && {height: height * 0.1}]}
+            source={require('./../../Assets/Lottie/test2.json')}
+            autoPlay
+            loop
+          />
+          <View
+            style={[
+              styles.noPeopleFound,
+              isIos && {marginTop: height * 0.02},
+            ]}>
               <AppText
                 nol={1}
                 textAlign="left"

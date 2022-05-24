@@ -22,6 +22,7 @@ import AlertModal from './../../Components/AlertModal';
 import Logo from './../../Components/Logo';
 import TextInputFeild from './../../Components/TextFeild';
 import IconImage from './../../Components/Icons';
+import Geolocation from '@react-native-community/geolocation';
 import Underline from './../../Components/Underline';
 import Heading from './../../Components/Heading';
 import TouchableOpacityBtn from './../../Components/TouchableOpacity';
@@ -31,6 +32,7 @@ import {
 } from 'react-native-responsive-screen';
 import PhoneInput from 'react-native-phone-number-input';
 import TextSample from './../../Components/Text';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 import OTPTextView from 'react-native-otp-textinput';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 // import CustomRadio from './../../Components/CustomRadio'
@@ -48,7 +50,7 @@ const SignupScreen = ({
   SignUpStepOne,
   Otp,
   userOtp,
-  userCoordsReducer,
+  userCoordsReducer,coords
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [value, setValue] = useState('');
@@ -67,8 +69,10 @@ const SignupScreen = ({
   const [validation, setValidation] = useState(false);
   const [checkedMale, onChangeCheckMale] = React.useState(false);
   const [checkedFemale, onChangeCheckFemale] = React.useState(false);
+  const [checkedLGBTQ, onChangeCheckLGBTQ] = React.useState(false);
   const [checkedMaleText, onChangeCheckMaleText] = React.useState('');
   const [checkedFemaleText, onChangeCheckFemaleText] = React.useState('');
+  const [checkedLGBTQText, onChangeCheckLGBTQText] = React.useState('');
   const [genderImage, onChangeGenderImage] = React.useState(
     require('./../../Assets/Images/gender1.png'),
   );
@@ -91,6 +95,30 @@ const SignupScreen = ({
     },
   ]);
 
+  const getOneTimeLocation = () => {
+    // console.log('one time==================');
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      position => {
+        // setLocationStatus('You are Here');
+        // console.log("----------------- get one time")
+        coords(position.coords.latitude, position.coords.longitude);
+
+        console.log('getting one time location coords...');
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
+  useEffect(() => {
+    getOneTimeLocation();
+  }, []);
   async function signInWithPhoneNumber(phoneNumber) {}
   // useEffect(()=>{
 
@@ -162,6 +190,13 @@ const SignupScreen = ({
   };
 
   const showModal = () => {
+    if (gender === null) {
+      showMessage({
+        message: 'Please Select Your Gender!',
+        type: 'danger',
+      });
+      return;
+    }
     setModalVisible(true);
   };
 
@@ -379,6 +414,7 @@ const SignupScreen = ({
 
             // :
 
+            //----- GENDER SELECTION -----
             <Animated.View style={{opacity: fadeAnim}}>
               <View style={{flexDirection: 'column', height: hp('110%')}}>
                 <Logo />
@@ -662,19 +698,19 @@ const SignupScreen = ({
                   }}>
                   <RNCheckboxCard
                     circleSize={30}
-                    isChecked={checkedFemale}
+                    isChecked={checkedLGBTQ}
                     checkedTextColor="#ffffff"
                     width={50}
                     checkImageSource={require('./../../Assets/Images/Check.png')}
                     circleBorderColor="#EFEFEF"
                     circleBackgroundColor="#B01125"
                     onPress={() => {
-                      if (checkedFemale) {
-                        onChangeCheckFemale(false);
-                        onChangeCheckFemaleText('');
+                      if (checkedLGBTQ) {
+                        onChangeCheckLGBTQ(false);
+                        onChangeCheckLGBTQText('');
                       } else {
-                        onChangeCheckFemale(true);
-                        onChangeCheckFemaleText('Female');
+                        onChangeCheckLGBTQ(true);
+                        onChangeCheckLGBTQText('Female');
                       }
                     }}
                     rightIconComponent={<View></View>}
@@ -683,8 +719,23 @@ const SignupScreen = ({
               </View>
               <TouchableOpacityBtn
                 onPress={() => {
-                  console.log(checkedMaleText, checkedFemaleText);
-                  const obj = [checkedMaleText, checkedFemaleText];
+                  // console.log(checkedMaleText, checkedFemaleText);
+                  if (
+                    checkedFemaleText === '' &&
+                    checkedMaleText === '' &&
+                    checkedLGBTQText === ''
+                  ) {
+                    showMessage({
+                      message: 'Please select at least one option',
+                      type: 'danger',
+                    });
+                    return;
+                  }
+                  const obj = [
+                    checkedMaleText,
+                    checkedFemaleText,
+                    checkedLGBTQText,
+                  ];
                   SignUpStepOne(
                     username,
                     email,

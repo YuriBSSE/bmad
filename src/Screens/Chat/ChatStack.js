@@ -1,10 +1,17 @@
 import React, {Component, useEffect, useState} from 'react';
-import {Dimensions, TouchableOpacity, Text, View, Image} from 'react-native';
+import {
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  View,
+  Image,
+  Platform,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-
+import {imageUrl} from '../../Config/Apis.json';
 import {connect} from 'react-redux';
 import Chat from './Chat';
 import {themeRed} from '../../Assets/Colors/Colors';
@@ -13,6 +20,9 @@ const {width, height} = Dimensions.get('window');
 
 function ChatStack({navigation, messagesReducer}) {
   const Stack = createStackNavigator();
+  const isIos = Platform.OS === 'ios';
+  const IMAGE_USER = messagesReducer?.currentChat?.chatPerson?.user_image;
+
   return (
     <Stack.Navigator initialRouteName="chatStack">
       <Stack.Screen
@@ -46,10 +56,16 @@ function ChatStack({navigation, messagesReducer}) {
                 // resizeMode="contain"
                 style={{
                   height: height * 0.055,
-                  width: width * 0.1,
+                  width: isIos ? width * 0.12 : width * 0.1,
                   borderRadius: width * 0.1,
                 }}
-                source={require('./../../Assets/Images/dp.png')}
+                source={
+                  IMAGE_USER !== null &&
+                  IMAGE_USER !== '' &&
+                  IMAGE_USER !== undefined
+                    ? {uri: `${imageUrl}/${IMAGE_USER}`}
+                    : require('./../../Assets/Images/dp.png')
+                }
               />
               <Text
                 style={{
@@ -59,7 +75,10 @@ function ChatStack({navigation, messagesReducer}) {
                   color: 'white',
                   fontFamily: 'Poppins-SemiBold',
                 }}>
-                {messagesReducer?.currentChat?.chatPerson?.user_name?.substring(0,20)}
+                {messagesReducer?.currentChat?.chatPerson?.user_name?.substring(
+                  0,
+                  20,
+                )}
               </Text>
               {/* </View> */}
             </TouchableOpacity>

@@ -42,6 +42,7 @@ const PostList = ({
   const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
 
   const route = useRoute();
+  // console.log(ProfileImg)
   const routeName = route?.name;
   return (
     <View
@@ -86,7 +87,7 @@ const PostList = ({
                 family="Poppins-SemiBold"
                 size={hp('1.9%')}
                 color="black"
-                Label={Name?.length < 3 ? 'Dummy Name' : Name}
+                Label={Name}
               />
               <AppText
                 nol={1}
@@ -118,7 +119,24 @@ const PostList = ({
                   Label={TotalLike}
                 />
               </View>
-              <View style={{flexDirection: 'row', left: 5}}>
+              <TouchableOpacity
+                style={{flexDirection: 'row', left: 5}}
+                activeOpacity={0.7}
+                onPress={() => {
+                  if (routeName === 'post') {
+                    return;
+                  }
+                  Navigation.navigate('mainpost', {
+                    name: Name,
+                    description: Description,
+                    profileImg: ProfileImg,
+                    uploadTime: UploadTime,
+                    totalLike: TotalLike,
+                    comment: Comment,
+                    img: Img,
+                    item: item,
+                  });
+                }}>
                 <View style={{paddingRight: 5}}>
                   <Icon1 name="message-outline" size={18} color="#B01125" />
                 </View>
@@ -130,7 +148,7 @@ const PostList = ({
                   color="black"
                   Label={Comment}
                 />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

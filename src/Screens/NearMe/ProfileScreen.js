@@ -11,6 +11,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  RefreshControl,Platform
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -21,6 +22,7 @@ import AppText from '../../Components/AppText';
 import {connect} from 'react-redux';
 import {imageUrl} from '../../Config/Apis.json';
 import {useRoute, StackActions, useIsFocused} from '@react-navigation/native';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 import * as actions from '../../Store/Actions/index';
 import {themeRed} from '../../Assets/Colors/Colors';
 //  import {useNavigation} from "@react-navigation/native"
@@ -38,14 +40,18 @@ const ProfileScreen = ({
   saveCurrentChatObject,
   messagesReducer,
   getUserData,
+  ignoreInviteFromProfile,
+  acceptInviteFromProfile,
 }) => {
   const [lines, onChangeLines] = useState(2);
   const [linesCondition, onChangeLinesCondition] = useState(false);
   const [nearMeUserData, setNearMeUserData] = useState(null);
+  const [refreshing, setRefreshing] = React.useState(false);
   const isFocused = useIsFocused();
-  // const nearMeUserData = usersNearmeReducer?.user;
+  const [actionLoader, setActionLoader] = useState(false);
   const USER_ID = userReducer?.data?.user_id;
   const profileData = route.params.userData;
+  const isIOS = Platform.OS === 'ios';
 
   const [loading, setLoading] = useState(false);
 
@@ -65,17 +71,19 @@ const ProfileScreen = ({
       user: userReducer?.data?.user_id,
       friend: nearMeUserData.user_id,
     };
-    console.log('cancelling ...');
-    cancelOfferFromProfile(apiData);
+    setActionLoader(true);
+    await cancelOfferFromProfile(apiData, _onSuccessOfAction);
+    setActionLoader(false);
   };
 
-  const _onPressRemoveFriend = () => {
+  const _onPressRemoveFriend = async () => {
     const apiData = {
       user: userReducer?.data?.user_id,
       friend: nearMeUserData.user_id,
     };
-    console.log('removing');
-    unfriendUserFromProfile(apiData);
+    setActionLoader(true);
+    await unfriendUserFromProfile(apiData, _onSuccessOfAction);
+    setActionLoader(false);
   };
 
   const _onPressMessageButton = async () => {
@@ -90,8 +98,41 @@ const ProfileScreen = ({
     // await createConversation(apiData, nearMeUserData, _onSuccess);
   };
 
-  const _onSuccess = () => {
-    navigation.navigate('chats');
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(async () => {
+      setRefreshing(false);
+      setLoading(true);
+
+      getProfileData();
+
+      setLoading(false);
+    });
+  }, []);
+
+  const _onPressIgnoreInvite = async (item, index) => {
+    const data = {
+      user: USER_ID,
+      friend: nearMeUserData?.user_id,
+    };
+    console.log(data, 'Ignore data');
+    await ignoreInviteFromProfile(data);
+  };
+
+  const _onPressAcceptButton = async (item, index) => {
+    const data = {
+      user: USER_ID,
+      friend: nearMeUserData?.user_id,
+    };
+    console.log(data, 'accept data');
+    await acceptInviteFromProfile(data);
+  };
+
+  const _onSuccessOfAction = () => {
+    getProfileData();
   };
 
   useEffect(() => {
@@ -119,7 +160,6 @@ const ProfileScreen = ({
       getProfileData();
     }
   }, [isFocused]);
-
   if (loading) {
     return (
       <View style={styles.loaderView}>
@@ -136,37 +176,43 @@ const ProfileScreen = ({
       </View>
     );
   }
+
+  // console.log(JSON.stringify(nearMeUserData?.sendBy, null, 2));
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <StatusBar translucent backgroundColor="transparent" />
 
-      {/* User Profile Section  */}
-      {nearMeUserData?.user_image === undefined ||
-      nearMeUserData?.user_image == null ? (
-        <Image
-          style={styles.userProfilePic}
-          source={require('./../../Assets/Images/userr.jpeg')}
-          resizeMode="cover"
-          resizeMethod="auto"
-        />
-      ) : (
-        <Image
-          style={styles.userProfilePic}
-          source={{uri: `${imageUrl}/${nearMeUserData?.user_image}`}}
-          // resizeMode=""
-          // resizeMethod="auto"
-        />
-      )}
+        {/* User Profile Section  */}
+        {nearMeUserData?.user_image === undefined ||
+        nearMeUserData?.user_image == null ? (
+          <Image
+            style={[styles.userProfilePic,isIOS && {height : height * 0.45}]}
+            source={require('./../../Assets/Images/userr.jpeg')}
+            resizeMode="cover"
+            // resizeMethod="auto"
+          />
+        ) : (
+          <Image
+            style={styles.userProfilePic}
+            source={{uri: `${imageUrl}/${nearMeUserData?.user_image}`}}
+            // resizeMode=""
+            // resizeMethod="auto"
+          />
+        )}
 
-      {/* Total Profile Likes  */}
-      {/* <View style={styles.heartContainer}>
+        {/* Total Profile Likes  */}
+        {/* <View style={styles.heartContainer}>
         <AntDesign name="heart" style={{padding: 2}} size={width * 0.1} color="red" />
         <Text style={styles.totalLike}>{nearMeUserData?.is_like}</Text>
       </View> */}
 
-      {/* User Info Section  */}
-      <View style={styles.userInfoSection}>
-        <ScrollView showsVerticalScrollIndicator={false} style={{}}>
+        {/* User Info Section  */}
+        <View style={styles.userInfoSection}>
           {/* Age and Name View  */}
           <View style={styles.ageAndNameView}>
             <AppText
@@ -183,11 +229,24 @@ const ProfileScreen = ({
               family="Poppins-SemiBold"
               size={hp('3%')}
               color="white"
-              Label={'26'}
-              // Label={nearMeUserData?.user_age}
+              // Label={'26'}
+              Label={nearMeUserData?.user_gender}
             /> */}
           </View>
-
+          <View style={{marginLeft: width * 0.05}}>
+            {/* <AppText
+              nol={1}
+              textAlign="left"
+              family="Poppins-SemiBold"
+              size={width * 0.037}
+              color="white"
+              Label={
+                typeof nearMeUserData?.user_gender[0] == 'string'
+                  ? ''
+                  : nearMeUserData?.user_gender[0]
+              }
+            /> */}
+          </View>
           {/* Profession View  */}
           <View style={styles.professionView}>
             {nearMeUserData?.user_title != null &&
@@ -257,18 +316,76 @@ const ProfileScreen = ({
 
           {/* Buttons View  */}
           <View style={styles.buttonsView}>
+            {/* Loader for Action Buttons */}
+            {actionLoader && (
+              <View style={styles.touchableOpacity}>
+                <AppText
+                  nol={1}
+                  textAlign="left"
+                  family="Poppins-SemiBold"
+                  size={width * 0.03}
+                  color="black"
+                  Label={'Please Wait...'}
+                />
+              </View>
+            )}
+
             {/* Connect Button  */}
-            {nearMeUserData?.connected !== 'pending' && (
+
+            {/* Cancel Request Sent By Me  */}
+            {nearMeUserData?.sendBy === USER_ID &&
+              nearMeUserData?.status === 'pending' && (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.touchableOpacity}
+                  onPress={() => {
+                    _cancelOfferRequest();
+                  }}>
+                  <AppText
+                    nol={1}
+                    textAlign="left"
+                    family="Poppins-SemiBold"
+                    size={width * 0.03}
+                    color="black"
+                    Label={'Cancel Offer'}
+                  />
+                </TouchableOpacity>
+              )}
+
+            {/* Send Friend Request  */}
+            {(nearMeUserData?.status === null ||
+              nearMeUserData?.status === 'null' ||
+              nearMeUserData?.status === 'rejected') && (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.touchableOpacity}
+                onPress={() => {
+                  if (userReducer?.data?.coins <= 0) {
+                    showMessage({
+                      message: "You don't have enough coins to send a request.",
+                      danger: 'error',
+                    });
+                    return;
+                  }
+                  navigation.navigate('OfferADrink');
+                }}>
+                <AppText
+                  nol={1}
+                  textAlign="left"
+                  family="Poppins-SemiBold"
+                  size={width * 0.03}
+                  color="black"
+                  Label={'Offer A Drink'}
+                />
+              </TouchableOpacity>
+            )}
+
+            {/* REmove Friend  */}
+            {nearMeUserData?.status === 'accepted' && !actionLoader && (
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  if (nearMeUserData?.connected === 'null') {
-                    navigation.navigate('OfferADrink');
-                  } else if (nearMeUserData?.connected === 'send') {
-                    _cancelOfferRequest();
-                  } else {
-                    _onPressRemoveFriend();
-                  }
+                  _onPressRemoveFriend();
                 }}
                 style={styles.touchableOpacity}>
                 <AppText
@@ -277,39 +394,73 @@ const ProfileScreen = ({
                   family="Poppins-SemiBold"
                   size={width * 0.03}
                   color="black"
-                  Label={
-                    // status = send
-                    nearMeUserData?.connected == 'null'
-                      ? 'Offer A Drink'
-                      : nearMeUserData?.connected == 'send' ||
-                        nearMeUserData?.status === 'send'
-                      ? 'Cancel Offer'
-                      : 'Remove Friend'
-                  }
+                  Label={'Remove Friend'}
                 />
-                {console.log(nearMeUserData?.connected, '...')}
               </TouchableOpacity>
             )}
-            <View style={{width: 10}} />
 
-            {/* Like Button  */}
-            {nearMeUserData?.status === 'accepted' && (
-            <TouchableOpacity
-              // onPress={
-              //   likeStatus == false ? is_like : likeStatus == true ? unlike : error
-              // }
-              activeOpacity={0.8}
-              onPress={() => _onPressMessageButton()}
-              style={styles.touchableOpacity}>
-              <AppText
-                nol={1}
-                textAlign="left"
-                family="Poppins-SemiBold"
-                size={width * 0.03}
-                color="black"
-                Label={'Message'}
-              />
-            </TouchableOpacity>
+            {/* Accept Button  */}
+            {nearMeUserData?.sendBy !== USER_ID &&
+              nearMeUserData?.status === 'pending' && (
+                <View>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      _onPressAcceptButton();
+                    }}
+                    style={styles.touchableOpacity}>
+                    <AppText
+                      nol={1}
+                      textAlign="left"
+                      family="Poppins-SemiBold"
+                      size={width * 0.03}
+                      color="black"
+                      Label={'Accept'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+            {/* Ignore Button  */}
+            {nearMeUserData?.sendBy !== USER_ID &&
+              nearMeUserData?.status === 'pending' && (
+                <View>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      _onPressIgnoreInvite();
+                    }}
+                    style={[styles.touchableOpacity, {marginLeft: 10}]}>
+                    <AppText
+                      nol={1}
+                      textAlign="left"
+                      family="Poppins-SemiBold"
+                      size={width * 0.03}
+                      color="black"
+                      Label={'Ignore'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+            {/* Message Button  */}
+            {nearMeUserData?.status === 'accepted' && !actionLoader && (
+              <TouchableOpacity
+                // onPress={
+                //   likeStatus == false ? is_like : likeStatus == true ? unlike : error
+                // }
+                activeOpacity={0.8}
+                onPress={() => _onPressMessageButton()}
+                style={[styles.touchableOpacity, {marginLeft: 10}]}>
+                <AppText
+                  nol={1}
+                  textAlign="left"
+                  family="Poppins-SemiBold"
+                  size={width * 0.03}
+                  color="black"
+                  Label={'Message'}
+                />
+              </TouchableOpacity>
             )}
           </View>
 
@@ -429,9 +580,9 @@ const ProfileScreen = ({
               )}
             />
           </View>
-          <View style={{height: 240}} />
-        </ScrollView>
-      </View>
+          <View style={{height: 170}} />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -475,10 +626,10 @@ var styles = StyleSheet.create({
     textAlign: 'center',
   },
   userProfilePic: {
-    position: 'absolute',
-    top: 0,
+    // position: 'absolute',
+    // top: 0,
     width: width,
-    height: height * 0.4,
+    height: height * 0.5,
   },
   heartContainer: {
     position: 'absolute',
@@ -497,10 +648,10 @@ var styles = StyleSheet.create({
   },
   userInfoSection: {
     backgroundColor: themeRed,
-    height: 500,
+    // height: 500,
     bottom: 0,
     justifyContent: 'flex-end',
-    marginTop: 400,
+    marginTop: -20,
     // borderRadius: 15,
     flexDirection: 'column',
     borderTopRightRadius: 20,

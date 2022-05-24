@@ -47,6 +47,8 @@ const NewPostScreen = ({
   getNotifications,
   postAction,
 }) => {
+  const isIOS = Platform.OS === 'ios';
+
   useEffect(() => {
     CheckPermission();
   }, []);
@@ -151,23 +153,24 @@ const NewPostScreen = ({
     onChangeArrays(tag);
   };
 
-  const newPost = () => {
+  const newPost = async () => {
     if (caption && filePath) {
-      setLoading(true)
-      postAction(
+      setLoading(true);
+      await postAction(
         // tags,
         caption,
         filePath,
         userReducer?.data?.user_id,
         navigation,
-        clearAllStates,_onPostFailed
+        clearAllStates,
+        _onPostFailed,
       );
-
     }
     // getNotifications(7)
   };
 
   const clearAllStates = () => {
+    setLoading(false);
     getFeedData(userReducer?.data?.user_id);
     setFilePath(null);
     onChangeCaption('');
@@ -175,6 +178,7 @@ const NewPostScreen = ({
       tag: '',
       tagsArray: [],
     });
+    navigation.navigate('HOME');
   };
 
   const _onPostFailed = () => {
@@ -194,7 +198,11 @@ const NewPostScreen = ({
             Label={'Add Pictures'}
           />
         </View>
-        <View style={{margin: 10, height: '100%'}}>
+        <View
+          style={{
+            // margin: 10,
+            height: '100%',
+          }}>
           <ScrollView
             bouncesZoom
             scrollToOverflowEnabled
@@ -371,8 +379,8 @@ const NewPostScreen = ({
               <LottieView
                 style={{
                   position: 'absolute',
-                  top: height * 0.05,
-                  left: width * 0.15,
+                  top: isIOS ? height * 0.035 : height * 0.05,
+                  left:isIOS ? width * 0.1: width * 0.15,
                   // backgroundColor:'white',
                   width: width * 0.4,
                   height: height * 0.3,
@@ -405,10 +413,11 @@ var styles = StyleSheet.create({
   },
   addPicView: {
     width: '100%',
-    left: width * 0.05,
+    left: width * 0.03,
     height: 60,
+    // backgroundColor:'red',
     justifyContent: 'flex-end',
-    marginTop: height * 0.04,
+    marginTop: height * 0.08,
   },
   imagesSection: {
     justifyContent: 'flex-start',

@@ -21,7 +21,7 @@ const TextInputFeild = ({
         if (text == ' ') {
           return;
         }
-        onchange(text);
+        onchange(text.toLowerCase());
       }}
       value={value}
       caretHidden={false}

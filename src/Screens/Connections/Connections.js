@@ -67,12 +67,12 @@ const Test = ({
     setChoice(index);
   };
 
-  const unFriendThisPerson = (item, index) => {
+  const unFriendThisPerson = async (item, index) => {
     const data = {
       user: USER_ID,
       friend: item?.user_id,
     };
-    unfriendUser(data);
+    await unfriendUser(data);
   };
 
   const _onPressCancelMyRequestSent = (item, index) => {
@@ -111,13 +111,13 @@ const Test = ({
   }, []);
 
   useEffect(() => {
-    let reqs = connectionsReducer?.invitations?.filter(
-      ele => ele.status == 'send',
+    let reqsSentByMe = connectionsReducer?.invitations?.filter(
+      ele => ele.sendBy == USER_ID,
     );
     let invitations = connectionsReducer?.invitations?.filter(
-      ele => ele?.status !== 'send',
+      ele => ele?.sendBy !== USER_ID,
     );
-    setRequests(reqs);
+    setRequests(reqsSentByMe);
     setConnections(connectionsReducer?.connections);
     setInvitations(invitations);
   }, [connectionsReducer?.connections, connectionsReducer?.invitations]);

@@ -1388,6 +1388,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-14.7.0.tgz#9ab30860f140dec1dce49f012fd56526e5b3707a"
   integrity sha512-G0GmmbmmAvhEltK7Rr1A3Mz6vH4qsX6OaqYNzbhgHvP2jvTIuchLcWozjTGcH/0OsXZz15fRe0WjQ3aMS2TTpg==
 
+"@react-native-google-signin/google-signin@^7.2.2":
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-7.2.2.tgz#29e416d5c8484b52de3dc97f982f04b0083f27fe"
+  integrity sha512-FqSJAEYz+SNeIOyokFX3e7nbBgK0js/Hye0YNY+cV0Qf1NxKw1vRt2MQB3kfuVWFCb+OSovgQCl6W8dhYvsblw==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -3674,6 +3679,11 @@ flatted@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"
   integrity sha512-r5wGx7YeOwNWNlCA0wQ86zKyDLMQr+/RB8xy74M4hTphfmjlijTSSXGuH8rnvKZnfT9i+75zmd8jcKdMR4O6jA==
+
+flatted@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
+  integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
 flow-parser@0.*:
   version "0.173.0"

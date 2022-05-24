@@ -23,6 +23,8 @@ import Geolocation from '@react-native-community/geolocation';
 import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
 import * as actions from '../../Store/Actions';
 import {connect} from 'react-redux';
+import {themeRed} from '../../Assets/Colors/Colors';
+import {useIsFocused} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -40,11 +42,15 @@ const HomeScreen = ({
   usersNearmeReducer,
   userCoordsReducer,
   likePost,
+  updateLocation,
 }) => {
   const USER_ID = userReducer?.data?.user_id;
   const [posts, setPosts] = useState(postsReducer?.feedPosts);
   const [refreshing, setRefreshing] = React.useState(false);
+  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
+  const [nearmeUsers, setNearmeUsers] = useState([]);
+  const isIos = Platform.OS === 'ios';
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -59,10 +65,6 @@ const HomeScreen = ({
       setLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    setPosts(postsReducer?.feedPosts);
-  }, [postsReducer?.feedPosts]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -112,13 +114,18 @@ const HomeScreen = ({
     Geolocation.getCurrentPosition(
       async position => {
         setLoading(true);
-        coords(position.coords.latitude, position.coords.longitude);
+        coords(position?.coords?.latitude, position?.coords?.longitude);
         await nearMeUsers(
-          position.coords.latitude,
-          position.coords.longitude,
+          position?.coords?.latitude,
+          position?.coords?.longitude,
           USER_ID,
         );
         await getFeedData(USER_ID);
+        await updateLocation({
+          user_id: USER_ID,
+          user_latitude: position?.coords?.latitude,
+          user_longitude: position?.coords?.longitude,
+        });
         setLoading(false);
       },
       error => {
@@ -132,14 +139,6 @@ const HomeScreen = ({
     );
   };
 
-  const _onPressHeart = item => {
-    const apiData = {
-      post_id: item?.post_id,
-      user_id: USER_ID,
-    };
-    likePost(apiData);
-  };
-
   // useEffect(() => {
   //   if (userCoordsReducer?.lat !== null && userCoordsReducer?.long !== null) {
   //     nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
@@ -150,6 +149,21 @@ const HomeScreen = ({
   //   }
   // }, [userReducer?.data?.id,userCoordsReducer]);
 
+  useEffect(() => {
+    setNearmeUsers(usersNearmeReducer?.allUsers);
+  }, [usersNearmeReducer?.allUsers, isFocused]);
+
+  useEffect(() => {
+    setPosts(postsReducer?.feedPosts);
+  }, [postsReducer?.feedPosts]);
+
+  const _onPressHeart = item => {
+    const apiData = {
+      post_id: item?.post_id,
+      user_id: USER_ID,
+    };
+    likePost(apiData);
+  };
   if (loading) {
     return (
       <View style={styles.loaderView}>
@@ -165,104 +179,122 @@ const HomeScreen = ({
         />
       </View>
     );
-  }
-  return (
-    <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+  } else {
+    return (
+      <View style={styles.container}>
+        <StatusBar translucent backgroundColor="transparent" />
 
-      {
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          scrollEnabled
-          showsVerticalScrollIndicator={false}
-          data={posts}
-          contentContainerStyle={{paddingBottom: 100}}
-          ListFooterComponentStyle={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          ListFooterComponent={() =>
-            posts?.length === 0 && (
-              <>
-                <View style={{height: 30}}></View>
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <LottieView
-                    style={{
-                      width: width * 0.5,
-                      height: height * 0.35,
-                    }}
-                    source={require('./../../Assets/Lottie/no-posts.json')}
-                    autoPlay
-                    loop
-                  />
+        {
+          // !!!! FlatList For All Posts !!!!!
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            scrollEnabled
+            showsVerticalScrollIndicator={false}
+            data={posts}
+            contentContainerStyle={{paddingBottom: 100}}
+            ListFooterComponentStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            // !!!! Will Be Viewed When No Posts To Show !!!!
+            ListFooterComponent={() =>
+              posts?.length === 0 && (
+                <>
+                  <View style={{height: 30}}></View>
                   <View
                     style={{
-                      marginTop: height * -0.07,
-                      width: width * 0.7,
                       justifyContent: 'center',
                       alignItems: 'center',
+                      marginTop:
+                        nearMeUsers?.length === 0 && isIos
+                          ? height * 0.16
+                          : height * 0.05,
                     }}>
+                    <LottieView
+                      style={{
+                        width: width * 0.5,
+                        height: isIos ? height * 0.27 : height * 0.35,
+                      }}
+                      source={require('./../../Assets/Lottie/no-posts.json')}
+                      autoPlay
+                      loop
+                    />
+                    <View
+                      style={{
+                        marginTop: height * -0.07,
+                        width: width * 0.7,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <AppText
+                        nol={1}
+                        family="Poppins-Bold"
+                        size={width * 0.06}
+                        style={{alignSelf: 'center'}}
+                        color="black"
+                        Label={'No Posts'}
+                      />
+                      <AppText
+                        nol={3}
+                        family="Poppins-Medium"
+                        size={width * 0.05}
+                        style={{alignSelf: 'center'}}
+                        color="black"
+                        Label={'Offer drinks and connect'}
+                      />
+                      <AppText
+                        style={{marginTop: -5}}
+                        nol={1}
+                        family="Poppins-Medium"
+                        size={width * 0.05}
+                        color="black"
+                        Label={' to see their posts.'}
+                      />
+                    </View>
+                  </View>
+                </>
+              )
+            }
+            stickyHeaderIndices={[0]}
+
+
+            // !!!! Header Showing Near Users !!!!
+            ListHeaderComponent={
+              nearmeUsers?.length > 0 ? (
+                <View
+                  style={[
+                    styles.cardContainer,
+                    isIos && {height: height * 0.15},
+                  ]}>
+                  <View style={styles.peopleNearContainer}>
                     <AppText
                       nol={1}
                       family="Poppins-Bold"
-                      size={width * 0.06}
-                      style={{alignSelf: 'center'}}
+                      size={hp('2%')}
                       color="black"
-                      Label={'No Posts'}
+                      Label={'People Near You'}
                     />
-                    <AppText
-                      nol={3}
-                      family="Poppins-Medium"
-                      size={width * 0.05}
-                      style={{alignSelf: 'center'}}
-                      color="black"
-                      Label={'Offer drinks and connect'}
-                    />
-                    <AppText
-                      style={{marginTop: -5}}
-                      nol={1}
-                      family="Poppins-Medium"
-                      size={width * 0.05}
-                      color="black"
-                      Label={' to see their posts.'}
-                    />
-                  </View>
-                </View>
-              </>
-            )
-          }
-          ListHeaderComponent={
-            usersNearmeReducer?.allUsers?.length > 0 ? (
-              <View style={styles.cardContainer}>
-                <View style={styles.peopleNearContainer}>
-                  <AppText
-                    nol={1}
-                    family="Poppins-Bold"
-                    size={hp('2%')}
-                    color="black"
-                    Label={'People Near You'} 
-                  />
-                  {/* <AppText
+                    {/* <AppText
                     nol={1}
                     family="Poppins-Regular"
                     size={hp('1.5%')}
                     color="black"
                     Label={'View More'}
                   /> */}
-                </View>
-                <FlatList
-                  contentContainerStyle={styles.innerFlatlistContentStyle}
-                  showsHorizontalScrollIndicator={false}
-                  data={usersNearmeReducer?.allUsers}
-                  horizontal
-                  keyExtractor={(item, index) => index}
-                  renderItem={({item, index}) => {
-                    // console.log(`${imageUrl}/${item?.user_image}`)
-                    return (
-                      <View key={index} style={styles.cardHeaderStyle}>
-                        {/* <View style={{bottom: 10, width: 50}}>
+                  </View>
+                  <FlatList
+                    contentContainerStyle={styles.innerFlatlistContentStyle}
+                    showsHorizontalScrollIndicator={false}
+                    data={nearmeUsers}
+                    horizontal
+                    keyExtractor={(item, index) => index}
+                    renderItem={({item, index}) => {
+                      // console.log(`${imageUrl}/${item?.user_image}`)
+                      return (
+                        <View key={index} style={styles.cardHeaderStyle}>
+                          {/* <View style={{bottom: 10, width: 50}}>
                       <AppText
                         nol={1}
                         textAlign="center"
@@ -272,94 +304,97 @@ const HomeScreen = ({
                         Label={item?.user_name}
                       />
                     </View> */}
-                        {item?.user_image === undefined ||
-                        item?.user_image === null ? (
-                          <Avatar
-                            size="medium"
-                            rounded
-                            source={require('./../../Assets/Images/maroon-dp2.jpeg')}
-                            containerStyle={
-                              {
-                                // borderColor: 'grey',
-                                // borderWidth: 1,
+                          {item?.user_image === undefined ||
+                          item?.user_image === null ? (
+                            <Avatar
+                              size="medium"
+                              rounded
+                              source={require('./../../Assets/Images/maroon-dp2.jpeg')}
+                              containerStyle={
+                                {
+                                  // borderColor: 'grey',
+                                  // borderWidth: 1,
+                                }
                               }
-                            }
-                          />
-                        ) : (
-                          <Avatar
-                            size="medium"
-                            rounded
-                            containerStyle={{borderColor: 'grey'}}
-                            source={{
-                              uri: `${imageUrl}/${item?.user_image}`,
-                            }}
-                          />
-                        )}
-                        {item?.distance != undefined ? (
-                          <View style={{top: 7}}>
-                            <AppText
-                              nol={1}
-                              textAlign="left"
-                              family="Poppins-Regular"
-                              size={hp('1.3%')}
-                              color="black"
-                              Label={((item?.distance * 1000).toPrecision(2)) + 'm'}
-                              // Label={item?.distance?.toPrecision(2) + ' km'}
                             />
-                          </View>
-                        ) : null}
-                      </View>
-                    );
-                  }}
+                          ) : (
+                            <Avatar
+                              size="medium"
+                              rounded
+                              containerStyle={{borderColor: 'grey'}}
+                              source={{
+                                uri: `${imageUrl}/${item?.user_image}`,
+                              }}
+                            />
+                          )}
+                          {item?.distance != undefined ? (
+                            <View style={{top: 7}}>
+                              <AppText
+                                nol={1}
+                                textAlign="left"
+                                family="Poppins-Regular"
+                                size={hp('1.3%')}
+                                color="black"
+                                Label={
+                                  (item?.distance * 1000).toPrecision(2) + 'm'
+                                }
+                                // Label={item?.distance?.toPrecision(2) + ' km'}
+                              />
+                            </View>
+                          ) : null}
+                        </View>
+                      );
+                    }}
+                  />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    width: '100%',
+                    backgroundColor: themeRed,
+                    justifyContent: 'space-around',
+                    flexDirection: 'row',
+                    padding: 5,
+                  }}>
+                  <AppText
+                    nol={1}
+                    family="Poppins-Bold"
+                    size={hp('2%')}
+                    color="white"
+                    Label={'PEOPLE NEAR BY'}
+                  />
+                  <AppText
+                    nol={1}
+                    family="Poppins-Bold"
+                    size={hp('2%')}
+                    color="white"
+                    Label={'NO PEOPLE FOUND'}
+                  />
+                </View>
+              )
+            }
+            keyExtractor={(item, index) => index}
+            renderItem={({item, index}) => {
+              return (
+                <PostList
+                  item={item}
+                  Img={item?.post_url}
+                  Name={item?.user_id?.user_name}
+                  Description={item?.post_desc}
+                  ProfileImg={item?.user_id?.user_image}
+                  UploadTime={item?.post_created_at}
+                  TotalLike={item?.count_likes}
+                  Comment={item?.count_comments}
+                  Navigation={navigation}
+                  _onPressHeart={_onPressHeart}
                 />
-              </View>
-            ) : (
-              <View
-                style={{
-                  width: '100%',
-                  backgroundColor: '#B01125',
-                  justifyContent: 'space-around',
-                  flexDirection: 'row',
-                  padding: 5,
-                }}>
-                <AppText
-                  nol={1}
-                  family="Poppins-Bold"
-                  size={hp('2%')}
-                  color="white"
-                  Label={'PEOPLE NEAR BY'}
-                />
-                <AppText
-                  nol={1}
-                  family="Poppins-Bold"
-                  size={hp('2%')}
-                  color="white"
-                  Label={'NO PEOPLE FOUND'}
-                />
-              </View>
-            )
-          }
-          keyExtractor={(item, index) => index}
-          renderItem={({item, index}) => {
-            return (
-              <PostList
-                item={item}
-                Img={item?.post_url}
-                Name={item?.user_id?.user_name}
-                Description={item?.post_desc}
-                ProfileImg={item?.user_id?.user_coverImage}
-                UploadTime={item?.post_created_at}
-                TotalLike={item?.count_likes}
-                Comment={item?.count_comments}
-                Navigation={navigation}
-                _onPressHeart={_onPressHeart}
-              />
-            );
-          }}
-        />
-      }
-    </View>
-  );
+              );
+            }}
+          />
+        }
+      </View>
+    );
+  }
 };
 
 // nearMeUsers
@@ -397,14 +432,14 @@ var styles = StyleSheet.create({
     // borderWidth: 1,
     borderColor: 'white',
     zIndex: 4,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.30,
+    shadowOpacity: 0.3,
     shadowRadius: 4.65,
-    
+    width: width,
     elevation: 8,
     backgroundColor: 'white',
     height: height * 0.17,

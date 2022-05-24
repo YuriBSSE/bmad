@@ -19,6 +19,9 @@ import {connect} from 'react-redux';
 import * as actions from './Store/Actions';
 import {NavigationContainer} from '@react-navigation/native';
 import {themeRed} from './Assets/Colors/Colors';
+import {showMessage} from 'react-native-flash-message';
+import VerifyForgotPasswordCode from './Screens/Forgot/VerifyForgotPasswordCode';
+import ResetPassword from './Screens/Forgot/ResetPassword';
 const AuthStack = createStackNavigator();
 const {width, height} = Dimensions.get('window');
 
@@ -33,103 +36,125 @@ const AuthRootStackScreen = ({
   userFavourite,
   userInterest,
   SignupAll,
-}) => (
-  <AuthStack.Navigator
-    headerMode="float"
-    screenOptions={{gestureEnabled: 'true', headerShown: true}}
-    initialRouteName="main">
-    <AuthStack.Screen
-      name="main"
-      options={{headerShown: false}}
-      component={MainScreen}
-    />
-    <AuthStack.Screen
-      name="login"
-      options={{headerShown: false}}
-      component={LoginScreen}
-    />
-    <AuthStack.Screen
-      name="forgot"
-      options={{headerShown: false}}
-      component={ForgotScreen}
-    />
-    <AuthStack.Screen
-      name="signup"
-      options={({navigation, route}) => ({
-        headerTitle: props => null,
-        headerTransparent: true,
-        headerLeft: () => null,
-      })}
-      component={SignupScreen}
-    />
-    <AuthStack.Screen
-      name="YourInterests"
-      options={({navigation, route}) => ({
-        headerTitle: props => (
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: width * 0.05,
-              color: 'black',
-              fontFamily: 'Poppins-SemiBold',
-            }}>
-            Your Interests
-          </Text>
-        ),
-        headerTransparent: false,
-        headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.leftIconStyle}>
-            <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('FavoriteDrinks')}
-            style={styles.rightIconStyle}>
-            <Image
-              resizeMode="contain"
-              source={require('./Assets/Images/Check.png')}
+}) => {
+
+  return (
+    <AuthStack.Navigator
+      headerMode="float"
+      screenOptions={{gestureEnabled: 'true', headerShown: true}}
+      initialRouteName="main">
+      <AuthStack.Screen
+        name="main"
+        options={{headerShown: false}}
+        component={MainScreen}
+      />
+      <AuthStack.Screen
+        name="login"
+        options={{headerShown: false}}
+        component={LoginScreen}
+      />
+      <AuthStack.Screen
+        name="forgot"
+        options={{headerShown: false}}
+        component={ForgotScreen}
+      />
+      <AuthStack.Screen
+        name="verifyForgot"
+        options={{headerShown: false}}
+        component={VerifyForgotPasswordCode}
+      />
+      <AuthStack.Screen
+        name="resetPassword"
+        options={{headerShown: false}}
+        component={ResetPassword}
+      />
+      <AuthStack.Screen
+        name="signup"
+        options={({navigation, route}) => ({
+          headerTitle: props => null,
+          headerTransparent: true,
+          headerLeft: () => null,
+        })}
+        component={SignupScreen}
+      />
+      <AuthStack.Screen
+        name="YourInterests"
+        options={({navigation, route}) => ({
+          headerTitle: props => (
+            <Text
               style={{
-                width: width * 0.08,
-                height: height * 0.04,
+                textAlign: 'center',
+                fontSize: width * 0.05,
+                color: 'black',
+                fontFamily: 'Poppins-SemiBold',
+              }}>
+              Your Interests
+            </Text>
+          ),
+          headerTransparent: false,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.leftIconStyle}>
+              <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                console.log(userInterest?.length);
+                if (userInterest == undefined || userInterest?.length == 0) {
+                  showMessage({
+                    message: 'Please select atleast one interest!',
+                    type: 'danger',
+                  });
+                  return;
+                }
+                navigation.navigate('FavoriteDrinks');
               }}
-            />
-          </TouchableOpacity>
-        ),
-      })}
-      component={InterestScreen}
-    />
-    <AuthStack.Screen
-      name="FavoriteDrinks"
-      options={({navigation, route}) => ({
-        headerTitle: props => (
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: width * 0.05,
-              color: 'black',
-              fontFamily: 'Poppins-SemiBold',
-            }}>
-            Favorite Drinks
-          </Text>
-        ),
-        headerTransparent: false,
-        headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.leftIconStyle}>
-            <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <TouchableOpacity
-            // onPress={() =>
-            //   SignUpFunction(userSignup, userFavourite, userInterest, SignupAll)
-            // }
-            style={styles.rightIconStyle}>
-            {/* <Image
+              style={styles.rightIconStyle}>
+              <Image
+                resizeMode="contain"
+                source={require('./Assets/Images/Check.png')}
+                style={{
+                  width: width * 0.08,
+                  height: height * 0.04,
+                }}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+        component={InterestScreen}
+      />
+      <AuthStack.Screen
+        name="FavoriteDrinks"
+        options={({navigation, route}) => ({
+          headerTitle: props => (
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: width * 0.05,
+                color: 'black',
+                fontFamily: 'Poppins-SemiBold',
+              }}>
+              Favorite Drinks
+            </Text>
+          ),
+          headerTransparent: false,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.leftIconStyle}>
+              <Icon name="arrow-back" size={width * 0.07} color="#B01125" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              // onPress={() =>
+              //   SignUpFunction(userSignup, userFavourite, userInterest, SignupAll)
+              // }
+              style={styles.rightIconStyle}>
+              {/* <Image
               resizeMode="contain"
               source={require('./Assets/Images/Check.png')}
               style={{
@@ -137,13 +162,14 @@ const AuthRootStackScreen = ({
                 height: height * 0.04,
               }}
             /> */}
-          </TouchableOpacity>
-        ),
-      })}
-      component={FavoriteDScreen}
-    />
-  </AuthStack.Navigator>
-);
+            </TouchableOpacity>
+          ),
+        })}
+        component={FavoriteDScreen}
+      />
+    </AuthStack.Navigator>
+  );
+};
 
 const mapStatetoProps = ({userSignup, userFavourite, userInterest}) => {
   return {userSignup, userFavourite, userInterest};

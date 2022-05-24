@@ -24,7 +24,9 @@ target 'Bmad' do
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
   pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
-
+  pod 'GoogleSignIn', '~> 6.1.0'
+  pod 'GoogleSignInSwiftSupport'
+  
   target 'BmadTests' do
     inherit! :complete
     # Pods for testing

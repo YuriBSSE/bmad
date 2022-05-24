@@ -38,6 +38,7 @@ const ForgotScreen = ({navigation, forgotPassword}) => {
   const [email, onChangeEmail] = React.useState('');
   const onSuccess = () => {
     onChangeEmail('');
+    navigation.navigate('verifyForgot', {email: email});
   };
   return (
     // <View style={styles.container}>
@@ -45,66 +46,67 @@ const ForgotScreen = ({navigation, forgotPassword}) => {
       style={styles.backgroundImage}
       source={require('./../../Assets/Images/Bg1.png')}>
       <StatusBar translucent backgroundColor="transparent" />
-        {/* <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
           styles={{height: hp('10%')}}
           behavior="padding"
           enabled> */}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={styles.scrollView}>
-            <View
-              style={{
-                flexDirection: 'column',
-                height: hp('80%'),
-                top: 20,
-                // backgroundColor: 'red',
-              }}>
-              <Logo />
-              <Heading Label="Forgot" />
-              <Heading Label="Password" />
-              <TextSample Label="Enter Your Email For Password Verfication" />
-              <View
-                style={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  margin: 15,
-                }}>
-                <View style={styles.textElement}>
-                  <View style={styles.textField}>
-                    <Feather name="user" color="white" size={20} />
-                    <TextInputFeild
-                      placeholder="Email"
-                      value={email}
-                      onchange={onChangeEmail}
-                      keyboardType="default"
-                      //   secureTextEntry={true}
-                    />
-                  </View>
-                  <Underline />
-                </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}>
+        <View
+          style={{
+            flexDirection: 'column',
+            height: hp('80%'),
+            top: 20,
+            // backgroundColor: 'red',
+          }}>
+          <Logo />
+          <Heading Label="Forgot" />
+          <Heading Label="Password" />
+          <TextSample Label="Enter Your Email For Password Verfication" />
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              margin: 15,
+            }}>
+            <View style={styles.textElement}>
+              <View style={styles.textField}>
+                <Feather name="user" color="white" size={20} />
+                <TextInputFeild
+                  placeholder="Email"
+                  value={email}
+                  onchange={onChangeEmail}
+                  keyboardType="default"
+                  //   secureTextEntry={true}
+                />
               </View>
+              <Underline />
             </View>
+          </View>
+        </View>
 
-            <View
-              style={{
-                height: hp('20%'),
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexDirection: 'column',
-                alignContent: 'space-between',
-                bottom: 30, 
-                // backgroundColor:'blue'
-              }}>
-              <TouchableOpacityBtn
-                onPress={() => {
-                  forgotPassword({email: email}, onSuccess);
-                }}
-                title="Continue"
-              />
-            </View>
-          </ScrollView>
-        {/* </KeyboardAvoidingView> */}
-      </ImageBackground>
+        <View
+          style={{
+            height: hp('20%'),
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'column',
+            alignContent: 'space-between',
+            bottom: 30,
+            // backgroundColor:'blue'
+          }}>
+          <TouchableOpacityBtn
+            onPress={() => {
+              console.log('ssadsssads');
+              forgotPassword({user_email: email}, onSuccess);
+            }}
+            title="Continue"
+          />
+        </View>
+      </ScrollView>
+      {/* </KeyboardAvoidingView> */}
+    </ImageBackground>
     // </View>
   );
 };

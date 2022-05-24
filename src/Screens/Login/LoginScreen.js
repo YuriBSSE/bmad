@@ -142,7 +142,7 @@ const LoginScreen = ({navigation, route, loginUser}) => {
                 <TextInputFeild
                   placeholder="Email"
                   value={username}
-                  onchange={onChangeUsername}
+                  onchange={e => onChangeUsername(e.toLowerCase())}
                   keyboardType="default"
                   secureTextEntry={false}
                 />
@@ -167,7 +167,7 @@ const LoginScreen = ({navigation, route, loginUser}) => {
             {loading ? (
               <LottieView
                 style={{
-                  marginTop:-10,
+                  marginTop: -10,
                   width: width * 0.2,
                   height: height * 0.1,
                 }}

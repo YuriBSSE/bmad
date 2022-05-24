@@ -26,6 +26,8 @@ import {
 import FavouriteList from './../../Components/FavouriteList';
 import * as actions from '../../Store/Actions';
 import {connect} from 'react-redux';
+import {showMessage, hideMessage} from 'react-native-flash-message';
+import Geolocation from '@react-native-community/geolocation';
 import LottieView from 'lottie-react-native';
 import {themeRed} from '../../Assets/Colors/Colors';
 import {useIsFocused} from '@react-navigation/native';
@@ -90,25 +92,61 @@ const FavoriteDScreen = ({
   userInterest,
   userCoordsReducer,
   SignupAll,
+  coords,
 }) => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const isFocused = useIsFocused();
   const _onPressDone = async () => {
-    if (userFavourite.length === 0) {
-      alert('Please Select Atleast One Drink.');
+    if (userFavourite?.length === 0 || userFavourite == undefined) {
+      
+
+      showMessage({
+        message: 'Please Select Atleast One Drink.',
+        // description: 'Please Select Atleast One Drink.',
+        type: 'danger',
+      });
       return;
     }
     setIsLoading(true);
     await SignupAll(userSignup, userFavourite, userInterest, _onSignUpFailed);
     console.log(userSignup);
   };
-  console.log(userFavourite);
+
   const _onSignUpFailed = () => {
     setIsLoading(false);
   };
 
-  
+  useEffect(() => {
+    if (
+      userSignup?.user_latitude == null ||
+      userSignup?.user_latitude === undefined
+    ) {
+      getOneTimeLocation();
+    }
+  }, [userSignup?.user_latitude]);
+
+  const getOneTimeLocation = () => {
+    // console.log('one time==================');
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      position => {
+        // setLocationStatus('You are Here');
+        // console.log("----------------- get one time")
+        coords(position.coords.latitude, position.coords.longitude);
+
+        console.log('getting one time location coords...');
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />

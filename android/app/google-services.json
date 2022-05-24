@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "254533762674-o28ckvb8bmrqhd0gkjtgscelunvm6pkg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bmad",
+            "certificate_hash": "c2a63b1ecb0aea94a7b4d0890073099e9889f5bb"
+          }
+        },
+        {
           "client_id": "254533762674-l02tkehr2okrsqbuh97vq0qu4150uodh.apps.googleusercontent.com",
           "client_type": 3
         }

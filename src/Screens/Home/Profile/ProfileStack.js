@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, Text, View, Image} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import ProfileScreen from './ProfileScreens';
+import MyProfileScreen from './MyProfileScreen';
 import PasswordChange from './PasswordChange';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BMAD from './BMAD';
@@ -10,12 +10,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MessageIcon from '../../../Components/MessageIcon';
 import MaterialIcons from 'react-native-vector-icons/Feather';
 import {themeRed} from '../../../Assets/Colors/Colors';
+import Drinks from './Drinks';
 
 function ProfileStack({navigation}) {
-  const Stack = createStackNavigator();
+  const ProfileStack = createStackNavigator();
+
   return (
-    <Stack.Navigator initialRouteName="Drinks">
-      <Stack.Screen
+    <ProfileStack.Navigator initialRouteName="BMAD">
+      {/* Drinks */}
+      <ProfileStack.Screen
         name="Drinks"
         options={({route}) => ({
           headerStyle: {
@@ -38,6 +41,46 @@ function ProfileStack({navigation}) {
           ),
           headerTransparent: false,
           headerLeft: () => (
+            <View style={{left: 20}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('BMAD', {
+                    screen: 'BMAD',
+                    initial: false,
+                  })
+                }>
+                <Icon name="arrow-back" size={25} color="white" />
+              </TouchableOpacity>
+            </View>
+          ),
+          headerRight: () => <MessageIcon navigation={navigation} />,
+        })}
+        component={Drinks}
+      />
+
+      <ProfileStack.Screen
+        name="BMAD"
+        options={({route}) => ({
+          headerStyle: {
+            borderBottomColor: 'grey',
+            borderBottomWidth: 0.7,
+            height: 110,
+            backgroundColor: themeRed,
+          },
+          headerStatusBarHeight: 32,
+          headerTitle: props => (
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 18,
+                color: 'white',
+                fontFamily: 'Poppins-SemiBold',
+              }}>
+              BMAD
+            </Text>
+          ),
+          headerTransparent: false,
+          headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.openDrawer()}
               style={{}}>
@@ -54,32 +97,43 @@ function ProfileStack({navigation}) {
         })}
         component={BMAD}
       />
-      <Stack.Screen
+      <ProfileStack.Screen
         name="MyProfile"
         options={({route, navigation}) => ({
           headerShown: true,
 
           headerStyle: {
             height: 110,
-            backgroundColor: '#B01125',
+            backgroundColor: themeRed,
             borderBottomWidth: 0,
-            borderBottomColor: '#B01125',
+            borderBottomColor: 'grey',
           },
           headerStatusBarHeight: 32,
           headerTitle: props => null,
           headerTransparent: true,
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.openDrawer()}
-              style={{}}>
-              <View style={{padding: 10, top: 3}}>
-                <Image
-                  resizeMode="contain"
-                  style={{height: 25, width: 25}}
-                  source={require('./../../../Assets/Images/menu1.png')}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={{left: 20}}>
+              {/* <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('BMAD', {
+                    screen: 'BMAD',
+                    initial: false,
+                  })
+                }>
+                <Icon name="arrow-back" size={25} color="white" />
+              </TouchableOpacity> */}
+            </View>
+            // <TouchableOpacity
+            //   onPress={() => navigation.openDrawer()}
+            //   style={{}}>
+            //   <View style={{padding: 10, top: 3}}>
+            //     <Image
+            //       resizeMode="contain"
+            //       style={{height: 25, width: 25}}
+            //       source={require('./../../../Assets/Images/menu1.png')}
+            //     />
+            //   </View>
+            // </TouchableOpacity>
             // <View style={{left: 20}}>
             //   <TouchableOpacity onPress={() => navigation.goBack()}>
             //     <Icon name="arrow-back" size={25} color="white" />
@@ -114,9 +168,9 @@ function ProfileStack({navigation}) {
             </View>
           ),
         })}
-        component={ProfileScreen}
+        component={MyProfileScreen}
       />
-      <Stack.Screen
+      <ProfileStack.Screen
         name="EditProfile"
         options={({route, navigation}) => ({
           headerShown: true,
@@ -163,16 +217,16 @@ function ProfileStack({navigation}) {
         })}
         component={EditProfile}
       />
-      <Stack.Screen
+      <ProfileStack.Screen
         name="PasswordChange"
         options={({route, navigation}) => ({
           headerShown: true,
 
           headerStyle: {
             height: 110,
-            backgroundColor: 'white',
+            backgroundColor: themeRed,
             borderBottomWidth: 0,
-            borderBottomColor: 'white',
+            borderBottomColor: 'grey',
           },
           headerStatusBarHeight: 32,
           headerTitle: props => (
@@ -180,7 +234,7 @@ function ProfileStack({navigation}) {
               style={{
                 textAlign: 'center',
                 fontSize: 18,
-                color: 'black',
+                color: 'white',
                 fontFamily: 'Poppins-SemiBold',
               }}>
               Change Password
@@ -188,17 +242,17 @@ function ProfileStack({navigation}) {
           ),
           headerTransparent: false,
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.openDrawer()}
-              style={{}}>
-              <View style={{padding: 10, top: 3}}>
-                <Image
-                  resizeMode="contain"
-                  style={{height: 25, width: 25}}
-                  source={require('./../../../Assets/Images/menu.png')}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={{left: 20}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('BMAD', {
+                    screen: 'BMAD',
+                    initial: false,
+                  })
+                }>
+                <Icon name="arrow-back" size={25} color="white" />
+              </TouchableOpacity>
+            </View>
           ),
           headerRight: () => (
             <View style={{right: 20}}>
@@ -210,7 +264,7 @@ function ProfileStack({navigation}) {
         })}
         component={PasswordChange}
       />
-    </Stack.Navigator>
+    </ProfileStack.Navigator>
   );
 }
 

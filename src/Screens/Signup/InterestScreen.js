@@ -80,10 +80,10 @@ const Data = [
 ];
 const InterestScreen = ({navigation, userInterest, Interest}) => {
   const [items, setItems] = useState([]);
-  console.log(userInterest);
+  
 
   useEffect(() => {
-    console.log(userInterest);
+    console.log(userInterest,"userInterest");
   }, [userInterest]);
   return (
     <View style={styles.container}>

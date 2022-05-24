@@ -1,7 +1,8 @@
 import {combineReducers, compose, createStore, applyMiddleware} from 'redux';
-import {persistStore, persistReducer} from 'redux-persist';
+import {persistStore, persistReducer, createTransform} from 'redux-persist';
 // import storage from 'redux-persist/lib/storage';
 import ReduxThunk from 'redux-thunk';
+import {parse, stringify, toJSON, fromJSON} from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   userLogin,
@@ -15,7 +16,9 @@ import {
   postsReducer,
   usersNearmeReducer,
   userCoordsReducer,
-  notificationsReducer,connectionsReducer,messagesReducer
+  notificationsReducer,
+  connectionsReducer,
+  messagesReducer,
 } from './Reducers/InAppReducer';
 
 const reducers = combineReducers({
@@ -28,24 +31,28 @@ const reducers = combineReducers({
   usersNearmeReducer,
   userCoordsReducer,
   postsReducer,
-  notificationsReducer,connectionsReducer,messagesReducer
+  notificationsReducer,
+  connectionsReducer,
+  messagesReducer,
 });
 
+const transformCircular = createTransform(
+  (inboundState, key) => stringify(inboundState),
+  (outboundState, key) => parse(outboundState),
+);
+
 const persistConfig = {
-  key: 'root',
+  key: 'primary',
   storage: AsyncStorage,
   whitelist: ['userReducer', 'userCoordsReducer'],
-  timeout: null
+  timeout: null,
+  transforms: [transformCircular],
 };
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const persistedReducer = persistReducer(persistConfig, reducers);
 
-const store = createStore(
-  persistedReducer,
-  {},
-  composeEnhancers(applyMiddleware(ReduxThunk)),
-);
+const store = createStore(persistedReducer, {}, applyMiddleware(ReduxThunk));
 let persistor = persistStore(store);
 
 export {store, persistor};

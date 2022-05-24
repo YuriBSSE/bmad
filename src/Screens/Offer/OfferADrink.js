@@ -29,6 +29,7 @@ import {
 import SplashScreen from 'react-native-splash-screen';
 import * as actions from '../../Store/Actions/index';
 import LottieView from 'lottie-react-native';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 import {imageUrl} from '../../Config/Apis.json';
 import {themeRed} from '../../Assets/Colors/Colors';
 
@@ -46,9 +47,7 @@ const OfferADrink = ({
 
   // send request to drink buddy
   const _onPressConfirm = async () => {
-    if (0 <= 0) {
-      alert("You don't have enough coins to send a request.");
-    }
+    
     setLoading(true);
     const apiData = {
       user: userReducer?.data?.user_id,
@@ -59,13 +58,15 @@ const OfferADrink = ({
 
   const onSuccess = () => {
     deductDrinksAfterRequestSent();
-    setLoading(false);
+    // setLoading(false);
     navigation.navigate('ProceedToPay');
   };
 
   const _onRequestFialed = () => {
     setLoading(false);
   };
+
+  console.log(NEARME_USERDATA)
   return (
     <View style={styles.mainContainer}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -97,8 +98,8 @@ const OfferADrink = ({
             <Image
               style={styles.imageStyles}
               source={
-                userReducer?.data?.user_image !== null &&
-                userReducer?.data?.user_image !== undefined
+                NEARME_USERDATA?.user_image !== null &&
+                NEARME_USERDATA?.user_image !== undefined
                   ? {uri: `${imageUrl}/${NEARME_USERDATA?.user_image}`}
                   : require('../../Assets/Images/placeholderImage.png')
               }

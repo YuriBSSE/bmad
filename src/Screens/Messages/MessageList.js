@@ -17,6 +17,7 @@ import {
   TouchableHighlight,
   TextInput,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import {Badge} from 'react-native-elements';
 import AppText from '../../Components/AppText';
@@ -27,6 +28,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+const {width, height} = Dimensions.get('window');
+
 export const MessageList = ({
   item,
   Image,
@@ -37,18 +41,32 @@ export const MessageList = ({
   onPress,
   OnlineStatus,
 }) => {
-  // console.log(item?.messageId, '--');
+  // console.log(JSON.stringify(item, null, 2), '--');
+  console.log(`${imageUrl}/${Image}`);
   return (
     <View
       style={{
-        height: hp('10%'),
+        // height: hp('10%'),
         flexDirection: 'row',
         justifyContent: 'center',
-        margin: 20,
-        marginVertical: 10,
+        marginHorizontal: width * 0.025,
+        borderRadius: 7,
+        marginVertical: height * 0.005,
+        paddingVertical: height * 0.01,
+        paddingHorizontal: width * 0.025,
         alignItems: 'center',
+        backgroundColor: 'white',
         alignContent: 'center',
         alignSelf: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
       }}>
       <TouchableOpacity
         onPress={() =>
@@ -76,7 +94,7 @@ export const MessageList = ({
                 size="large"
                 source={
                   Image !== undefined && Image !== null && Image !== ''
-                    ? `${imageUrl}/${Image}`
+                    ? {uri: `${imageUrl}/${Image}`}
                     : require('../../Assets/Images/maroon-dp2.jpeg')
                 }
               />
@@ -107,7 +125,7 @@ export const MessageList = ({
                   family="Poppins-SemiBold"
                   size={hp('1.7%')}
                   color="#757575"
-                  Label={item?.lastMessage?.message}
+                  Label={item?.messageId?.message}
                 />
               </View>
             </View>
@@ -120,7 +138,7 @@ export const MessageList = ({
               family="Poppins-Regular"
               size={hp('1.5%')}
               color="#757575"
-              Label={moment(item?.user_created_at).format('hh:mm A')}
+              Label={moment(item?.messageId?.createdAt).format('hh:mm A')}
             />
           </View>
         </View>

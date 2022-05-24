@@ -26,7 +26,7 @@ function HomeStack({navigation}) {
         options={({route}) => ({
           headerStyle: {
             borderBottomColor: 'grey',
-            borderBottomWidth: 0.7,
+            // borderBottomWidth: 0.7,
             height: 110,
             backgroundColor: themeRed,
           },

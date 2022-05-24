@@ -66,20 +66,26 @@ const DrawerContent = ({
                 })
               }
             />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <FontAwesome
-                  name="user-o"
-                  color='white'
-                  size={30}
-                />
-              )}
-              labelStyle={{fontFamily: 'Poppins-Regular', color: 'white', fontSize: hp('2%')}}
-              label=" Profile"
-              onPress={() => navigation.navigate('MyProfile')}
-            />
-
             {/* <DrawerItem
+              icon={({color, size}) => (
+                <FontAwesome name="user-o" color="white" size={30} />
+              )}
+              labelStyle={{
+                fontFamily: 'Poppins-Regular',
+                color: 'white',
+                fontSize: hp('2%'),
+              }}
+              label=" Profile"
+              // onPress={() => navigation.navigate('MyProfile')}
+              onPress={() =>
+                navigation.navigate('Drinks', {
+                  screen: 'MyProfile',
+                  initial: false,
+                })
+              }
+            /> */}
+
+            <DrawerItem
               icon={({color, size}) => (
                 <MaterialCommunityIcons
                   name="message-processing-outline"
@@ -94,7 +100,7 @@ const DrawerContent = ({
               }}
               label="Messages"
               onPress={() => navigation.navigate('message')}
-            /> */}
+            />
             <DrawerItem
               icon={({color, size}) => (
                 <MaterialIcons

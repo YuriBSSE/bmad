@@ -15,7 +15,10 @@ import {
 import MessageList from './MessageList';
 import LottieView from 'lottie-react-native';
 import {connect} from 'react-redux';
+import AppText from '../../Components/AppText';
 import * as actions from '../../Store/Actions/index';
+import {useIsFocused} from '@react-navigation/native';
+import {themeRed} from '../../Assets/Colors/Colors';
 
 const {width, height} = Dimensions.get('window');
 
@@ -31,15 +34,17 @@ const MessageScreen = ({
   const [conversationlist, setconversationlist] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const isFocused = useIsFocused();
+  const isIOS = Platform.OS === 'ios';
 
   useEffect(async () => {
     setIsLoading(true);
     await getAllConversations(user?.user_id);
     setIsLoading(false);
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
-    if (messagesReducer?.conversations?.length > 0) {
+    if (messagesReducer?.conversations !== undefined) {
       setconversationlist(messagesReducer?.conversations);
     }
   }, [messagesReducer?.conversations]);
@@ -59,7 +64,6 @@ const MessageScreen = ({
   };
 
   const onPressChat = item => {
-    // console.log(item)
     saveCurrentChatObject(item);
     navigation.navigate('chats');
   };
@@ -79,18 +83,62 @@ const MessageScreen = ({
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, conversationlist?.length === 0 && {backgroundColor:'white'}]}>
       {isLoading ? (
         <>
           <LottieView
-            style={styles.lottieStyles}
+            style={[styles.lottieStyles, isIOS ? {marginLeft: width * 0.06} : {marginLeft: width * 0.11}]}
             source={require('../../Assets/Lottie/loading-heart.json')}
             autoPlay
             loop
           />
-          <Text style={styles.loadingText}>{`Loading`}</Text>
+          <Text style={[styles.loadingText,!isIOS && {marginBottom: height * -0.02,}]}>{`Loading`}</Text>
           <Text style={styles.convStyles}>{`Conversations..`}</Text>
         </>
+      ) : conversationlist?.length === 0 ? (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <LottieView
+            style={{
+              width: width * 0.5,
+              height: height * 0.35,
+            }}
+            source={require('../../Assets/Lottie/no-messages.json')}
+            autoPlay
+            loop
+          />
+          <View
+            style={{
+              // marginTop: height * -0.07,
+              width: width * 0.75,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <AppText
+              nol={1}
+              family="Poppins-Bold"
+              size={width * 0.06}
+              style={{alignSelf: 'center'}}
+              color="black"
+              Label={'No Messages'}
+            />
+            <AppText
+              nol={3}
+              family="Poppins-Medium"
+              size={width * 0.05}
+              style={{alignSelf: 'center'}}
+              color="black"
+              Label={'Offer drinks and connect'}
+            />
+            <AppText
+              style={{marginTop: -5}}
+              nol={2}
+              family="Poppins-Medium"
+              size={width * 0.05}
+              color="black"
+              Label={' to start a conversation.'}
+            />
+          </View>
+        </View>
       ) : (
         <FlatList
           bounces
@@ -140,16 +188,17 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     height: hp('103%'),
-    backgroundColor: '#FCFCFC',
+    backgroundColor: 'rgba(224, 224, 224, 0.8)',
   },
   lottieStyles: {
-    marginTop: height * -0.03,
+    // marginTop: height * -0.03,
     // width: width * 0.2,
-    height: height * 0.28,
+    marginBottom: height * -0.05,
+    height: height * 0.3,
     marginLeft: width * 0.12,
   },
   loadingText: {
-    marginTop: height * -0.06,
+    // marginTop: height * -0.06,
     marginLeft: width * 0.36,
     fontSize: width * 0.07,
     fontFamily: 'Poppins-ExtraBold',

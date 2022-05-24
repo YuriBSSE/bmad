@@ -40,6 +40,7 @@ import {imageUrl} from '../../Config/Apis.json';
 import {connect} from 'react-redux';
 import Preview from './Preview';
 import * as actions from '../../Store/Actions/index';
+import {showMessage} from 'react-native-flash-message';
 const {width, height} = Dimensions.get('window');
 
 const Img = [
@@ -66,6 +67,7 @@ const MainPost = ({
   const [isCommenting, setIsCommenting] = useState(false);
   const userId = userReducer?.data?.user_id;
   const [postComments, setPostComments] = useState([]);
+  const isIOS = Platform.OS === 'ios';
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -78,13 +80,20 @@ const MainPost = ({
   }, []);
 
   const _onPressComment = async () => {
-    const apiData = {
-      user_id: userId,
-      post_id: postId,
-      comment: commentText,
-    };
-    setIsCommenting(true);
-    await commentOnPost(apiData, onSuccess);
+    if (commentText.length > 0) {
+      const apiData = {
+        user_id: userId,
+        post_id: postId,
+        comment: commentText,
+      };
+      setIsCommenting(true);
+      await commentOnPost(apiData, onSuccess);
+    } else {
+      showMessage({
+        message: 'Please enter comment.',
+        danger: 'error',
+      });
+    }
   };
 
   const onSuccess = () => {
@@ -180,7 +189,7 @@ const MainPost = ({
                   justifyContent: 'flex-start',
                   alignItems: 'flex-start',
                   marginVertical: height * 0.015,
-                  width:width * 0.9,
+                  width: width * 0.9,
                 }}>
                 <AppText
                   nol={12}
@@ -220,16 +229,26 @@ const MainPost = ({
               </TouchableWithoutFeedback>
             </View>
             {isCommenting ? (
-              <LottieView
-                style={{
-                  width: width * 0.2,
-                  height: height * 0.1,
-                  marginLeft: width * 0.38,
-                }}
-                source={require('../../Assets/Lottie/red-loader.json')}
-                autoPlay
-                loop
-              />
+              // <LottieView
+              //   style={{
+              //     width: width * 0.2,
+              //     height: height * 0.1,
+              //     marginLeft: width * 0.38,
+              //   }}
+              //   source={require('../../Assets/Lottie/red-loader.json')}
+              //   autoPlay
+              //   loop
+              // />
+
+              <View style={[styles.commentBtn, (isCommenting && isIOS && {width:width *0.35}) ]}>
+                <AppText
+                  nol={1}
+                  family="Poppins-SemiBold"
+                  size={hp('1.7%')}
+                  color="white"
+                  Label={'Commenting...'}
+                />
+              </View>
             ) : (
               <TouchableOpacity
                 activeOpacity={0.7}
@@ -254,8 +273,9 @@ const MainPost = ({
         renderItem={({item, index}) => {
           return (
             <Comment
-              img={item?.user_image}
-              name={item?.user_name}
+            item={item}
+              img={item?.user?.user_image}
+              name={item?.user?.user_name}
               time={moment(item?.created_at).fromNow()}
               message={item?.comment}
             />
