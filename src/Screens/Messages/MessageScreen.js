@@ -5,7 +5,7 @@ import {
   Text,
   FlatList,
   Dimensions,
-  RefreshControl,
+  RefreshControl,Platform
 } from 'react-native';
 import Messages from '../../../model/Messages';
 import {
@@ -140,10 +140,8 @@ const MessageScreen = ({
           </View>
         </View>
       ) : (
+        // null
         <FlatList
-          bounces
-          bouncesZoom
-          maintainVisibleContentPosition
           keyExtractor={(item, index) => index}
           showsVerticalScrollIndicator={false}
           data={conversationlist}
@@ -201,11 +199,11 @@ var styles = StyleSheet.create({
     // marginTop: height * -0.06,
     marginLeft: width * 0.36,
     fontSize: width * 0.07,
-    fontFamily: 'Poppins-ExtraBold',
+    fontFamily: 'Poppins-Medium',
   },
   convStyles: {
     marginLeft: width * 0.24,
     fontSize: width * 0.07,
-    fontFamily: 'Poppins-ExtraBold',
+    fontFamily: 'Poppins-Medium',
   },
 });

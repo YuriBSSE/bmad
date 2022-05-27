@@ -18,9 +18,7 @@ const TextInputFeild = ({
       placeholderTextColor="white"
       style={styles.input}
       onChangeText={text => {
-        if (text == ' ') {
-          return;
-        }
+       
         onchange(text.toLowerCase());
       }}
       value={value}

@@ -20,7 +20,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import TouchableOpacityBtn from './../../Components/TouchableOpacity';
-import auth from '@react-native-firebase/auth';
+import {auth} from '@react-native-firebase/auth';
 import * as actions from '../../Store/Actions/index';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import Geolocation from '@react-native-community/geolocation';
@@ -38,13 +38,19 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const MainScreen = ({navigation, coords, userCoordsReducer}) => {
+const MainScreen = ({navigation, coords, userCoordsReducer, userSignup}) => {
   const moveToTop = useRef(new Animated.ValueXY({x: 10, y: 300})).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    GoogleSignin.configure({
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'], // [Android] what API you want to access on behalf of the user, default is email and profile
+      webClientId:
+        '415701697665-t9h3qorn9tu9u94a8ln257b57eggvuon.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    });
     SplashScreen.hide();
     changePosition();
+
     fadeChange();
 
     //  LoginManager.logInWithPermissions(["public_profile",  'email',  'user_friends']).then(
@@ -115,11 +121,15 @@ const MainScreen = ({navigation, coords, userCoordsReducer}) => {
   }
 
   useEffect(() => {
-    if (userCoordsReducer?.lat == null) {
+    if (
+      userCoordsReducer === undefined ||
+      userCoordsReducer?.lat == null ||
+      userCoordsReducer?.lat == undefined
+    ) {
       getOneTimeLocation();
     }
     console.log(userCoordsReducer, 'userCoordsReducer');
-  }, [userCoordsReducer]);
+  }, [userCoordsReducer, userSignup]);
 
   const getOneTimeLocation = () => {
     // console.log('one time==================');
@@ -143,38 +153,42 @@ const MainScreen = ({navigation, coords, userCoordsReducer}) => {
     );
   };
 
-  // GoogleSignin.configure({
-  //   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // [Android] what API you want to access on behalf of the user, default is email and profile
-  //   webClientId: '254533762674-l02tkehr2okrsqbuh97vq0qu4150uodh.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-  //   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  //   hostedDomain: '', // specifies a hosted domain restriction
-  //   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-  //   accountName: '', // [Android] specifies an account name on the device that should be used
-  //   iosClientId: '254533762674-ja1fgpm3i3a700ojtsa9totvb4o5eb4c.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-  //   googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
-  //   openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-  //   profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-  // });
-
   const signIn = async () => {
     // console.log("dsdsdasdsad")
     try {
-      // await GoogleSignin.hasPlayServices();
+      await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log(error.code, 'SIGN_IN_CANCELLED');
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log(error.code, 'IN_PROGRESS');
+
         // operation (e.g. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log(error.code, 'PLAY_SERVICES_NOT_AVAILABLE');
+
         // play services not available or outdated
       } else {
+        console.log(error.code, error, 'Not Described');
+
         // some other error happened
       }
     }
   };
 
+  const onGoogleButtonPress = async () => {
+    try {
+      const {idToken} = await GoogleSignin.signIn();
+      // const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      console.log('tokenn', idToken);
+      // return auth().signInWithCredential(googleCredential);
+    } catch (err) {
+      console.log(err, 'dddddd');
+    }
+  };
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
@@ -294,8 +308,8 @@ const MainScreen = ({navigation, coords, userCoordsReducer}) => {
                 size={GoogleSigninButton.Size.Wide}
                 color={GoogleSigninButton.Color.Dark}
                 onPress={signIn}
-                /> */}
-                {/* // disabled={this.state.isSigninInProgress} */}
+              /> */}
+              {/* // disabled={this.state.isSigninInProgress} */}
 
               {/* <TouchableOpacity>
                 <Image
@@ -371,4 +385,10 @@ var styles = StyleSheet.create({
   },
 });
 
-export default connect(null, actions)(MainScreen);
+const mapStateToProps = ({userSignup, userCoordsReducer}) => {
+  return {
+    userCoordsReducer,
+    userSignup,
+  };
+};
+export default connect(mapStateToProps, actions)(MainScreen);

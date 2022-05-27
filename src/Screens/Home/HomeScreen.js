@@ -139,6 +139,11 @@ const HomeScreen = ({
     );
   };
 
+  useEffect(() => {
+    if (isFocused) {
+      getOneTimeLocation();
+    }
+  }, [isFocused]);
   // useEffect(() => {
   //   if (userCoordsReducer?.lat !== null && userCoordsReducer?.long !== null) {
   //     nearMeUsers(userCoordsReducer?.lat, userCoordsReducer?.long, USER_ID);
@@ -258,8 +263,6 @@ const HomeScreen = ({
               )
             }
             stickyHeaderIndices={[0]}
-
-
             // !!!! Header Showing Near Users !!!!
             ListHeaderComponent={
               nearmeUsers?.length > 0 ? (
@@ -375,6 +378,7 @@ const HomeScreen = ({
             }
             keyExtractor={(item, index) => index}
             renderItem={({item, index}) => {
+              console.log(item?.user_id?.user_image,"===")
               return (
                 <PostList
                   item={item}

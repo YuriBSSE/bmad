@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: width * 0.05,
     // fontWeight: 'bold',
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Poppins-Bold',
   },
   btn: {
     width: width * 0.8,

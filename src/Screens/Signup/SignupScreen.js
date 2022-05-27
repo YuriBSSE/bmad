@@ -6,16 +6,10 @@ import {
   ImageBackground,
   StyleSheet,
   StatusBar,
-  SafeAreaView,
+  Dimensions,
   Modal,
-  TextInput,
-  Image,
-  KeyboardAvoidingView,
-  LayoutAnimation,
   Platform,
-  UIManager,
   Animated,
-  TouchableHighlight,
   ScrollView,
 } from 'react-native';
 import AlertModal from './../../Components/AlertModal';
@@ -45,12 +39,17 @@ import Feather from 'react-native-vector-icons/Feather';
 import {connect} from 'react-redux';
 import {trueFunc} from 'boolbase';
 import {color} from 'react-native-elements/dist/helpers';
+
+const {width, height} = Dimensions?.get('window');
+
 const SignupScreen = ({
   navigation,
   SignUpStepOne,
   Otp,
   userOtp,
-  userCoordsReducer,coords
+  userCoordsReducer,
+  coords,
+  userSignup,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [value, setValue] = useState('');
@@ -76,7 +75,7 @@ const SignupScreen = ({
   const [genderImage, onChangeGenderImage] = React.useState(
     require('./../../Assets/Images/gender1.png'),
   );
-
+  const isIOS = Platform.OS === 'ios';
   const LAT = userCoordsReducer?.lat;
   const LONG = userCoordsReducer?.long;
   const [open, setOpen] = useState(false);
@@ -95,13 +94,24 @@ const SignupScreen = ({
     },
   ]);
 
+  useEffect(() => {
+    if (
+      userCoordsReducer === undefined ||
+      userCoordsReducer?.lat == null ||
+      userCoordsReducer?.lat == undefined
+    ) {
+      getOneTimeLocation();
+    }
+    console.log(userCoordsReducer, 'userCoordsReducer');
+  }, [userCoordsReducer, userSignup]);
+
   const getOneTimeLocation = () => {
     // console.log('one time==================');
     Geolocation.getCurrentPosition(
       //Will give you the current location
       position => {
         // setLocationStatus('You are Here');
-        // console.log("----------------- get one time")
+        console.log('----------------- get onne time');
         coords(position.coords.latitude, position.coords.longitude);
 
         console.log('getting one time location coords...');
@@ -116,9 +126,9 @@ const SignupScreen = ({
       },
     );
   };
-  useEffect(() => {
-    getOneTimeLocation();
-  }, []);
+  // useEffect(() => {
+  //   getOneTimeLocation();
+  // }, []);
   async function signInWithPhoneNumber(phoneNumber) {}
   // useEffect(()=>{
 
@@ -211,7 +221,11 @@ const SignupScreen = ({
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'always'}
             style={styles.scrollView}>
-            <View style={{flexDirection: 'column', height: hp('90%')}}>
+            <View
+              style={{
+                flexDirection: 'column',
+                height: isIOS ? height * 0.75 : height * 0.9,
+              }}>
               <Logo />
               <Heading Label="Sign Up" />
 
@@ -773,8 +787,8 @@ const SignupScreen = ({
 //       return {userOtp}
 // }
 
-const mapStateToProps = ({userCoordsReducer}) => {
-  return {userCoordsReducer};
+const mapStateToProps = ({userCoordsReducer, userSignup}) => {
+  return {userCoordsReducer, userSignup};
 };
 export default connect(mapStateToProps, actions)(SignupScreen);
 

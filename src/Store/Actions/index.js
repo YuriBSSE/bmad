@@ -482,7 +482,7 @@ export const getFeedData = userId => async dispatch => {
 };
 
 export const coords = (lat, long) => async dispatch => {
-  // console.log(lat, long, 'coords  ++++++++++++++++++++++');
+  console.log(lat, long, 'coords  getting new coords ');
   dispatch({
     type: types.USER_COORDS,
     payload: {
@@ -1367,7 +1367,7 @@ export const changePassword = (data, _closeStripeModal) => async dispatch => {
       description: 'Can not change password at the moment, try again.',
       danger: 'error',
     });
-    console.log('FAILED Changin Password.', error);
+    console.log('FAILED Changin Password.', error?.response?.data?.msg);
   }
 };
 
@@ -1406,10 +1406,11 @@ export const updateLocation = apiData => async dispatch => {
   }
 };
 
-export const acceptInviteFromProfile = data => async dispatch => {
+export const acceptInviteFromProfile = (data,_onSuccessOfAction) => async dispatch => {
   try {
     const response = await axios.post(`${api}/api/friends/acceptFriend`, data);
     if (response.data.success) {
+      _onSuccessOfAction();
       showMessage({
         message: 'Accepted! now available in your connections.',
         type: 'success',
@@ -1431,10 +1432,15 @@ export const acceptInviteFromProfile = data => async dispatch => {
   }
 };
 
-export const ignoreInviteFromProfile = data => async dispatch => {
+export const ignoreInviteFromProfile = (data,_onSuccessOfAction) => async dispatch => {
   try {
     const response = await axios.post(`${api}/api/friends/rejectFriend`, data);
     if (response.data.status) {
+      showMessage({
+        message: 'Friend removed from your connections.',
+        type: 'success',
+      });
+      _onSuccessOfAction();
     } else {
       showMessage({
         message: 'Oh Snap!',

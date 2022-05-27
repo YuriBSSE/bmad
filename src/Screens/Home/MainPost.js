@@ -68,7 +68,7 @@ const MainPost = ({
   const userId = userReducer?.data?.user_id;
   const [postComments, setPostComments] = useState([]);
   const isIOS = Platform.OS === 'ios';
-
+console.log(route.params.name)
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => {
@@ -103,6 +103,7 @@ const MainPost = ({
       setPostComments(postsReducer?.postComments);
     });
   };
+  
 
   useEffect(() => {
     getAllCommentsOfPost(postId).then(() => {

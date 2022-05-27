@@ -41,113 +41,112 @@ export const MessageList = ({
   onPress,
   OnlineStatus,
 }) => {
-  // console.log(JSON.stringify(item, null, 2), '--');
-  console.log(`${imageUrl}/${Image}`);
+  const isIos = Platform.OS === 'ios';
   return (
-    <View
-      style={{
-        // height: hp('10%'),
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginHorizontal: width * 0.025,
-        borderRadius: 7,
-        marginVertical: height * 0.005,
-        paddingVertical: height * 0.01,
-        paddingHorizontal: width * 0.025,
-        alignItems: 'center',
-        backgroundColor: 'white',
-        alignContent: 'center',
-        alignSelf: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
-      }}>
-      <TouchableOpacity
-        onPress={() =>
-          // Navigation.navigate('chats', {item: item})
-          onPress(item)
-        }>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignSelf: 'center',
-            alignItems: 'center',
-            width: '100%',
-          }}>
-          <View style={{flexDirection: 'row', alignContent: 'flex-start'}}>
-            <View
-              style={{
-                padding: 0,
-                flexDirection: 'column',
-                alignContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}>
-              <Avatar
-                size="large"
-                source={
-                  Image !== undefined && Image !== null && Image !== ''
-                    ? {uri: `${imageUrl}/${Image}`}
-                    : require('../../Assets/Images/maroon-dp2.jpeg')
-                }
-              />
-              {/* <Badge 
+    <TouchableOpacity
+      style={Styles.messageContainer}
+      onPress={() =>
+        // Navigation.navigate('chats', {item: item})
+        onPress(item)
+      }>
+      <View style={Styles.insideContainer}>
+        <View style={Styles.leftView}>
+          <View style={Styles.imageView}>
+            <Avatar
+              size={"large"}
+              source={
+                Image !== undefined && Image !== null && Image !== ''
+                  ? {uri: `${imageUrl}/${Image}`}
+                  : require('../../Assets/Images/maroon-dp2.jpeg')
+              }
+            />
+            {/* <Badge 
                     badgeStyle={{height:15,width: 15, borderRadius:50, borderColor: 'white', borderWidth: 1, position: 'absolute'}}
                     status={OnlineStatus ? 'success': 'warning'}
                     containerStyle={{ position: 'absolute', top: 0, right: 12 }}
                     /> */}
-            </View>
-            <View
-              style={{
-                justifyContent: 'space-around',
-                flexDirection: 'column',
-                left: 15,
-              }}>
-              <AppText
-                nol={1}
-                textAlign="left"
-                family="Poppins-Bold"
-                size={hp('1.9%')}
-                color="#757575"
-                Label={Name === 'Sbdhdh' ? 'Daniyal Ahmed Khan' : Name}
-              />
-              <View style={{width: wp('60%')}}>
-                <AppText
-                  nol={2}
-                  textAlign="left"
-                  family="Poppins-SemiBold"
-                  size={hp('1.7%')}
-                  color="#757575"
-                  Label={item?.messageId?.message}
-                />
-              </View>
-            </View>
           </View>
-
-          <View style={{alignSelf: 'flex-start'}}>
+          <View
+            style={{
+              justifyContent: 'space-around',
+              flexDirection: 'column',
+              left: 15,
+            }}>
             <AppText
               nol={1}
               textAlign="left"
-              family="Poppins-Regular"
-              size={hp('1.5%')}
+              family="Poppins-Bold"
+              size={isIos ? width * 0.04 : width * 0.04}
               color="#757575"
-              Label={moment(item?.messageId?.createdAt).format('hh:mm A')}
+              Label={Name === 'Sbdhdh' ? 'Daniyal Ahmed Khan' : Name}
             />
+            <View style={{width: wp('60%')}}>
+              <AppText
+                nol={2}
+                textAlign="left"
+                family="Poppins-SemiBold"
+                size={isIos ? width * 0.035 : width * 0.035}
+                color="#757575"
+                Label={item?.messageId?.message}
+              />
+            </View>
           </View>
         </View>
-      </TouchableOpacity>
-    </View>
+
+        <View style={{alignSelf: 'flex-start', marginLeft : isIos ? 0 : -width * 0.04}}>
+          <AppText
+            nol={1}
+            textAlign="left"
+            family="Poppins-Regular"
+            size={isIos ? width * 0.028 : width * 0.028}
+            color="#757575"
+            Label={moment(item?.messageId?.createdAt).format('hh:mm A')}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const Styles = StyleSheet.create({
+  messageContainer: {
+    // height: hp('10%'),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: width * 0.025,
+    borderRadius: 7,
+    marginVertical: height * 0.005,
+    paddingVertical: height * 0.01,
+    paddingHorizontal: width * 0.025,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    alignContent: 'center',
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  insideContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  imageView: {
+    padding: 0,
+    flexDirection: 'column',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  leftView: {flexDirection: 'row', alignContent: 'flex-start'},
   linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',

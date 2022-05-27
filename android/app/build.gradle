@@ -152,17 +152,17 @@ android {
         }
     }
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
         release {
             storeFile file('my-release-key.keystore')
             storePassword '123456'
             keyAlias 'key1'
             keyPassword '123456'
+        }
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
     buildTypes {
@@ -201,13 +201,13 @@ dependencies {
 //    implementation 'com.android.support:multidex:1.0.3'
     implementation "androidx.multidex:multidex:2.0.0"
     implementation 'com.facebook.android:facebook-android-sdk:8.2.0'
-    implementation platform('com.google.firebase:firebase-bom:29.2.1')
+    implementation platform('com.google.firebase:firebase-bom:30.0.2')
     implementation 'com.google.firebase:firebase-analytics'
     implementation project(':react-native-image-picker')
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-push-notification')
     implementation project(':react-native-splash-screen')
-
+    implementation 'com.google.firebase:firebase-auth'
     implementation "com.google.android.gms:play-services-auth:20.2.0"
     implementation project(':react-native-android-location-services-dialog-box')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
@@ -215,6 +215,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation project(':react-native-fbsdk')
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

@@ -42,8 +42,9 @@ const PostList = ({
   const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
 
   const route = useRoute();
-  // console.log(ProfileImg)
+  console.log(IMAGES,"IMAGES")
   const routeName = route?.name;
+  // const isIos = 
   return (
     <View
       style={{

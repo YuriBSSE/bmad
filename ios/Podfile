@@ -17,15 +17,15 @@ target 'Bmad' do
     :hermes_enabled => false
   )
 
+  
 
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/React/FBReactNativeSpec"
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-google-maps', :path => '../node_modules/react-native-maps'
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-  pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
-  pod 'GoogleSignIn', '~> 6.1.0'
-  pod 'GoogleSignInSwiftSupport'
+  # pod 'GoogleSignIn', '~> 6.1.0'
+  # pod 'GoogleSignInSwiftSupport'
   
   target 'BmadTests' do
     inherit! :complete

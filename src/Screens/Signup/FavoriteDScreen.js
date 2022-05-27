@@ -110,7 +110,7 @@ const FavoriteDScreen = ({
     }
     setIsLoading(true);
     await SignupAll(userSignup, userFavourite, userInterest, _onSignUpFailed);
-    console.log(userSignup);
+    // console.log(userSignup);
   };
 
   const _onSignUpFailed = () => {

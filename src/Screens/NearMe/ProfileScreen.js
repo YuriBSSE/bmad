@@ -119,7 +119,7 @@ const ProfileScreen = ({
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'Ignore data');
-    await ignoreInviteFromProfile(data);
+    await ignoreInviteFromProfile(data,_onSuccessOfAction);
   };
 
   const _onPressAcceptButton = async (item, index) => {
@@ -128,7 +128,7 @@ const ProfileScreen = ({
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'accept data');
-    await acceptInviteFromProfile(data);
+    await acceptInviteFromProfile(data,_onSuccessOfAction);
   };
 
   const _onSuccessOfAction = () => {
@@ -233,20 +233,20 @@ const ProfileScreen = ({
               Label={nearMeUserData?.user_gender}
             /> */}
           </View>
-          <View style={{marginLeft: width * 0.05}}>
-            {/* <AppText
+          {/* <View style={{marginLeft: width * 0.05}}>
+            <AppText
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
               size={width * 0.037}
               color="white"
               Label={
-                typeof nearMeUserData?.user_gender[0] == 'string'
+                typeof (nearMeUserData?.user_gender[0]?.toString()) == 'string'
                   ? ''
                   : nearMeUserData?.user_gender[0]
               }
-            /> */}
-          </View>
+            />
+          </View> */}
           {/* Profession View  */}
           <View style={styles.professionView}>
             {nearMeUserData?.user_title != null &&
@@ -470,7 +470,7 @@ const ProfileScreen = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={hp('3%')}
+              size={isIOS? width * 0.05 : width * 0.05}
               color="white"
               Label={'Favourites'}
             />
@@ -529,7 +529,7 @@ const ProfileScreen = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={hp('3%')}
+              size={isIOS? width * 0.05 : width * 0.05}
               color="white"
               Label={'Interest'}
             />

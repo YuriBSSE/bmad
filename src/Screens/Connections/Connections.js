@@ -134,6 +134,7 @@ const Test = ({
     <View style={styles.container}>
       <FlatList
         showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[0]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: height * 0.02,
     paddingHorizontal: width * 0.02,
-    // backgroundColor: 'grey',
+    backgroundColor: 'white',
     // height: height * 0.06,
   },
 });
