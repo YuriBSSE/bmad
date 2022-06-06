@@ -121,6 +121,8 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
 
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+
   const [value, setValue] = useState(userReducer?.data?.user_contact);
   const renderItem = ({item, index}) => {
     return (
@@ -202,16 +204,20 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
     setCountry(country);
   };
   const openGallery = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      includeBase64: true,
-    }).then(image => {
-      console.log(image);
-      setImageObject(image);
-      setImage(`data:${image?.mime};base64,${image?.data}`);
-    });
+    try {
+      ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+        includeBase64: true,
+      }).then(image => {
+        console.log(image);
+        setImageObject(image);
+        setImage(`data:${image?.mime};base64,${image?.data}`);
+      });
+    } catch (err) {
+      console.log(err,"Catched.");
+    }
   };
 
   const updateProfileChanges = async () => {
@@ -225,8 +231,15 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
     };
 
     if (username && country && phone_no) {
-      setLoading(true);
-      await updateProfile(data, _onSuccess, _onFailed);
+      if (usernameRegex.test(username)) {
+        setLoading(true);
+        await updateProfile(data, _onSuccess, _onFailed);
+      } else {
+        showMessage({
+          message: ' Invalid Username, there might be any space.',
+          type: 'danger',
+        });
+      }
     } else {
       showMessage({
         message: 'All fields are required!',

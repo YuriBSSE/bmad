@@ -261,11 +261,11 @@ const NearMeScreen = ({
                 key={index}
                 coordinate={{
                   latitude:
-                    Platform.OS != 'ios'
+                    Platform.OS == 'ios'
                       ? parseFloat(marker.user_latitude, 10)
                       : marker.user_latitude,
                   longitude:
-                    Platform.OS != 'ios'
+                    Platform.OS == 'ios'
                       ? parseFloat(marker.user_longitude, 10)
                       : marker.user_longitude,
                 }}
@@ -309,31 +309,33 @@ const NearMeScreen = ({
           pagingEnabled
           scrollEventThrottle={1}
           showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH + 20}
+          // snapToInterval={CARD_WIDTH + 20}
+          
           snapToAlignment="center"
           style={styles.scrollView}
-          contentInset={{
-            top: 0,
-            left: SPACING_FOR_CARD_INSET,
-            bottom: 0,
-            right: SPACING_FOR_CARD_INSET,
-          }}
+          // contentInset={{
+          //   top: 0,
+          //   left: SPACING_FOR_CARD_INSET,
+          //   bottom: 0,
+          //   right: SPACING_FOR_CARD_INSET,
+          // }}
           contentContainerStyle={{
             paddingHorizontal:
               Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
           }}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: mapAnimation,
-                  },
-                },
-              },
-            ],
-            {useNativeDriver: true},
-          )}>
+          // onScroll={Animated.event(
+          //   [
+          //     {
+          //       nativeEvent: {
+          //         contentOffset: {
+          //           x: mapAnimation,
+          //         },
+          //       },
+          //     },
+          //   ],
+          //   {useNativeDriver: true},
+          // )}
+          >
           {state?.users?.map((marker, index) => {
             // console.log(marker?.distance*1000)
             return (

@@ -147,6 +147,7 @@ const Test = ({
             keyExtractor={item => item?.id?.toString()}
             renderItem={({item, index}) => (
               <ConnectionButtonsMapper
+                onlyInvitations={invitation}
                 item={item}
                 index={index}
                 choice={choice}

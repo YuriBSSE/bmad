@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   Platform,
   Dimensions,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import AppText from '../../Components/AppText';
 import {
@@ -54,7 +55,7 @@ const HomeScreen = ({
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(async () => {
       setRefreshing(false);
@@ -82,7 +83,9 @@ const HomeScreen = ({
       })
         .then(
           function (success) {
-            getOneTimeLocation();
+            if (!loading) {
+              getOneTimeLocation();
+            }
           }.bind(this),
         )
         .catch(error => {
@@ -100,7 +103,9 @@ const HomeScreen = ({
         },
       );
     } else {
-      getOneTimeLocation();
+      if (!loading) {
+        getOneTimeLocation();
+      }
     }
     if (Platform.OS === 'android') {
       return () => {
@@ -110,23 +115,11 @@ const HomeScreen = ({
     }
   }, []);
 
+  // Getting Location
   const getOneTimeLocation = async () => {
     Geolocation.getCurrentPosition(
       async position => {
-        setLoading(true);
-        coords(position?.coords?.latitude, position?.coords?.longitude);
-        await nearMeUsers(
-          position?.coords?.latitude,
-          position?.coords?.longitude,
-          USER_ID,
-        );
-        await getFeedData(USER_ID);
-        await updateLocation({
-          user_id: USER_ID,
-          user_latitude: position?.coords?.latitude,
-          user_longitude: position?.coords?.longitude,
-        });
-        setLoading(false);
+        getAllHomeData(position.coords.latitude, position.coords.longitude);
       },
       error => {
         console.log(error.message);
@@ -139,8 +132,29 @@ const HomeScreen = ({
     );
   };
 
+  // Getting all data needed in different apis.
+  const getAllHomeData = async (lat, long) => {
+    setLoading(true);
+    // Update user coordinates in redux
+    coords(lat, long);
+
+    // Get new near me users for new coordinates
+    await nearMeUsers(lat, long, USER_ID);
+
+    // Get new home feed posts
+    await getFeedData(USER_ID);
+
+    // Update user location in database
+    await updateLocation({
+      user_id: USER_ID,
+      user_latitude: lat,
+      user_longitude: long,
+    });
+    setLoading(false);
+  };
+
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !loading) {
       getOneTimeLocation();
     }
   }, [isFocused]);
@@ -155,13 +169,19 @@ const HomeScreen = ({
   // }, [userReducer?.data?.id,userCoordsReducer]);
 
   useEffect(() => {
-    setNearmeUsers(usersNearmeReducer?.allUsers);
+    const arr = usersNearmeReducer?.allUsers?.sort(
+      (a, b) =>
+        (a?.distance * 1000).toPrecision(2) -
+        (b?.distance * 1000).toPrecision(2),
+    );
+    setNearmeUsers(arr);
   }, [usersNearmeReducer?.allUsers, isFocused]);
 
   useEffect(() => {
     setPosts(postsReducer?.feedPosts);
-  }, [postsReducer?.feedPosts]);
+  }, [postsReducer?.feedPosts, isFocused]);
 
+  // Liking Any Post Function
   const _onPressHeart = item => {
     const apiData = {
       post_id: item?.post_id,
@@ -169,6 +189,7 @@ const HomeScreen = ({
     };
     likePost(apiData);
   };
+
   if (loading) {
     return (
       <View style={styles.loaderView}>
@@ -184,7 +205,8 @@ const HomeScreen = ({
         />
       </View>
     );
-  } else {
+  }
+   else {
     return (
       <View style={styles.container}>
         <StatusBar translucent backgroundColor="transparent" />
@@ -296,7 +318,13 @@ const HomeScreen = ({
                     renderItem={({item, index}) => {
                       // console.log(`${imageUrl}/${item?.user_image}`)
                       return (
-                        <View key={index} style={styles.cardHeaderStyle}>
+                        <TouchableOpacity
+                          key={index}
+                          style={[styles.cardHeaderStyle]}
+                          onPress={() => {
+                            navigation.navigate('profile', {userData: item});
+                          }}
+                          activeOpacity={0.7}>
                           {/* <View style={{bottom: 10, width: 50}}>
                       <AppText
                         nol={1}
@@ -345,7 +373,7 @@ const HomeScreen = ({
                               />
                             </View>
                           ) : null}
-                        </View>
+                        </TouchableOpacity>
                       );
                     }}
                   />
@@ -378,7 +406,6 @@ const HomeScreen = ({
             }
             keyExtractor={(item, index) => index}
             renderItem={({item, index}) => {
-              console.log(item?.user_id?.user_image,"===")
               return (
                 <PostList
                   item={item}
@@ -401,7 +428,6 @@ const HomeScreen = ({
   }
 };
 
-// nearMeUsers
 function mapStateToProps({
   usersNearmeReducer,
   userReducer,

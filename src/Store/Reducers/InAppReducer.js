@@ -32,6 +32,7 @@ import {
   DEDUCT_DRINK,
   SAVE_SOCKET_REF,
   UPDATE_PROFILE,
+  SHOW_DRAWER_CONNECTIONS_BADGE,
 } from './../Actions/actionType';
 
 const iNITIAL_NEAR_ME = {
@@ -63,6 +64,7 @@ const INITIAL_NOTI_DATA = {
 const INITIAL_CONNECTIONS_DATA = {
   connections: [],
   invitations: [],
+  showConnectionsBadge: false,
 };
 
 const INITIAL_MESSAGES_DATA = {
@@ -117,7 +119,7 @@ export function userReducer(state = INITIAL_USER_DATA, action) {
       //   ...state.data,
       //   ...action.payload,
       // })
-      console.log(action.payload.user_name,"USERNAME...")
+      console.log(action.payload.user_name, 'USERNAME...');
       return {
         ...state,
         data: {
@@ -150,7 +152,10 @@ export function usersNearmeReducer(state = iNITIAL_NEAR_ME, action) {
       };
 
     case SAVE_NEAR_ME_USER_DATA:
-      console.log(action.payload?.status, '+++++++++++++++++++++++++++++++ from reducer');
+      console.log(
+        action.payload?.status,
+        '+++++++++++++++++++++++++++++++ from reducer',
+      );
       return {
         ...state,
         user: action.payload,
@@ -277,6 +282,12 @@ export function notificationsReducer(state = INITIAL_NOTI_DATA, action) {
 
 export function connectionsReducer(state = INITIAL_CONNECTIONS_DATA, action) {
   switch (action.type) {
+    case SHOW_DRAWER_CONNECTIONS_BADGE:
+      return {
+        ...state,
+        showConnectionsBadge: action.payload,
+      };
+
     case RESER_CONNECTIONS:
       return {
         ...INITIAL_CONNECTIONS_DATA,

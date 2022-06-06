@@ -1,17 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, Dimensions} from 'react-native';
 import {DrawerItem, DrawerContentScrollView} from '@react-navigation/drawer';
-import {
-  useTheme,
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  Text,
-  TouchableRipple,
-  Switch,
-} from 'react-native-paper';
+import {Drawer} from 'react-native-paper';
 import AppText from './Components/AppText';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,11 +11,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {AuthContext} from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as actions from './Store/Actions';
+import {Badge} from 'react-native-elements';
 import {connect} from 'react-redux';
+import IconComp from './Components/IconComp';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+const {width, height} = Dimensions.get('window');
 
 const DrawerContent = ({
   props,
@@ -33,7 +27,19 @@ const DrawerContent = ({
   SignOut,
   navigation,
   userLogin,
+  showDrawerConnectionsBadge,
+  connectionsReducer,
 }) => {
+  const [hasNewRequests, setHasNewRequests] = useState(false);
+  // const [invitations, setInvitations] = useState([]);
+  // const [hasNewMessages, setHasNewMessages] = useState(false);
+  useEffect(() => {
+    if (connectionsReducer?.showConnectionsBadge) {
+      setHasNewRequests(true);
+    }
+  }, [connectionsReducer?.showConnectionsBadge]);
+
+  console.log(connectionsReducer?.showConnectionsBadge,"--")
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
@@ -48,7 +54,23 @@ const DrawerContent = ({
               }}
             />
           </View>
-          <Drawer.Section style={styles.drawerSection}>
+
+          <Drawer.Section
+            style={[styles.drawerSection, {position: 'relative'}]}>
+            {hasNewRequests && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: height * 0.035,
+                  right: width * 0.2,
+                }}>
+                <IconComp
+                  type="FontAwesome"
+                  iconName="circle"
+                  passedStyle={{color: 'white', fontSize: width * 0.04}}
+                />
+              </View>
+            )}
             <DrawerItem
               icon={({color, size}) => (
                 <Feather name="home" color="white" size={30} />
@@ -115,12 +137,14 @@ const DrawerContent = ({
                 fontSize: hp('2%'),
               }}
               label="Connections"
-              onPress={() =>
+              onPress={() => {
+                showDrawerConnectionsBadge(false);
+                setHasNewRequests(false);
                 navigation.navigate('connections', {
                   screen: 'connections',
                   initial: false,
-                })
-              }
+                });
+              }}
             />
             {/* <DrawerItem
               icon={({color, size}) => (
@@ -159,15 +183,15 @@ const DrawerContent = ({
             color: 'white',
             fontSize: hp('2%'),
           }}
-          onPress={() => SignOut()}
+          onPress={() => SignOut(userReducer?.data?.user_id?.toString())}
           label="Sign Out"
         />
       </Drawer.Section>
     </View>
   );
 };
-function mapStateToProps({userReducer, userLogin}) {
-  return {userReducer, userLogin};
+function mapStateToProps({userReducer, userLogin,connectionsReducer}) {
+  return {userReducer, userLogin,connectionsReducer};
 }
 export default connect(mapStateToProps, actions)(DrawerContent);
 

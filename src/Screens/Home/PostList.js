@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {TouchableOpacity, View, Dimensions} from 'react-native';
+import {TouchableOpacity, View, Dimensions, StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -42,25 +42,19 @@ const PostList = ({
   const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
 
   const route = useRoute();
-  console.log(IMAGES,"IMAGES")
+
   const routeName = route?.name;
-  // const isIos = 
+  // const isIos =
   return (
-    <View
-      style={{
-        // height: height*0.5,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        paddingHorizontal: width * 0.008,
-        // padding: 4,
-        paddingVertical: height * 0.02,
-        width: '95%',
-        alignItems: 'center',
-        alignContent: 'center',
-        alignSelf: 'center',
-      }}>
+    <View style={styles.postContainer}>
       <View style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
-        <View style={{justifyContent: 'flex-start', flexDirection: 'row'}}>
+        <View
+          style={{
+            justifyContent: 'flex-start',
+            flexDirection: 'row',
+            // backgroundColor: 'green',
+            width:width * 0.93,
+          }}>
           <Avatar
             size="medium"
             source={
@@ -78,7 +72,8 @@ const PostList = ({
               justifyContent: 'space-between',
               alignItems: 'center',
               left: 5,
-              width: '80%',
+              width: width * 0.78,
+              // backgroundColor: 'red',
             }}>
             <View
               style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
@@ -191,12 +186,13 @@ const PostList = ({
         style={{
           justifyContent: 'center',
           flexDirection: 'column',
-          top: 10,
-          width: '100%',
+          top: height * 0.022,
+          width: width,
           alignItems: 'center',
           alignSelf: 'center',
-          height: 250,
-          marginBottom: 10,
+          height: height * 0.32,
+          // marginBottom: 10,
+          // backgroundColor:'red',
         }}>
         <FlatListSlider
           data={IMAGES}
@@ -210,7 +206,12 @@ const PostList = ({
         />
         <View style={{marginTop: 20}} />
         <View
-          style={{width: '95%', height: 0.4, backgroundColor: 'grey', top: -3}}
+          style={{
+            width: width * 0.95,
+            height: 0.4,
+            backgroundColor: 'grey',
+            top: -3,
+          }}
         />
       </View>
     </View>
@@ -221,4 +222,18 @@ const mapStateToProps = ({userReducer}) => {
   return {userReducer};
 };
 
+const styles = StyleSheet.create({
+  postContainer: {
+    // height: height*0.5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingHorizontal: width * 0.008,
+    // padding: 4,
+    paddingVertical: height * 0.02,
+    width: width * 0.95,
+    alignItems: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+});
 export default connect(mapStateToProps, actions)(PostList);

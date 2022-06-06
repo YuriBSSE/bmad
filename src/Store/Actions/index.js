@@ -3,6 +3,7 @@ import {api, deploy_API} from '../../Config/Apis.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as types from './actionType';
 import {showMessage, hideMessage} from 'react-native-flash-message';
+import messaging from '@react-native-firebase/messaging';
 
 export const postAction =
   (caption, images, id, navigation, clearAllStates, _onPostFailed) =>
@@ -68,7 +69,6 @@ export const postAction =
           Accept: 'application/json',
         },
       });
-      console.log('===', response.data);
       if (response.data.success) {
         clearAllStates();
 
@@ -132,10 +132,10 @@ export const postAction =
 
 export const nearMeUsers = (latitude, longitude, userId) => async dispatch => {
   // console.log('FETCHING NEAR ME USERS !!!!!!!!!!!!!!!!!!!!!!');
-  console.log(latitude, longitude, userId);
+  // console.log(latitude, longitude, userId);
   try {
     const URL = `${api}/api/post/nearMe?kilometers=0.1&user_latitude=${latitude}&user_longitude=${longitude}&user_id=${userId}`;
-    console.log(URL);
+    // console.log(URL);
     const response = await axios.get(URL);
 
     // console.log('Total Near Me Users: ', response.data.data.length);
@@ -211,11 +211,12 @@ export const forgotPassword = (data, onSuccess) => async dispatch => {
     const URL = `${api}/api/auth/forgotpassword`;
     console.log(URL, data);
     const response = await axios.post(URL, data);
-console.log(response.data,"==========")
+    console.log(response.data, '==========');
     if (response.data.success) {
       showMessage({
         message: 'Success!',
-        description: 'A reset password verification code has been sent this email.',
+        description:
+          'A reset password verification code has been sent this email.',
         type: 'success',
       });
       onSuccess();
@@ -241,7 +242,7 @@ export const verfifyForgotCode = (data, onSuccess) => async dispatch => {
     const URL = `${api}/api/auth/verifyToken`;
     console.log(URL, data);
     const response = await axios.post(URL, data);
-    console.log(response.data,"==========")
+    console.log(response.data, '==========');
 
     if (response.data.success) {
       showMessage({
@@ -409,9 +410,13 @@ export const SignUpStepOne =
     }
   };
 
-export const SignOut = () => async dispatch => {
-  console.log('sign out');
+export const SignOut = id => async dispatch => {
   try {
+    messaging()
+      .unsubscribeFromTopic('bmad' + id)
+      .then(() => {
+        console.log('NOTIFICATIONS UNSUBSCRIBED & LOGGING OUT!');
+      });
     dispatch({
       type: types.USER_GET_INFO,
       payload: {
@@ -439,6 +444,17 @@ export const SignOut = () => async dispatch => {
     // await AsyncStorage.removeItem('userData')
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const showDrawerConnectionsBadge = (showBadge) => async dispatch => {
+  try {
+    dispatch({
+      type: types.SHOW_DRAWER_CONNECTIONS_BADGE,
+      payload: showBadge,
+    });
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -1406,54 +1422,62 @@ export const updateLocation = apiData => async dispatch => {
   }
 };
 
-export const acceptInviteFromProfile = (data,_onSuccessOfAction) => async dispatch => {
-  try {
-    const response = await axios.post(`${api}/api/friends/acceptFriend`, data);
-    if (response.data.success) {
-      _onSuccessOfAction();
-      showMessage({
-        message: 'Accepted! now available in your connections.',
-        type: 'success',
-      });
-    } else {
+export const acceptInviteFromProfile =
+  (data, _onSuccessOfAction) => async dispatch => {
+    try {
+      const response = await axios.post(
+        `${api}/api/friends/acceptFriend`,
+        data,
+      );
+      if (response.data.success) {
+        _onSuccessOfAction();
+        showMessage({
+          message: 'Accepted! now available in your connections.',
+          type: 'success',
+        });
+      } else {
+        showMessage({
+          message: 'Oh Snap!',
+          description: 'Can not accept connection at the moment, try again.',
+          danger: 'error',
+        });
+      }
+    } catch (error) {
       showMessage({
         message: 'Oh Snap!',
         description: 'Can not accept connection at the moment, try again.',
         danger: 'error',
       });
+      console.log('FAILED ACCEPTING ', error);
     }
-  } catch (error) {
-    showMessage({
-      message: 'Oh Snap!',
-      description: 'Can not accept connection at the moment, try again.',
-      danger: 'error',
-    });
-    console.log('FAILED ACCEPTING ', error);
-  }
-};
+  };
 
-export const ignoreInviteFromProfile = (data,_onSuccessOfAction) => async dispatch => {
-  try {
-    const response = await axios.post(`${api}/api/friends/rejectFriend`, data);
-    if (response.data.status) {
-      showMessage({
-        message: 'Friend removed from your connections.',
-        type: 'success',
-      });
-      _onSuccessOfAction();
-    } else {
+export const ignoreInviteFromProfile =
+  (data, _onSuccessOfAction) => async dispatch => {
+    try {
+      const response = await axios.post(
+        `${api}/api/friends/rejectFriend`,
+        data,
+      );
+      if (response.data.status) {
+        showMessage({
+          message: 'Friend removed from your connections.',
+          type: 'success',
+        });
+        _onSuccessOfAction();
+      } else {
+        showMessage({
+          message: 'Oh Snap!',
+          description: 'Can not reject connection at the moment, try again.',
+          danger: 'error',
+        });
+      }
+    } catch (error) {
       showMessage({
         message: 'Oh Snap!',
         description: 'Can not reject connection at the moment, try again.',
         danger: 'error',
       });
+      console.log('FAILED REJECTING ', error);
     }
-  } catch (error) {
-    showMessage({
-      message: 'Oh Snap!',
-      description: 'Can not reject connection at the moment, try again.',
-      danger: 'error',
-    });
-    console.log('FAILED REJECTING ', error);
-  }
-};
+  };

@@ -264,14 +264,16 @@ const MainAppScreens = ({
   userGet,
   userReducer,
   getNotifications,
-  saveSocketRef,coords
+  saveSocketRef,
+  coords,
+  showDrawerConnectionsBadge,
 }) => {
   const socket = useRef();
   const [animatedValue, setAnimatedValue] = useState(new Animated.Value(0));
   const USER_ID = userReducer?.data?.user_id;
-  socket.current = io('http://webprojectmockup.com:9444');
 
   useEffect(() => {
+    socket.current = io('http://webprojectmockup.com:9444');
     // console.log("=================",socket.current)
     saveSocketRef(socket.current);
     // registerAppWithFCM()
@@ -312,6 +314,12 @@ const MainAppScreens = ({
         if (remoteMessage?.data?.type == 'likePost') {
           getNotifications(USER_ID);
         }
+
+        //Set badge in drawer for new invitations
+        if (remoteMessage?.data?.type == 'sendRequest') {
+          alert('ssss');
+          showDrawerConnectionsBadge(true);
+        }
         // if (remoteMessage?.data?.type == 'reject') {
         // }
 
@@ -339,12 +347,11 @@ const MainAppScreens = ({
   }, []);
 
   const getOneTimeLocation = () => {
-    // console.log('one time==================');
     Geolocation.getCurrentPosition(
       //Will give you the current location
       position => {
         // setLocationStatus('You are Here');
-        // console.log("----------------- get one time")
+
         coords(position.coords.latitude, position.coords.longitude);
 
         console.log('getting one time location coords...');

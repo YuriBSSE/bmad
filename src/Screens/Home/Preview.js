@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Platform,
+  Platform,Dimensions
 } from 'react-native';
+const {width, height} = Dimensions.get('window');
 
 export default Preview = ({
   style,
@@ -17,13 +18,15 @@ export default Preview = ({
   active,
   local,
 }) => {
+  
   return (
     <View style={styles.videoContainer}>
       <View style={[styles.imageContainer, styles.shadow]}>
         <Image
-          resizeMethod="auto"
+          // resizeMethod="cover"
           style={styles.videoPreview}
           source={{uri: item}}
+          resizeMode='stretch'
         />
       </View>
     </View>
@@ -36,10 +39,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   videoPreview: {
-    width: 280,
-    height: 220,
+    width: width * 0.85,
+    height: height * 0.28,
     // borderRadius: 8,
-    margin: 10,
+    margin: width * 0.022,
   },
   desc: {
     fontSize: 14,

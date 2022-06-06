@@ -11,7 +11,8 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  RefreshControl,Platform
+  RefreshControl,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -50,7 +51,7 @@ const ProfileScreen = ({
   const isFocused = useIsFocused();
   const [actionLoader, setActionLoader] = useState(false);
   const USER_ID = userReducer?.data?.user_id;
-  const profileData = route.params.userData;
+  const profileData = route?.params?.userData;
   const isIOS = Platform.OS === 'ios';
 
   const [loading, setLoading] = useState(false);
@@ -119,7 +120,7 @@ const ProfileScreen = ({
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'Ignore data');
-    await ignoreInviteFromProfile(data,_onSuccessOfAction);
+    await ignoreInviteFromProfile(data, _onSuccessOfAction);
   };
 
   const _onPressAcceptButton = async (item, index) => {
@@ -128,7 +129,7 @@ const ProfileScreen = ({
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'accept data');
-    await acceptInviteFromProfile(data,_onSuccessOfAction);
+    await acceptInviteFromProfile(data, _onSuccessOfAction);
   };
 
   const _onSuccessOfAction = () => {
@@ -191,7 +192,7 @@ const ProfileScreen = ({
         {nearMeUserData?.user_image === undefined ||
         nearMeUserData?.user_image == null ? (
           <Image
-            style={[styles.userProfilePic,isIOS && {height : height * 0.45}]}
+            style={[styles.userProfilePic, isIOS && {height: height * 0.45}]}
             source={require('./../../Assets/Images/userr.jpeg')}
             resizeMode="cover"
             // resizeMethod="auto"
@@ -233,20 +234,24 @@ const ProfileScreen = ({
               Label={nearMeUserData?.user_gender}
             /> */}
           </View>
-          {/* <View style={{marginLeft: width * 0.05}}>
+          <View style={{marginLeft: width * 0.05}}>
             <AppText
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
               size={width * 0.037}
               color="white"
-              Label={
-                typeof (nearMeUserData?.user_gender[0]?.toString()) == 'string'
-                  ? ''
-                  : nearMeUserData?.user_gender[0]
-              }
+              Label={`${nearMeUserData?.user_gender[0]}`}
             />
-          </View> */}
+            <AppText
+              nol={1}
+              textAlign="left"
+              family="Poppins-SemiBold"
+              size={width * 0.037}
+              color="white"
+              Label={`${nearMeUserData?.user_lives}`}
+            />
+          </View>
           {/* Profession View  */}
           <View style={styles.professionView}>
             {nearMeUserData?.user_title != null &&
@@ -470,7 +475,7 @@ const ProfileScreen = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={isIOS? width * 0.05 : width * 0.05}
+              size={isIOS ? width * 0.05 : width * 0.05}
               color="white"
               Label={'Favourites'}
             />
@@ -529,7 +534,7 @@ const ProfileScreen = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={isIOS? width * 0.05 : width * 0.05}
+              size={isIOS ? width * 0.05 : width * 0.05}
               color="white"
               Label={'Interest'}
             />
