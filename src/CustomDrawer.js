@@ -39,7 +39,7 @@ const DrawerContent = ({
     }
   }, [connectionsReducer?.showConnectionsBadge]);
 
-  console.log(connectionsReducer?.showConnectionsBadge,"--")
+ 
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>

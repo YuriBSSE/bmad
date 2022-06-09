@@ -114,7 +114,7 @@ const Main = ({
     if (userCoordsReducer?.lat == null) {
       getOneTimeLocation();
     }
-    console.log(userCoordsReducer, 'userCoordsReducer');
+    // console.log(userCoordsReducer, 'userCoordsReducer');
   }, [userCoordsReducer]);
 
   const getOneTimeLocation = () => {
@@ -126,7 +126,7 @@ const Main = ({
         // console.log("----------------- get one time")
         coords(position.coords.latitude, position.coords.longitude);
 
-        console.log('getting one time location coords...');
+        // console.log('getting one time location coords...');
       },
       error => {
         console.log(error.message);
@@ -144,14 +144,14 @@ const Main = ({
       position => {
         coords(position.coords.latitude, position.coords.longitude);
         if (isLogin) {
-          console.log('LOGGED IN HAYY====================');
+          // console.log('LOGGED IN HAYY====================');
           updateLocation({
             user_id: USER_ID,
             user_latitude: position.coords.latitude,
             user_longitude: position.coords.longitude,
           });
         }
-        console.log('UPDATING LOCATION.......................');
+        // console.log('UPDATING LOCATION.......................');
       },
       error => {
         console.log(error.message);

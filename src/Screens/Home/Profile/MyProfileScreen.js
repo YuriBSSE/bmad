@@ -36,6 +36,7 @@ import IconComp from '../../../Components/IconComp';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const {width, height} = Dimensions.get('window');
+const isIOS = Platform.OS === 'ios';
 
 const data = [
   {key: 'A', image: require('../../../Assets/Images/post1.png')},
@@ -136,7 +137,6 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
       </View>
     );
   };
-  const isIOS = Platform.OS === 'ios';
   // console.log(userReducer, 'PROFILE SCREEN USERDATA');
   useEffect(() => {
     setValue(userReducer?.data?.user_contact);
@@ -203,9 +203,9 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
     setCountryCode(country.cca2);
     setCountry(country);
   };
-  const openGallery = () => {
+  const openGallery = async () => {
     try {
-      ImagePicker.openPicker({
+      await ImagePicker.openPicker({
         width: 300,
         height: 300,
         cropping: true,
@@ -216,7 +216,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
         setImage(`data:${image?.mime};base64,${image?.data}`);
       });
     } catch (err) {
-      console.log(err,"Catched.");
+      console.log(err, 'Catched.');
     }
   };
 
@@ -340,7 +340,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
               source={require('../../../Assets/Images/test.png')}
             />
           )}
-          <View style={[styles.textContainer, isIOS && {top: height * 0.35}]}>
+          <View style={[styles.textContainer, isIOS && {top: height * 0.33}]}>
             <Text style={styles.nameStyles}>{`${
               username?.length > 17
                 ? `${username.substring(0, 17)}...`
@@ -432,7 +432,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           <CountryPicker
             containerButtonStyle={[
               styles.textInputLabel,
-              {padding: height * 0.02, color: 'black'},
+              {padding: height * 0.01, color: 'black'},
             ]}
             {...{
               countryCode,
@@ -453,7 +453,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           <Text
             style={{
               width: width * 0.7,
-              marginTop: -40,
+              marginTop: isIOS ? height * -0.055 :   height * -0.056,
               marginLeft: width * 0.24,
               color: 'black',
               fontSize: width * 0.04,
@@ -478,7 +478,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
             color="black"
             style={{
               width: width * 0.7,
-              marginTop: isIOS ? height * -0.008 : height * -0.014,
+              marginTop: isIOS ? height * -0.025 : height * -0.025,
               marginLeft: width * 0.16,
               color: 'black',
               fontSize: width * 0.026,
@@ -717,7 +717,7 @@ var styles = StyleSheet.create({
     borderRadius: width * 0.3,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: height * 0.045,
+    marginVertical: height * 0.07,
     elevation: 9,
   },
   touchableOpacity: {
@@ -785,7 +785,7 @@ var styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     borderRadius: width * 0.3,
     fontSize: width * 0.04,
-    height: height * 0.07,
+    height: height * 0.08,
     paddingHorizontal: width * 0.05,
     elevation: 20,
   },

@@ -140,7 +140,7 @@ export const nearMeUsers = (latitude, longitude, userId) => async dispatch => {
 
     // console.log('Total Near Me Users: ', response.data.data.length);
     if (response.data.data.length > 0) {
-      console.log('Near Me Users Fetched!');
+      // console.log('Near Me Users Fetched!');
       dispatch({
         type: types.NEAR_ME_USERS,
         payload: response.data.data,
@@ -447,7 +447,18 @@ export const SignOut = id => async dispatch => {
   }
 };
 
-export const showDrawerConnectionsBadge = (showBadge) => async dispatch => {
+export const showNotificationsBadge = () => async dispatch => {
+  try {
+    dispatch({
+      type: types.SHOW_TAB_NOTIFICATIONS_BADGE,
+      // payload: totalUnread,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const showDrawerConnectionsBadge = showBadge => async dispatch => {
   try {
     dispatch({
       type: types.SHOW_DRAWER_CONNECTIONS_BADGE,
@@ -498,7 +509,7 @@ export const getFeedData = userId => async dispatch => {
 };
 
 export const coords = (lat, long) => async dispatch => {
-  console.log(lat, long, 'coords  getting new coords ');
+  // console.log(lat, long, 'coords  getting new coords ');
   dispatch({
     type: types.USER_COORDS,
     payload: {
@@ -590,7 +601,7 @@ export const likePost = data => async dispatch => {
       description: 'Something went wrong!',
       danger: 'error',
     });
-    console.log('FAILED LIKING POST', error);
+    console.log('FAILED LIKING POST', error.response.data.message);
   }
 };
 
@@ -654,14 +665,11 @@ export const commentOnPost = (data, onSuccess) => async dispatch => {
 };
 
 export const getAllCommentsOfPost = postId => async dispatch => {
-  console.log('Getting all comments of this post, POst_id: ', postId);
   try {
     const response = await axios.get(
       `${api}/api/post/comments?post_id=${postId}`,
     );
     if (response.data.status) {
-      console.log(response.data.status, 'Comments Retrieved!!!');
-      console.log('Total Comments: ', response.data.data.length);
       dispatch({
         type: types.GET_POST_COMMENTS,
         payload: response.data.data,
@@ -756,7 +764,11 @@ export const connectUser =
         danger: 'error',
       });
       _onRequestFialed();
-      console.log('FAILED CONNECTING USER', error?.response?.data);
+      console.log(
+        'FAILED CONNECTING USER',
+        error?.response?.data,
+        error?.response?.data?.message,
+      );
     }
   };
 
@@ -1399,7 +1411,7 @@ export const updateLocation = apiData => async dispatch => {
           long: apiData?.user_longitude,
         },
       });
-      console.log('Lcation Updated!!!');
+      // console.log('Lcation Updated!!!');
       // _onSuccess();
     } else {
       // showMessage({
@@ -1481,3 +1493,25 @@ export const ignoreInviteFromProfile =
       console.log('FAILED REJECTING ', error);
     }
   };
+
+export const appendDataToNotifications = notiData => dispatch => {
+  try {
+    dispatch({
+      type: types.APPEND_DATA_TO_NOTIFICATIONS,
+      payload: notiData,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const resetTotalUnreadNotificationsCount = () => dispatch => {
+  try {
+    dispatch({
+      type: types.RESET_UNREAD_COUNT,
+      payload: 0,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

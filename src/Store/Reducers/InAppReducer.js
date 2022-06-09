@@ -33,6 +33,9 @@ import {
   SAVE_SOCKET_REF,
   UPDATE_PROFILE,
   SHOW_DRAWER_CONNECTIONS_BADGE,
+  SHOW_TAB_NOTIFICATIONS_BADGE,
+  APPEND_DATA_TO_NOTIFICATIONS,
+  RESET_UNREAD_COUNT,
 } from './../Actions/actionType';
 
 const iNITIAL_NEAR_ME = {
@@ -59,6 +62,7 @@ const INITIAL_STATE_POSTS = {
 
 const INITIAL_NOTI_DATA = {
   notifications: [],
+  unreadNoti: 0,
 };
 
 const INITIAL_CONNECTIONS_DATA = {
@@ -108,7 +112,6 @@ export function userReducer(state = INITIAL_USER_DATA, action) {
       };
 
     case SAVE_SOCKET_REF:
-      console.log('red=================', action.payload);
       return {
         ...state,
         socket: action.payload,
@@ -119,7 +122,6 @@ export function userReducer(state = INITIAL_USER_DATA, action) {
       //   ...state.data,
       //   ...action.payload,
       // })
-      console.log(action.payload.user_name, 'USERNAME...');
       return {
         ...state,
         data: {
@@ -264,6 +266,17 @@ export function postsReducer(state = INITIAL_STATE_POSTS, action) {
 
 export function notificationsReducer(state = INITIAL_NOTI_DATA, action) {
   switch (action.type) {
+    case SHOW_TAB_NOTIFICATIONS_BADGE:
+      return {
+        ...state,
+        unreadNoti: state.unreadNoti + 1,
+      };
+
+    case RESET_UNREAD_COUNT:
+      return {
+        ...state,
+        unreadNoti: 0,
+      };
     case RESET_NOTIFICATIONS:
       return {
         ...INITIAL_NOTI_DATA,
@@ -275,6 +288,11 @@ export function notificationsReducer(state = INITIAL_NOTI_DATA, action) {
         notifications: action.payload,
       };
 
+    case APPEND_DATA_TO_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: [...action.payload, ...state.notifications],
+      };
     default:
       return state;
   }

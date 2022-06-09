@@ -25,7 +25,7 @@ export default Preview = ({
         <Image
           // resizeMethod="cover"
           style={styles.videoPreview}
-          source={{uri: item}}
+          source={{uri: 'http://webprojectmockup.com:9443/post_file/post_file_1652965539266.jpg'}}
           resizeMode='stretch'
         />
       </View>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   videoPreview: {
     width: width * 0.85,
-    height: height * 0.28,
+    height: height * 0.3,
     // borderRadius: 8,
     margin: width * 0.022,
   },

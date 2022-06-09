@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   View,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import AppText from '../../../Components/AppText';
@@ -20,6 +21,7 @@ import {PUB_KEY_STRIPE} from '../../../Config/Apis.json';
 import {StripeProvider} from '@stripe/stripe-react-native';
 const {width, height} = Dimensions.get('window');
 import {useRoute} from '@react-navigation/native';
+import Heading from '../../../Components/Heading';
 
 const Drinks = ({navigation, userReducer, buyMoreDrinks}) => {
   const [isStripeModalVisible, setIsStripeModalVisible] = useState(false);
@@ -63,84 +65,86 @@ const Drinks = ({navigation, userReducer, buyMoreDrinks}) => {
   return (
     <StripeProvider publishableKey={PUB_KEY_STRIPE}>
       <SafeAreaView style={styles.container}>
-        <StatusBar translucent backgroundColor="transparent" />
-        {/* <View style={styles.container}> */}
-        {/* Images Container  */}
-        {/* <View style={styles.imagesContainer}>
-            <Image
-              resizeMode="contain"
-              source={require('../../../Assets/Images/bmad-logo.png')}
-              style={styles.bmadLogo}
-            />
-            <Image
-              resizeMode="contain"
-              source={require('../../../Assets/Images/bmad.png')}
-              style={styles.bmadTextLogo}
-            />
-          </View> */}
-
-        <View style={styles.availableDrinksView}>
-          {/* <Notification
-              name="fast-food-outline"
-              style={{}}
-              size={size}
-              color={color}
-            /> */}
-          <AppText
-            nol={2}
-            textAlign="center"
-            family="Poppins-SemiBold"
-            size={height * 0.028}
-            color="black"
-            Label={`Available Drinks: ${userReducer?.data?.coins}`}
-          />
-        </View>
-
-        <TouchableOpacity
-          style={styles.buyView}
-          onPress={() => {
-            setShowBuyDrinksModal(true);
-          }}>
-          <Image
-            // resizeMode="contain"
-            blurRadius={4}
-            source={require('../../../Assets/Images/buy-mor.png')}
-            style={styles.buyMoreImage}
-          />
-
-          <Text
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <StatusBar translucent backgroundColor="transparent" />
+          <View
             style={{
-              fontFamily: 'Poppins-BoldItalic',
-              color: 'white',
-              position: 'absolute',
-              fontSize: width * 0.06,
-              top: height * 0.07,
+              height: height * 0.65,
+              borderWidth: 3,
+              borderColor: themeRed,
+              borderRadius: 25,
+              paddingHorizontal: width * 0.05,
+              width: width * 0.9,
               alignSelf: 'center',
+              marginVertical: height * 0.02,
+              backgroundColor: 'white',
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+
+              elevation: 14,
             }}>
-            Buy More Drinks
-          </Text>
-        </TouchableOpacity>
-        {/* </View> */}
+            <Image
+              source={require('../../../Assets/Images/beer2.jpeg')}
+              style={{
+                width: width * 0.9,
+                height: height * 0.65,
+                alignSelf: 'center',
+                borderRadius: 25,
+              }}
+            />
 
-        {isStripeModalVisible && (
-          <StripeModal
-            setId={setStripeGeneratedKey}
-            onPress={_onPressBuyDrinks}
-            isLoading={isLoading}
-            isModalVisible={isStripeModalVisible}
-            setIsModalVisible={setIsStripeModalVisible}
-          />
-        )}
+            <View style={styles.crateTextView}>
+              <Heading
+                title="Drinks in your crate - "
+                passedStyle={styles.crateTextStyle}
+                fontType="bold"
+              />
+              <Heading
+                title={
+                  userReducer?.data?.coins?.toString()?.length == 1
+                    ? `0${userReducer?.data?.coins}`
+                    : userReducer?.data?.coins
+                }
+                passedStyle={styles.crateTextStyle}
+                fontType="bold"
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowBuyDrinksModal(true)}
+              style={styles.buyDrinkBtn}
+              activeOpacity={0.8}>
+              <Heading
+                title="Buy Drinks"
+                passedStyle={{color: 'white', fontSize: width * 0.045}}
+                fontType="medium"
+              />
+            </TouchableOpacity>
+          </View>
+          {isStripeModalVisible && (
+            <StripeModal
+              setId={setStripeGeneratedKey}
+              onPress={_onPressBuyDrinks}
+              isLoading={isLoading}
+              isModalVisible={isStripeModalVisible}
+              setIsModalVisible={setIsStripeModalVisible}
+            />
+          )}
 
-        {showBuyDrinksModal && (
-          <BuyDrinksModal
-            drinks={drinks}
-            setDrinks={setDrinks}
-            isModalVisible={showBuyDrinksModal}
-            setIsModalVisible={setShowBuyDrinksModal}
-            setIsStripeModalVisible={setIsStripeModalVisible}
-          />
-        )}
+          {showBuyDrinksModal && (
+            <BuyDrinksModal
+              drinks={drinks}
+              setDrinks={setDrinks}
+              isModalVisible={showBuyDrinksModal}
+              setIsModalVisible={setShowBuyDrinksModal}
+              setIsStripeModalVisible={setIsStripeModalVisible}
+            />
+          )}
+        </ScrollView>
       </SafeAreaView>
     </StripeProvider>
   );
@@ -156,7 +160,7 @@ export default connect(mapStateToProps, actions)(Drinks);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: themeRed,
   },
   bmadLogo: {
     width: width * 0.3,
@@ -194,4 +198,97 @@ const styles = StyleSheet.create({
     height: height * 0.17,
     borderRadius: width * 0.05,
   },
+  buyDrinkBtn: {
+    position: 'absolute',
+    bottom: height * 0.02,
+    backgroundColor: themeRed,
+    width: width * 0.7,
+    height: height * 0.08,
+    marginTop: height * 0.02,
+    borderRadius: 25,
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderColor: themeRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+
+    elevation: 14,
+  },
+  crateTextView: {
+    position: 'absolute',
+    top: height * 0.03,
+    left: width * 0.05,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  crateTextStyle:{
+    color: 'white',
+    fontSize: width * 0.05,
+  }
 });
+
+//  {/* <View style={styles.container}> */}
+//         {/* Images Container  */}
+//         {/* <View style={styles.imagesContainer}>
+//             <Image
+//               resizeMode="contain"
+//               source={require('../../../Assets/Images/bmad-logo.png')}
+//               style={styles.bmadLogo}
+//             />
+//             <Image
+//               resizeMode="contain"
+//               source={require('../../../Assets/Images/bmad.png')}
+//               style={styles.bmadTextLogo}
+//             />
+//           </View> */}
+
+//           <View style={styles.availableDrinksView}>
+//           {/* <Notification
+//               name="fast-food-outline"
+//               style={{}}
+//               size={size}
+//               color={color}
+//             /> */}
+//           <AppText
+//             nol={2}
+//             textAlign="center"
+//             family="Poppins-SemiBold"
+//             size={height * 0.028}
+//             color="black"
+//             Label={`Available Drinks: ${userReducer?.data?.coins}`}
+//           />
+//         </View>
+
+//         <TouchableOpacity
+//           style={styles.buyView}
+//           onPress={() => {
+//             setShowBuyDrinksModal(true);
+//           }}>
+//           <Image
+//             // resizeMode="contain"
+//             blurRadius={4}
+//             source={require('../../../Assets/Images/buy-mor.png')}
+//             style={styles.buyMoreImage}
+//           />
+
+//           <Text
+//             style={{
+//               fontFamily: 'Poppins-BoldItalic',
+//               color: 'white',
+//               position: 'absolute',
+//               fontSize: width * 0.06,
+//               top: height * 0.07,
+//               alignSelf: 'center',
+//             }}>
+//             Buy More Drinks
+//           </Text>
+//         </TouchableOpacity>
+//         {/* </View> */}

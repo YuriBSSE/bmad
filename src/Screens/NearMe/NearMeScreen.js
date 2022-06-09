@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -56,7 +56,6 @@ const NearMeScreen = ({
   usersNearmeReducer,
   userReducer,
 }) => {
-  // console.log(typeof userCoordsReducer?.lat, '____________________COORDINATES');
   const _map = useRef(null);
   const USER_ID = userReducer?.data?.user_id;
   const _scrollView = useRef(null);
@@ -64,19 +63,8 @@ const NearMeScreen = ({
   const isFocused = useIsFocused();
   const isIos = Platform.OS === 'ios';
 
-  const [nearmeUsers, setNearmeUsers] = useState([]);
-  // const initialMapState = {
-  //   users: usersNearmeReducer?.allUsers,
-  //   region: {
-  //     latitude: userCoordsReducer?.lat,
-  //     longitude: userCoordsReducer?.long,
-  //     latitudeDelta: 0.0925,
-  //     longitudeDelta: 0.0925,
-  //   },
-  // };
-
-  const [refreshing, setRefreshing] = React.useState(false);
-  const onRefresh = React.useCallback(() => {
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => {
       setRefreshing(false);
@@ -93,21 +81,15 @@ const NearMeScreen = ({
       const initialMapState = {
         users: usersNearmeReducer?.allUsers,
         region: {
-          latitude:
-            Platform.OS != 'ios'
-              ? parseFloat(userCoordsReducer?.lat, 10)
-              : userCoordsReducer?.lat,
-          longitude:
-            Platform.OS != 'ios'
-              ? parseFloat(userCoordsReducer?.long, 10)
-              : userCoordsReducer?.long,
+          latitude: parseFloat(userCoordsReducer?.lat, 10),
+          longitude: parseFloat(userCoordsReducer?.long, 10),
           latitudeDelta: 0.0925,
           longitudeDelta: 0.0925,
         },
       };
       setState(initialMapState);
     }
-  }, [usersNearmeReducer?.allUsers]);
+  }, [usersNearmeReducer?.allUsers, isFocused]);
 
   useEffect(() => {
     if (state?.users?.length > 0) {
@@ -123,11 +105,12 @@ const NearMeScreen = ({
         const regionTimeout = setTimeout(() => {
           if (mapIndex !== index) {
             mapIndex = index;
-            const {coordinate} = state?.users[index];
+            const {user_latitude, user_longitude} = state?.users[index];
 
             _map.current.animateToRegion(
               {
-                ...coordinate,
+                latitude: user_latitude,
+                longitude: user_longitude,
                 latitudeDelta: state?.region?.latitudeDelta,
                 longitudeDelta: state?.region?.longitudeDelta,
               },
@@ -164,6 +147,7 @@ const NearMeScreen = ({
     if (Platform.OS === 'ios') {
       x = x - SPACING_FOR_CARD_INSET;
     }
+    console.log(x, markerID);
     _scrollView.current.scrollTo({x: x, y: 0, animated: true});
   };
 
@@ -183,26 +167,20 @@ const NearMeScreen = ({
 
   const onRegionChange = mark => {
     const Delta = 0.025;
-    changeCoords({
-      latitude: mark?.nativeEvent?.coordinate?.latitude,
-      longitude: mark?.nativeEvent?.coordinate?.longitude,
-      latitudeDelta: Delta,
-      longitudeDelta: Delta,
-    });
+    // changeCoords({
+    //   latitude: mark?.nativeEvent?.coordinate?.latitude,
+    //   longitude: mark?.nativeEvent?.coordinate?.longitude,
+    //   latitudeDelta: Delta,
+    //   longitudeDelta: Delta,
+    // });
   };
 
-  // const size = zoomLevel <= 10 ? 40 : 80;
-  useEffect(() => {
-    if (isFocused) {
-      setNearmeUsers(usersNearmeReducer?.allUsers);
-    }
-  }, [isFocused, usersNearmeReducer?.allUsers]);
   if (state?.users?.length > 0) {
     return (
       <View style={styles.container}>
         <MapView
           optimizeWaypoints={true}
-          minZoomLevel={18} // revert it back to 16 !!
+          minZoomLevel={16} // revert it back to 16 !!
           onMarkerDragEnd={onRegionChange}
           ref={_map}
           initialRegion={state?.region}
@@ -212,8 +190,8 @@ const NearMeScreen = ({
             stopPropagation={false}
             style={{position: 'absolute'}}
             coordinate={{
-              latitude: isIos ? parseFloat(state?.region?.latitude) : state?.region?.latitude,
-              longitude: isIos ? parseFloat(state?.region?.longitude) : state?.region?.longitude,
+              latitude: parseFloat(state?.region?.latitude),
+              longitude: parseFloat(state?.region?.longitude),
             }}
             // image={require('./../../Assets/Images/maroon-dp2.jpeg')}
             title={'Your Location'}>
@@ -235,11 +213,8 @@ const NearMeScreen = ({
           </Marker>
           <MapView.Circle
             key={(
-              isIos 
-              ? 
-              (parseFloat(state?.region?.latitude) + parseFloat(state?.region?.longitude))
-              :
-              state?.region?.latitude + state?.region?.longitude
+              parseFloat(state?.region?.latitude) +
+              parseFloat(state?.region?.longitude)
             ).toString()}
             center={state?.region}
             radius={100}
@@ -260,14 +235,8 @@ const NearMeScreen = ({
               <MapView.Marker
                 key={index}
                 coordinate={{
-                  latitude:
-                    Platform.OS == 'ios'
-                      ? parseFloat(marker.user_latitude, 10)
-                      : marker.user_latitude,
-                  longitude:
-                    Platform.OS == 'ios'
-                      ? parseFloat(marker.user_longitude, 10)
-                      : marker.user_longitude,
+                  latitude: parseFloat(marker?.user_latitude, 10),
+                  longitude: parseFloat(marker?.user_longitude, 10),
                 }}
                 title={marker.user_name}
                 onPress={e => onMarkerPress(e)}>
@@ -309,59 +278,67 @@ const NearMeScreen = ({
           pagingEnabled
           scrollEventThrottle={1}
           showsHorizontalScrollIndicator={false}
-          // snapToInterval={CARD_WIDTH + 20}
-          
+          snapToInterval={CARD_WIDTH + 20}
           snapToAlignment="center"
           style={styles.scrollView}
-          // contentInset={{
-          //   top: 0,
-          //   left: SPACING_FOR_CARD_INSET,
-          //   bottom: 0,
-          //   right: SPACING_FOR_CARD_INSET,
-          // }}
+          contentInset={{
+            // for iOS only
+            top: 0,
+            left: SPACING_FOR_CARD_INSET,
+            bottom: 0,
+            right: SPACING_FOR_CARD_INSET,
+          }}
           contentContainerStyle={{
             paddingHorizontal:
               Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
           }}
-          // onScroll={Animated.event(
-          //   [
-          //     {
-          //       nativeEvent: {
-          //         contentOffset: {
-          //           x: mapAnimation,
-          //         },
-          //       },
-          //     },
-          //   ],
-          //   {useNativeDriver: true},
-          // )}
-          >
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {
+                    x: mapAnimation,
+                  },
+                },
+              },
+            ],
+            {useNativeDriver: true},
+          )}>
           {state?.users?.map((marker, index) => {
-            // console.log(marker?.distance*1000)
             return (
-              <TouchableOpacity
+              <View // Parent
                 key={index}
-                activeOpacity={0.9}
-                onPress={() => {
-                  // Save User Profile Data In Redux
-                  // saveNearmeUserData(marker);
-                  navigation.push('profile', {userData: marker});
-                }}
-                style={styles.card}>
-                <View style={styles.imageView}>
-                  {marker?.user_image ? (
-                    <Image
-                      source={{uri: `${imageUrl}/${marker?.user_image}`}}
-                      style={{width: width * 0.5, height: height * 0.18}}
-                    />
-                  ) : (
-                    <Image
-                      source={require('./../../Assets/Images/placeholderImage.png')}
-                      style={{width: width * 0.53, height: height * 0.18}}
-                    />
-                  )}
+                style={{
+                  flex: 1,
+                  // No backgroundColor
+                  shadowColor: '#000',
+                  shadowOffset: {width: 2, height: 2},
+                  shadowOpacity: 0.8,
+                  shadowRadius: 4,
+                }}>
+                <TouchableOpacity
+                  key={index}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    // Save User Profile Data In Redux
+                    // saveNearmeUserData(marker);
+                    navigation.push('profile', {userData: marker});
+                  }}
+                  style={styles.card}>
+                  <View style={styles.imageView}>
+                    {marker?.user_image ? (
+                      <Image
+                        source={{uri: `${imageUrl}/${marker?.user_image}`}}
+                        style={{width: width * 0.5, height: height * 0.18}}
+                      />
+                    ) : (
+                      <Image
+                        source={require('./../../Assets/Images/placeholderImage.png')}
+                        style={{width: width * 0.53, height: height * 0.18}}
+                      />
+                    )}
 
-                  {/* <Badge
+                    {/* <Badge
                     badgeStyle={{
                       height: 12,
                       width: 12,
@@ -373,37 +350,38 @@ const NearMeScreen = ({
                     status="success"
                     containerStyle={{position: 'absolute', top: height * 0.042, right: 55}}
                   /> */}
-                </View>
-                <View style={styles.textContent}>
-                  <AppText
-                    nol={1}
-                    textAlign="left"
-                    family="Poppins-Medium"
-                    size={height * 0.02}
-                    color="black"
-                    Label={marker?.user_name}
-                  />
-                  <View style={styles.addressAndDist}>
+                  </View>
+                  <View style={styles.textContent}>
                     <AppText
-                      nol={3}
-                      family="Poppins-SemiBold"
-                      size={hp('1.4%')}
-                      color="grey"
-                      Label={marker?.user_gender}
+                      nol={1}
+                      textAlign="left"
+                      family="Poppins-Medium"
+                      size={height * 0.02}
+                      color="black"
+                      Label={marker?.user_name}
+                    />
+                    <View style={styles.addressAndDist}>
+                      <AppText
+                        nol={3}
+                        family="Poppins-SemiBold"
+                        size={hp('1.4%')}
+                        color="grey"
+                        Label={marker?.user_gender}
+                      />
+                    </View>
+                    <AppText
+                      nol={1}
+                      family="Poppins-Regular"
+                      size={isIOS ? width * 0.032 : width * 0.032}
+                      color={'grey'}
+                      Label={
+                        parseFloat(marker?.distance * 1000).toFixed(2) +
+                        'm far away'
+                      }
                     />
                   </View>
-                  <AppText
-                    nol={1}
-                    family="Poppins-Regular"
-                    size={isIOS ? width * 0.032 : width * 0.032}
-                    color={'grey'}
-                    Label={
-                      parseFloat(marker?.distance * 1000).toFixed(2) +
-                      'm far away'
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             );
           })}
         </Animated.ScrollView>
@@ -417,21 +395,21 @@ const NearMeScreen = ({
         }
         ListFooterComponent={() => (
           <View
-          style={[
-            styles.lottieStyleView,
-            isIos && {marginTop: height * 0.33},
-          ]}>
-          <LottieView
-            style={[styles.lottie, isIos && {height: height * 0.1}]}
-            source={require('./../../Assets/Lottie/test2.json')}
-            autoPlay
-            loop
-          />
-          <View
             style={[
-              styles.noPeopleFound,
-              isIos && {marginTop: height * 0.02},
+              styles.lottieStyleView,
+              isIos && {marginTop: height * 0.33},
             ]}>
+            <LottieView
+              style={[styles.lottie, isIos && {height: height * 0.1}]}
+              source={require('./../../Assets/Lottie/test2.json')}
+              autoPlay
+              loop
+            />
+            <View
+              style={[
+                styles.noPeopleFound,
+                isIos && {marginTop: height * 0.02},
+              ]}>
               <AppText
                 nol={1}
                 textAlign="left"
@@ -535,18 +513,27 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: 0,
-    elevation: 2,
+    // elevation: 2,
     backgroundColor: '#FFF',
     marginHorizontal: 8,
-    shadowColor: '#000',
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: {x: 2, y: -2},
+    // shadowColor: '#000',
+    // shadowRadius: 5,
+    // shadowOpacity: 0.3,
+    // shadowOffset: {x: 2, y: -2},
     height: height * 0.27,
     width: width * 0.35,
     overflow: 'hidden',
     marginBottom: 100,
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 10.65,
+    zIndex: 999,
+    elevation: 7,
   },
   cardImage: {
     flex: 3,

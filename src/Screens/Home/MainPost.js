@@ -1,53 +1,28 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   TouchableOpacity,
   View,
-  Text,
-  ImageBackground,
   StyleSheet,
-  StatusBar,
-  SafeAreaView,
   FlatList,
-  Image,
-  KeyboardAvoidingView,
-  LayoutAnimation,
   Platform,
   Dimensions,
-  UIManager,
-  Animated,
-  TouchableHighlight,
   TextInput,
   RefreshControl,
-  ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import comments from './../../../model/Comments';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Avatar from '../../Components/Avatar';
 import AppText from '../../Components/AppText';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
-import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItems';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {FlatListSlider} from 'react-native-flatlist-slider';
 import Comment from './Comments';
-import LottieView from 'lottie-react-native';
 import {imageUrl} from '../../Config/Apis.json';
 import {connect} from 'react-redux';
-import Preview from './Preview';
 import * as actions from '../../Store/Actions/index';
 import {showMessage} from 'react-native-flash-message';
 const {width, height} = Dimensions.get('window');
-
-const Img = [
-  {image: require('./../../Assets/Images/post1.png')},
-  {image: require('./../../Assets/Images/place2.png')},
-  {image: require('./../../Assets/Images/place3.png')},
-];
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -68,8 +43,8 @@ const MainPost = ({
   const userId = userReducer?.data?.user_id;
   const [postComments, setPostComments] = useState([]);
   const isIOS = Platform.OS === 'ios';
-console.log(route.params.name)
-  const onRefresh = React.useCallback(() => {
+
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => {
       getAllCommentsOfPost(postId).then(() => {
@@ -103,7 +78,6 @@ console.log(route.params.name)
       setPostComments(postsReducer?.postComments);
     });
   };
-  
 
   useEffect(() => {
     getAllCommentsOfPost(postId).then(() => {
@@ -115,57 +89,28 @@ console.log(route.params.name)
     setPostComments(postsReducer?.postComments);
   }, [postsReducer?.postComments]);
   return (
-    <View
-      style={{
-        // height: hp('100%'),
-        backgroundColor: '#F7F3F2',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        // width: '100%',
-        flex: 1,
-        alignItems: 'center',
-      }}>
+    <View style={styles.mainContainer}>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        // ListHeaderComponentStyle={{width: width,}}
         ListHeaderComponent={
-          <View style={{}}>
-            <View
-              style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
-              <View
-                style={{
-                  justifyContent: 'flex-start',
-                  flexDirection: 'row',
-                  width: width * 0.9,
-
-                  marginVertical: height * 0.01,
-                }}>
+          <>
+            <View style={styles.outerInfoView}>
+              <View style={styles.innerInfoView}>
                 <Avatar
                   size="medium"
-                  // source={`${imageUrl}/${route.params.profileImg}`}
                   source={
                     route?.params?.profileImg
                       ? {
                           uri: `${imageUrl}/${route?.params?.profileImg}`,
                         }
-                      : require('../../Assets/Images/maroon-dp2.jpeg')
+                      : require('../../Assets/Images/maroon-dp.png')
                   }
                 />
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    padding: 4,
-                    justifyContent: 'space-between',
-                    alignContent: 'center',
-                    left: 5,
-                    width: '94%',
-                  }}>
-                  <View
-                    style={{
-                      justifyContent: 'flex-start',
-                      flexDirection: 'column',
-                    }}>
+                <View style={styles.textView}>
+                  <View style={styles.innerTextView}>
                     <AppText
                       nol={1}
                       textAlign="left"
@@ -185,13 +130,7 @@ console.log(route.params.name)
                   </View>
                 </View>
               </View>
-              <View
-                style={{
-                  justifyContent: 'flex-start',
-                  alignItems: 'flex-start',
-                  marginVertical: height * 0.015,
-                  width: width * 0.9,
-                }}>
+              <View style={styles.descripView}>
                 <AppText
                   nol={12}
                   textAlign="left"
@@ -203,31 +142,33 @@ console.log(route.params.name)
               </View>
             </View>
 
-            <View style={styles.commentBoxContainer}>
-              <Avatar
-                size="small"
-                source={
-                  route?.params?.profileImg
-                    ? {
-                        uri: `${imageUrl}/${route?.params?.profileImg}`,
-                      }
-                    : require('../../Assets/Images/maroon-dp2.jpeg')
-                }
-              />
-              <TouchableWithoutFeedback>
-                <TextInput
-                  placeholder="Add a comment"
-                  numberOfLines={5}
-                  placeholderTextColor="grey"
-                  multiline={true}
-                  onChangeText={e => {
-                    setCommentText(e);
-                  }}
-                  textAlignVertical="top"
-                  value={commentText}
-                  style={styles.textInputStyles}
+            <View style={styles.shadowContainerForIos}>
+              <View style={styles.commentBoxContainer}>
+                <Avatar
+                  size="small"
+                  source={
+                    route?.params?.profileImg
+                      ? {
+                          uri: `${imageUrl}/${route?.params?.profileImg}`,
+                        }
+                      : require('../../Assets/Images/maroon-dp2.jpeg')
+                  }
                 />
-              </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback>
+                  <TextInput
+                    placeholder="Add a comment"
+                    numberOfLines={5}
+                    placeholderTextColor="grey"
+                    multiline={true}
+                    onChangeText={e => {
+                      setCommentText(e);
+                    }}
+                    textAlignVertical="top"
+                    value={commentText}
+                    style={styles.textInputStyles}
+                  />
+                </TouchableWithoutFeedback>
+              </View>
             </View>
             {isCommenting ? (
               // <LottieView
@@ -241,7 +182,11 @@ console.log(route.params.name)
               //   loop
               // />
 
-              <View style={[styles.commentBtn, (isCommenting && isIOS && {width:width *0.35}) ]}>
+              <View
+                style={[
+                  styles.commentBtn,
+                  isCommenting && isIOS && {width: width * 0.35},
+                ]}>
                 <AppText
                   nol={1}
                   family="Poppins-SemiBold"
@@ -264,7 +209,7 @@ console.log(route.params.name)
                 />
               </TouchableOpacity>
             )}
-          </View>
+          </>
         }
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -274,7 +219,7 @@ console.log(route.params.name)
         renderItem={({item, index}) => {
           return (
             <Comment
-            item={item}
+              item={item}
               img={item?.user?.user_image}
               name={item?.user?.user_name}
               time={moment(item?.created_at).fromNow()}
@@ -294,21 +239,57 @@ const mapStateToProps = ({userReducer, postsReducer}) => {
 export default connect(mapStateToProps, actions)(MainPost);
 
 const styles = StyleSheet.create({
+  descripView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginVertical: height * 0.015,
+    width: width * 0.9,
+  },
+  mainContainer: {
+    // height: hp('100%'),
+    backgroundColor: '#F7F3F2',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    // width: '100%',
+    flex: 1,
+    alignItems: 'center',
+  },
+  textView: {
+    flexDirection: 'row',
+    padding: 4,
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    left: 5,
+    width: '94%',
+  },
+  innerTextView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+  },
   commentBoxContainer: {
     flexDirection: 'row',
     width: width * 0.9,
     borderRadius: 10,
+    minHeight: height * 0.12,
     zIndex: 4,
     padding: 10,
     elevation: 10,
     borderColor: 'gray',
-    // borderWidth: 1,
     backgroundColor: 'white',
     alignItems: 'flex-start',
     alignSelf: 'center',
     justifyContent: 'center',
-    //  height:100
     marginBottom: height * 0.01,
+  },
+  shadowContainerForIos: {
+    flex: 1,
+    shadowColor: '#000',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 0.4,
+    shadowRadius: 7,
+    // backgroundColor:'red'
+    width: width * 0.9,
+    marginHorizontal: width * 0.05,
   },
   textInputStyles: {
     marginLeft: width * 0.03,
@@ -317,6 +298,8 @@ const styles = StyleSheet.create({
     top: -3,
     color: 'grey',
     fontSize: hp('1.9%'),
+    minHeight: height * 0.07,
+    height:height * 0.1
   },
   commentBtn: {
     borderRadius: width * 0.03,
@@ -329,5 +312,18 @@ const styles = StyleSheet.create({
     // marginRight: width * 0.01,
     marginTop: height * 0.01,
     marginBottom: height * 0.01,
+    marginRight:width * 0.05,
+  },
+  outerInfoView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    width: width * 0.9,
+    paddingHorizontal: width * 0.05,
+
+  },
+  innerInfoView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    marginVertical: height * 0.01,
   },
 });

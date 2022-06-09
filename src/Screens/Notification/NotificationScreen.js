@@ -101,11 +101,12 @@ const NotificationScreen = ({
         ItemSeparatorComponent={Separater}
         showsHorizontalScrollIndicator={false}
         renderItem={({item, index}) => {
+          // console.log(item?.user)
           return (
             <NotificationList
               Item={item}
               Time={item?.created_at}
-              Img={item?.user?.user_coverImage}
+              Img={item?.user?.user_image}
               Name={item?.user?.user_name}
               Message={item.details}
               OnlineStatus={item.OnlineStatus}

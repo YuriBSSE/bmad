@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
-  TouchableWithoutFeedback,Platform
+  TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import PostList from '../Home/PostList';
@@ -24,6 +25,7 @@ import moment from 'moment';
 import LottieView from 'lottie-react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useRoute} from '@react-navigation/native';
+import {imageUrl} from '../../Config/Apis.json';
 
 const {height, width} = Dimensions.get('window');
 
@@ -68,7 +70,8 @@ const PostScreen = ({
     };
     likePostFromScreen(apiData);
   };
-
+  // console.log(postData, 'post data');
+  // console.log(postsReducer?.postComments, 'post comments');
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => {
@@ -112,149 +115,101 @@ const PostScreen = ({
   useEffect(() => {
     setPostComments(postsReducer?.postComments);
   }, [postsReducer?.postComments]);
+  console.log(userReducer?.data?.user_image, '--');
   return (
     <View style={styles.container}>
-      <ScrollView nestedScrollEnabled={true}>
-        <PostList
-          item={postData}
-          Img={postData?.post_url}
-          Name={postData?.user_id?.user_name}
-          Description={postData?.post_desc}
-          ProfileImg={postData?.user_id?.user_coverImage}
-          UploadTime={postData?.post_created_at}
-          TotalLike={postData?.count_likes}
-          Comment={postData?.count_comments}
-          Navigation={navigation}
-          _onPressHeart={_onPressHeart}
-        />
-
-        <>
-          <View style={styles.commentBoxContainer}>
-            <Avatar
-              size="small"
-              source={
-                userReducer?.data?.user_coverImage
-                  ? {
-                      uri: `${imageUrl}/${userReducer?.data?.user_coverImage}`,
-                    }
-                  : require('../../Assets/Images/maroon-dp2.jpeg')
-              }
+      <FlatList
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListHeaderComponent={
+          <>
+            <PostList
+              item={postData}
+              Img={postData?.post_url}
+              Name={postData?.user_id?.user_name}
+              Description={postData?.post_desc}
+              ProfileImg={postData?.user_id?.user_coverImage}
+              UploadTime={postData?.post_created_at}
+              TotalLike={postData?.count_likes}
+              Comment={postData?.count_comments}
+              Navigation={navigation}
+              _onPressHeart={_onPressHeart}
             />
-            <TouchableWithoutFeedback>
-              <TextInput
-                placeholder="Add a comment"
-                numberOfLines={5}
-                placeholderTextColor="grey"
-                multiline={true}
-                onChangeText={e => {
-                  setCommentText(e);
-                }}
-                textAlignVertical="top"
-                value={commentText}
-                style={styles.textInputStyles}
-              />
-            </TouchableWithoutFeedback>
-          </View>
-          {isCommenting ? (
-            <View style={[styles.commentBtn, (isCommenting && isIOS && {width:width *0.35})]}>
-              <AppText
-                nol={1}
-                family="Poppins-SemiBold"
-                size={hp('1.7%')}
-                color="white"
-                Label={'Commenting...'}
-              />
+            <View style={styles.shadowContainerForIos}>
+              <View style={styles.commentBoxContainer}>
+                <Avatar
+                  size="small"
+                  source={
+                    userReducer?.data?.user_image
+                      ? {
+                          uri: `${imageUrl}/${userReducer?.data?.user_image}`,
+                        }
+                      : require('../../Assets/Images/maroon-dp2.jpeg')
+                  }
+                />
+                <TouchableWithoutFeedback>
+                  <TextInput
+                    placeholder="Add a comment"
+                    numberOfLines={5}
+                    placeholderTextColor="grey"
+                    multiline={true}
+                    onChangeText={e => {
+                      setCommentText(e);
+                    }}
+                    textAlignVertical="top"
+                    value={commentText}
+                    style={styles.textInputStyles}
+                  />
+                </TouchableWithoutFeedback>
+              </View>
             </View>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.commentBtn}
-              onPress={_onPressComment}>
-              <AppText
-                nol={1}
-                family="Poppins-SemiBold"
-                size={hp('1.7%')}
-                color="white"
-                Label={'Comment'}
-              />
-            </TouchableOpacity>
-          )}
-        </>
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          //   ListHeaderComponent={() => (
-          //     <>
-          //       <View style={styles.commentBoxContainer}>
-          //         <Avatar
-          //           size="small"
-          //           source={
-          //             userReducer?.data?.user_coverImage
-          //               ? {
-          //                   uri: `${imageUrl}/${userReducer?.data?.user_coverImage}`,
-          //                 }
-          //               : require('../../Assets/Images/maroon-dp2.jpeg')
-          //           }
-          //         />
-          //         <TouchableWithoutFeedback>
-          //         <TextInput
-          //           placeholder="Add a comment"
-          //           numberOfLines={5}
-          //           placeholderTextColor="grey"
-          //           multiline={true}
-          //           onChangeText={e => {
-          //             setCommentText(e);
-          //           }}
-          //           textAlignVertical="top"
-          //           value={commentText}
-          //           style={styles.textInputStyles}
-          //         />
-          //         </TouchableWithoutFeedback>
-          //       </View>
-          //       {isCommenting ? (
-          //         <LottieView
-          //           style={{
-          //             width: width * 0.2,
-          //             height: height * 0.1,
-          //             marginLeft: width * 0.39,
-          //           }}
-          //           source={require('../../Assets/Lottie/red-loader.json')}
-          //           autoPlay
-          //           loop
-          //         />
-          //       ) : (
-          //         <TouchableOpacity
-          //           activeOpacity={0.7}
-          //           style={styles.commentBtn}
-          //           onPress={_onPressComment}>
-          //           <AppText
-          //             nol={1}
-          //             family="Poppins-SemiBold"
-          //             size={hp('1.7%')}
-          //             color="white"
-          //             Label={'Comment'}
-          //           />
-          //         </TouchableOpacity>
-          //       )}
-          //     </>
-          //   )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: height * 0.14}}
-          data={postComments}
-          keyExtractor={(item, index) => index}
-          renderItem={({item, index}) => {
-            return (
-              <Comment
-                img={item?.user_image}
-                name={item?.user_name}
-                time={moment(item?.created_at).fromNow()}
-                message={item?.comment}
-              />
-            );
-          }}
-        />
-      </ScrollView>
+            {isCommenting ? (
+              <View
+                style={[
+                  styles.commentBtn,
+                  isCommenting && isIOS && {width: width * 0.35},
+                ]}>
+                <AppText
+                  nol={1}
+                  family="Poppins-SemiBold"
+                  size={hp('1.7%')}
+                  color="white"
+                  Label={'Commenting...'}
+                />
+              </View>
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.commentBtn}
+                onPress={_onPressComment}>
+                <AppText
+                  nol={1}
+                  family="Poppins-SemiBold"
+                  size={hp('1.7%')}
+                  color="white"
+                  Label={'Comment'}
+                />
+              </TouchableOpacity>
+            )}
+          </>
+        }
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: height * 0.14}}
+        data={postComments}
+        keyExtractor={(item, index) => index}
+        renderItem={({item, index}) => {
+          return (
+            <Comment
+              item={item}
+              img={item?.user_image || item?.user?.user_image}
+              name={item?.user_name || item?.user?.user_name}
+              time={moment(item?.created_at).fromNow()}
+              message={item?.comment}
+            />
+          );
+        }}
+      />
     </View>
   );
 };
@@ -305,5 +260,15 @@ const styles = StyleSheet.create({
     top: -3,
     color: 'grey',
     fontSize: hp('1.9%'),
+    minHeight: height * 0.07,
+    height:height * 0.1
+  },
+  shadowContainerForIos: {
+    flex: 1,
+    // No backgroundColor
+    shadowColor: '#000',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 0.4,
+    shadowRadius: 7,
   },
 });

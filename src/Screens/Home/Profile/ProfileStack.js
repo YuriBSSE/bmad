@@ -22,8 +22,9 @@ function ProfileStack({navigation}) {
         name="Drinks"
         options={({route}) => ({
           headerStyle: {
-            borderBottomColor: 'grey',
-            borderBottomWidth: 0.7,
+            borderBottomColor: 'white',
+            // borderBottomWidth: 5,
+            // borderBottomWidth: 0.7,
             height: 110,
             backgroundColor: themeRed,
           },

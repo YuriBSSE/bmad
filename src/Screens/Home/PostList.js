@@ -39,22 +39,17 @@ const PostList = ({
   userReducer,
   _onPressHeart,
 }) => {
-  const IMAGES = Img?.map(ele => `${imageUrl}/${ele}`);
+  const IMAGES = item?.post_url?.map(ele => `${imageUrl}/${ele}`);
 
   const route = useRoute();
-
   const routeName = route?.name;
+// console.log(IMAGES,"IMAGES",route?.name); 
   // const isIos =
   return (
     <View style={styles.postContainer}>
-      <View style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
-        <View
-          style={{
-            justifyContent: 'flex-start',
-            flexDirection: 'row',
-            // backgroundColor: 'green',
-            width:width * 0.93,
-          }}>
+      {/* Post Info View */}
+      <View style={styles.postInfoOuterView}>
+        <View style={styles.postInfoInnerView}>
           <Avatar
             size="medium"
             source={
@@ -62,21 +57,13 @@ const PostList = ({
                 ? {
                     uri: `${imageUrl}/${ProfileImg}`,
                   }
-                : require('../../Assets/Images/maroon-dp2.jpeg')
+                : require('../../Assets/Images/placeholderImage.png')
             }
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              padding: 4,
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              left: 5,
-              width: width * 0.78,
-              // backgroundColor: 'red',
-            }}>
-            <View
-              style={{justifyContent: 'flex-start', flexDirection: 'column'}}>
+
+          {/* Username Time And Like Comment View  */}
+          <View style={styles.nameDateIconsView}>
+            <View style={styles.nameAndDateView}>
               <AppText
                 nol={1}
                 textAlign="left"
@@ -98,7 +85,7 @@ const PostList = ({
               style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <View style={{flexDirection: 'row'}}>
                 <View style={{paddingRight: 5}}>
-                  <TouchableOpacity onPress={() => _onPressHeart(item)}>
+                  <TouchableOpacity onPress={() => _onPressHeart(item)} activeOpacity={0.9}>
                     {item?.is_like === 1 ? (
                       <Icon name="heart" size={18} color="#B01125" />
                     ) : (
@@ -117,7 +104,7 @@ const PostList = ({
               </View>
               <TouchableOpacity
                 style={{flexDirection: 'row', left: 5}}
-                activeOpacity={0.7}
+                activeOpacity={0.9}
                 onPress={() => {
                   if (routeName === 'post') {
                     return;
@@ -148,6 +135,8 @@ const PostList = ({
             </View>
           </View>
         </View>
+
+        {/* Post Description View */}
         <TouchableOpacity
           onPress={() => {
             if (routeName === 'post') {
@@ -164,8 +153,7 @@ const PostList = ({
               item: item,
             });
           }}>
-          <View
-            style={{justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+          <View style={styles.descriptionView}>
             <AppText
               nol={12}
               textAlign="left"
@@ -182,18 +170,8 @@ const PostList = ({
         </TouchableOpacity>
       </View>
 
-      <View
-        style={{
-          justifyContent: 'center',
-          flexDirection: 'column',
-          top: height * 0.022,
-          width: width,
-          alignItems: 'center',
-          alignSelf: 'center',
-          height: height * 0.32,
-          // marginBottom: 10,
-          // backgroundColor:'red',
-        }}>
+      {/* Photos Slider  */}
+      <View style={styles.photosView}>
         <FlatListSlider
           data={IMAGES}
           width={275}
@@ -209,7 +187,7 @@ const PostList = ({
           style={{
             width: width * 0.95,
             height: 0.4,
-            backgroundColor: 'grey',
+            backgroundColor: 'silver',
             top: -3,
           }}
         />
@@ -223,17 +201,56 @@ const mapStateToProps = ({userReducer}) => {
 };
 
 const styles = StyleSheet.create({
+  postInfoOuterView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+  },
+  descriptionView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  nameDateIconsView: {
+    flexDirection: 'row',
+    padding: 4,
+    // backgroundColor: 'red',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    left: 5,
+    width: width * 0.78,
+    // backgroundColor: 'red',
+  },
   postContainer: {
     // height: height*0.5,
     flexDirection: 'column',
     justifyContent: 'center',
     paddingHorizontal: width * 0.008,
     // padding: 4,
-    paddingVertical: height * 0.02,
+    paddingVertical: height * 0.035,
     width: width * 0.95,
     alignItems: 'center',
     alignContent: 'center',
     alignSelf: 'center',
+  },
+  photosView: {
+    justifyContent: 'center',
+    flexDirection: 'column',
+    top: height * 0.022,
+    width: width,
+    alignItems: 'center',
+    alignSelf: 'center',
+    height: height * 0.32,
+    // marginBottom: 10,
+    // backgroundColor:'red',
+  },
+  nameAndDateView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+  },
+  postInfoInnerView: {
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    // backgroundColor: 'green',
+    width: width * 0.93,
   },
 });
 export default connect(mapStateToProps, actions)(PostList);

@@ -16,7 +16,7 @@ import MessageIcon1 from '../../Components/MessageIcon1';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {themeRed} from '../../Assets/Colors/Colors';
 import ProfileScreen from '../NearMe/ProfileScreen';
-
+import Icon2 from 'react-native-vector-icons/Ionicons';
 LogBox.ignoreAllLogs([
   'Non-serializable values were found in the navigation state',
 ]);
@@ -86,18 +86,34 @@ function HomeStack({navigation}) {
             </Text>
           ),
           headerTransparent: false,
+          // headerLeft: () => (
+          //   <TouchableOpacity
+          //     onPress={() => navigation.openDrawer()}
+          //     style={{}}>
+          //     <View style={{padding: 10, top: 3}}>
+          //       <Image
+          //         resizeMode="contain"
+          //         style={{height: 25, width: 25}}
+          //         source={require('./../../Assets/Images/menu1.png')}
+          //       />
+          //     </View>
+          //   </TouchableOpacity>
+          // ),
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.openDrawer()}
-              style={{}}>
-              <View style={{padding: 10, top: 3}}>
-                <Image
-                  resizeMode="contain"
-                  style={{height: 25, width: 25}}
-                  source={require('./../../Assets/Images/menu1.png')}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={{left: 20}}>
+              <TouchableOpacity
+                onPress={
+                  () =>
+                    navigation.navigate('HOME', {
+                      screen: 'home',
+                      initial: false,
+                    })
+
+                  // console.log("dsdasds")
+                }>
+                <Icon2 name="arrow-back" size={25} color="white" />
+              </TouchableOpacity>
+            </View>
           ),
           headerRight: () => <MessageIcon navigation={navigation} />,
         })}

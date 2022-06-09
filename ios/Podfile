@@ -3,7 +3,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '13.0'
-$FirebaseSDKVersion = '8.10.0'
+$FirebaseSDKVersion = '8.15.0'
+$RNFirebaseAsStaticFramework = true
 
 target 'Bmad' do
   config = use_native_modules!

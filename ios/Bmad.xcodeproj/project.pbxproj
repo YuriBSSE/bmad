@@ -12,6 +12,7 @@
 		607AB65B03906EB8C3475F1E /* libPods-Bmad-BmadTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF25AF342CB7263626680AD /* libPods-Bmad-BmadTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C530B88627F1E85400DE197C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C530B88527F1E7E800DE197C /* GoogleService-Info.plist */; };
+		C55B2E61284E0392005D3471 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C55B2E60284E0392005D3471 /* UserNotifications.framework */; };
 		C56BDB3B27D0B4DB00D100A0 /* BmadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56BDB3A27D0B4DB00D100A0 /* BmadTests.swift */; };
 		C56BDB6327D0DE1D00D100A0 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C7BB71D4395459E8E9556FE /* Poppins-Black.ttf */; };
 		C56BDB6427D0DE2000D100A0 /* Poppins-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C625186D2B646F7B0AC3D0F /* Poppins-BlackItalic.ttf */; };
@@ -89,6 +90,7 @@
 		B501D53AABEF49859BD11843 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/Assets/Fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		C054EAACE6FAAD02021E0F95 /* Pods-Bmad-BmadTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bmad-BmadTests.release.xcconfig"; path = "Target Support Files/Pods-Bmad-BmadTests/Pods-Bmad-BmadTests.release.xcconfig"; sourceTree = "<group>"; };
 		C530B88527F1E7E800DE197C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Bmad/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C55B2E60284E0392005D3471 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		C56BDB3827D0B4DB00D100A0 /* BmadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BmadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C56BDB3A27D0B4DB00D100A0 /* BmadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BmadTests.swift; sourceTree = "<group>"; };
 		C56BDBA827D248B700D100A0 /* Bmad.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Bmad.entitlements; path = Bmad/Bmad.entitlements; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C55B2E61284E0392005D3471 /* UserNotifications.framework in Frameworks */,
 				C56BDBAA27D248C800D100A0 /* MapKit.framework in Frameworks */,
 				07FC6DFF7DA0A1D53B046DA6 /* libPods-Bmad.a in Frameworks */,
 			);
@@ -159,6 +162,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C55B2E60284E0392005D3471 /* UserNotifications.framework */,
 				C56BDBA927D248C800D100A0 /* MapKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				20C5BB1DFB06798672C82F71 /* libPods-Bmad.a */,

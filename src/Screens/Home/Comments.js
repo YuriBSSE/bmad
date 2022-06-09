@@ -16,11 +16,9 @@ import {useRoute} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window');
 
 const Comment = ({img, item,name, time, message}) => {
-   console.log(`${imageUrl}/${item?.user_image}`)
   const route = useRoute();
   const routeName = route?.name;
-  // console.log(route.name);
-  //  console.log(route.params)
+ 
   return (
     <View
       style={[
@@ -28,7 +26,6 @@ const Comment = ({img, item,name, time, message}) => {
         {
           flexDirection: 'row',
           width: width * 0.9,
-
           marginVertical: height * 0.01,
           // padding: 5,
           borderRadius: 5,
@@ -37,8 +34,7 @@ const Comment = ({img, item,name, time, message}) => {
           justifyContent: 'center',
           flexDirection: 'column',
           paddingVertical: 4,
-
-          alignSelf: 'flex-end',
+          alignSelf: 'center',
           alignItems: 'center',
         },
       ]}>

@@ -42,6 +42,7 @@ export const NotificationList = ({
   type,
   Action,
 }) => {
+ console.log(Img)
   return (
     <TouchableOpacity
       activeOpacity={0.9}

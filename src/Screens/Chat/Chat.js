@@ -244,29 +244,30 @@ function Chat({route, getMessages, messagesReducer, sendMessage, userReducer}) {
                     backgroundColor: themeRed,
                     marginRight: 5,
                     marginVertical: 5,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 7,
-                    },
-                    shadowOpacity: 0.41,
-                    shadowRadius: 9.11,
+                    // shadowColor: '#000',
+                    // shadowOffset: {
+                    //   width: 0,
+                    //   height: 7,
+                    // },
+                    // shadowOpacity: 0.41,
+                    // shadowRadius: 9.11,
 
-                    elevation: 14,
+                    // elevation: 14,
+                    // borderWidth:1, borderColor:'grey'
                   },
                   left: {
                     color: 'white',
                     backgroundColor: 'white',
                     marginVertical: 5,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 7,
-                    },
-                    shadowOpacity: 0.41,
-                    shadowRadius: 9.11,
-
-                    elevation: 14,
+                    // shadowColor: '#000',
+                    // shadowOffset: {
+                    //   width: 0,
+                    //   height: 7,
+                    // },
+                    // shadowOpacity: 0.41,
+                    // shadowRadius: 9.11,
+                    borderWidth:1, borderColor:'silver'
+                    // elevation: 14,
                   },
                 }}
               />

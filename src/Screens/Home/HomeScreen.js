@@ -32,7 +32,7 @@ const {width, height} = Dimensions.get('window');
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
-
+const isIos = Platform.OS === 'ios';
 const HomeScreen = ({
   coords,
   navigation,
@@ -51,7 +51,7 @@ const HomeScreen = ({
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [nearmeUsers, setNearmeUsers] = useState([]);
-  const isIos = Platform.OS === 'ios';
+
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -205,8 +205,7 @@ const HomeScreen = ({
         />
       </View>
     );
-  }
-   else {
+  } else {
     return (
       <View style={styles.container}>
         <StatusBar translucent backgroundColor="transparent" />
@@ -291,7 +290,7 @@ const HomeScreen = ({
                 <View
                   style={[
                     styles.cardContainer,
-                    isIos && {height: height * 0.15},
+                    // isIos && {height: height * 0.15},
                   ]}>
                   <View style={styles.peopleNearContainer}>
                     <AppText
@@ -310,7 +309,7 @@ const HomeScreen = ({
                   /> */}
                   </View>
                   <FlatList
-                    contentContainerStyle={styles.innerFlatlistContentStyle}
+                    // contentContainerStyle={styles.innerFlatlistContentStyle}
                     showsHorizontalScrollIndicator={false}
                     data={nearmeUsers}
                     horizontal
@@ -320,27 +319,30 @@ const HomeScreen = ({
                       return (
                         <TouchableOpacity
                           key={index}
-                          style={[styles.cardHeaderStyle]}
+                          style={[
+                            styles.cardHeaderStyle,
+                            isIos && {marginTop: 5},
+                          ]}
                           onPress={() => {
                             navigation.navigate('profile', {userData: item});
                           }}
                           activeOpacity={0.7}>
                           {/* <View style={{bottom: 10, width: 50}}>
-                      <AppText
-                        nol={1}
-                        textAlign="center"
-                        family="Poppins-Regular"
-                        size={hp('1.5%')}
-                        color="black"
-                        Label={item?.user_name}
-                      />
-                    </View> */}
+                              <AppText
+                                nol={1}
+                                textAlign="center"
+                                family="Poppins-Regular"
+                                size={hp('1.5%')}
+                                color="black"
+                                Label={item?.user_name}
+                              />
+                            </View> */}
                           {item?.user_image === undefined ||
                           item?.user_image === null ? (
                             <Avatar
                               size="medium"
                               rounded
-                              source={require('./../../Assets/Images/maroon-dp2.jpeg')}
+                              source={require('./../../Assets/Images/placeholderImage.png')}
                               containerStyle={
                                 {
                                   // borderColor: 'grey',
@@ -359,7 +361,10 @@ const HomeScreen = ({
                             />
                           )}
                           {item?.distance != undefined ? (
-                            <View style={{top: 7}}>
+                            <View
+                              style={{
+                                marginTop: height * 0.006,
+                              }}>
                               <AppText
                                 nol={1}
                                 textAlign="left"
@@ -472,29 +477,39 @@ var styles = StyleSheet.create({
     width: width,
     elevation: 8,
     backgroundColor: 'white',
-    height: height * 0.17,
-    marginBottom: 10,
+    // height: isIos ? height * 0.16 : height * 0.16,
+    paddingBottom: isIos ? height * -0.01 : -height * 0.01,
+
+    // marginBottom: 10,
   },
   peopleNearContainer: {
     justifyContent: 'space-between',
-    paddingTop: 10,
+    // paddingVertical: height * 0.011,
+    paddingTop: height * 0.011,
+    // marginBottom:5,
+    // paddingBottom:isIos ? height * -0.01 : -height * 0.01,
+    // height :height * 0.04,
+    // paddingBottom: height * 0.008,
     flexDirection: 'row',
+    // backgroundColor: 'green',
     width: width * 0.92,
-    alignContent: 'space-between',
+    // alignContent: 'space-between',
   },
   innerFlatlistContentStyle: {
     alignSelf: 'flex-start',
-    marginVertical: 5,
-    alignContent: 'flex-start',
+    // paddingVertical: height * 0.02,
     alignItems: 'flex-start',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    // backgroundColor: 'red',
   },
   cardHeaderStyle: {
-    paddingBottom: 6,
-    paddingHorizontal: 10,
+    // paddingVertical: height * 0.01,
+    paddingBottom: isIos ? 10 : height * 0.02,
+    paddingHorizontal: width * 0.02,
+    // marginBottom: isIos ? 10:0,
     justifyContent: 'center',
     flexDirection: 'column',
+    // backgroundColor: 'yellow',
     alignItems: 'center',
   },
 });

@@ -235,14 +235,14 @@ const ProfileScreen = ({
             /> */}
           </View>
           <View style={{marginLeft: width * 0.05}}>
-            <AppText
+            {/* <AppText
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
               size={width * 0.037}
               color="white"
               Label={`${nearMeUserData?.user_gender[0]}`}
-            />
+            /> */}
             <AppText
               nol={1}
               textAlign="left"
