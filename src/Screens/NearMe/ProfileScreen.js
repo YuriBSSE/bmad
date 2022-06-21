@@ -50,7 +50,7 @@ const ProfileScreen = ({
   const [refreshing, setRefreshing] = React.useState(false);
   const isFocused = useIsFocused();
   const [actionLoader, setActionLoader] = useState(false);
-  const USER_ID = userReducer?.data?.user_id;
+  const LOGGED_IN_USER = userReducer?.data?.user_id;
   const profileData = route?.params?.userData;
   const isIOS = Platform.OS === 'ios';
 
@@ -93,7 +93,7 @@ const ProfileScreen = ({
     navigation.navigate('chats');
 
     // const apiData = {
-    //   sender: USER_ID,
+    //   sender: LOGGED_IN_USER,
     //   receiver: nearMeUserData?.user_id,
     // };
     // await createConversation(apiData, nearMeUserData, _onSuccess);
@@ -116,7 +116,7 @@ const ProfileScreen = ({
 
   const _onPressIgnoreInvite = async (item, index) => {
     const data = {
-      user: USER_ID,
+      user: LOGGED_IN_USER,
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'Ignore data');
@@ -125,7 +125,7 @@ const ProfileScreen = ({
 
   const _onPressAcceptButton = async (item, index) => {
     const data = {
-      user: USER_ID,
+      user: LOGGED_IN_USER,
       friend: nearMeUserData?.user_id,
     };
     console.log(data, 'accept data');
@@ -161,6 +161,8 @@ const ProfileScreen = ({
       getProfileData();
     }
   }, [isFocused]);
+
+  console.log(nearMeUserData?.status,nearMeUserData?.sendBy)
   if (loading) {
     return (
       <View style={styles.loaderView}>
@@ -338,7 +340,7 @@ const ProfileScreen = ({
             {/* Connect Button  */}
 
             {/* Cancel Request Sent By Me  */}
-            {nearMeUserData?.sendBy === USER_ID &&
+            {nearMeUserData?.sendBy === LOGGED_IN_USER &&
               nearMeUserData?.status === 'pending' && (
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -405,7 +407,7 @@ const ProfileScreen = ({
             )}
 
             {/* Accept Button  */}
-            {nearMeUserData?.sendBy !== USER_ID &&
+            {nearMeUserData?.sendBy !== LOGGED_IN_USER &&
               nearMeUserData?.status === 'pending' && (
                 <View>
                   <TouchableOpacity
@@ -427,7 +429,7 @@ const ProfileScreen = ({
               )}
 
             {/* Ignore Button  */}
-            {nearMeUserData?.sendBy !== USER_ID &&
+            {nearMeUserData?.sendBy !== LOGGED_IN_USER &&
               nearMeUserData?.status === 'pending' && (
                 <View>
                   <TouchableOpacity

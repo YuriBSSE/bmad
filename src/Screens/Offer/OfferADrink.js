@@ -136,8 +136,8 @@ const OfferADrink = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={hp('2.5%')}
-              color="black"
+              size={width * 0.045}
+              color={'white'}
               Label={'Confirm'}
             />
           </TouchableOpacity>
@@ -149,8 +149,8 @@ const OfferADrink = ({
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
-              size={hp('2.5%')}
-              color="black"
+              size={width * 0.045}
+              color={'white'}
               Label={'Later'}
             />
           </TouchableOpacity>
@@ -175,16 +175,16 @@ var styles = StyleSheet.create({
   },
   pleaseWait: {
     color: 'white',
-    fontSize: width * 0.04,
+    fontSize: width * 0.045,
     position: 'absolute',
-    bottom: height * 0.16,
-    left: width * 0.37,
+    bottom: height * 0.1,
+    // left: width * 0.37,
     fontFamily: 'Poppins-Bold',
   },
   lottieStyles: {
     position: 'absolute',
-    bottom: height * 0.05,
-    left: width * 0.15,
+    bottom: height * 0.02,
+    // left: width * 0.15,
     // backgroundColor:'white',
     width: width * 0.4,
     height: height * 0.3,
@@ -199,8 +199,8 @@ var styles = StyleSheet.create({
     position: 'absolute',
   },
   imageStyles: {
-    width: 200,
-    height: 200,
+    width: width * 0.44,
+    height: height * 0.24,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: themeRed,
@@ -238,11 +238,11 @@ var styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   touchableOpacity: {
-    backgroundColor: 'white',
-    borderWidth: 0,
+    backgroundColor: themeRed,
+    borderWidth: 2,
     borderColor: 'white',
-    width: wp('60%'),
-    height: hp('9%'),
+    width: width * 0.5,
+    height: height * 0.07,
     justifyContent: 'center',
     borderRadius: 35,
     alignItems: 'center',
@@ -250,7 +250,7 @@ var styles = StyleSheet.create({
   touchableOpacityText: {
     color: 'black',
     fontFamily: 'Poppins-Bold',
-    fontSize: hp('2'),
+    fontSize: width * 0.04,
     textAlign: 'center',
   },
 });

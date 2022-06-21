@@ -235,7 +235,7 @@ const HomeScreen = ({
                       alignItems: 'center',
                       marginTop:
                         nearMeUsers?.length === 0 && isIos
-                          ? height * 0.16
+                          ? height * 0.1
                           : height * 0.05,
                     }}>
                     <LottieView

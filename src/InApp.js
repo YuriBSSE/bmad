@@ -99,41 +99,42 @@ const MainAppScreens = ({
 
       const unsubscribe = messaging().onMessage(async remoteMessage => {
         console.log(remoteMessage, 'notification');
-        const user = await JSON.parse(remoteMessage?.data?.user);
-        const post = await JSON.parse(remoteMessage?.data?.post);
-        const notiData = await JSON.parse(remoteMessage?.data?.notiData);
+        // const user = await JSON.parse(remoteMessage?.data?.user);
+        // const post = await JSON.parse(remoteMessage?.data?.post);
+        // const notiData = await JSON.parse(remoteMessage?.data?.notiData);
 
         //generrate random string
         const randomString = Math.random().toString(36).substring(7);
 
-        const data = {
-          id: randomString,
-          user: {
-            user_id: user?.user_id,
-            user_name: user?.user_name,
-            user_email: user?.user_email,
-            coins: user?.coins,
-            user_coverImage: user?.user_coverImage,
-            user_image: user?.user_image,
-          },
+        // const data = {
+        //   id: randomString,
+        //   user: {
+        //     user_id: user?.user_id,
+        //     user_name: user?.user_name,
+        //     user_email: user?.user_email,
+        //     coins: user?.coins,
+        //     user_coverImage: user?.user_coverImage,
+        //     user_image: user?.user_image,
+        //   },
 
-          type: remoteMessage?.data?.type,
-          post: {
-            post_id: post?.post_id,
-            user_id: post?.user_id,
-            post_title: post?.post_title,
-            post_url: JSON.parse(post?.post_url),
-            post_desc: post?.post_desc,
-            post_type: post?.post_type,
-            post_status: 1,
-            post_created_at: notiData?.post_created_at,
-            post_updated_at: post?.post_updated_at,
-          },
-          comment: remoteMessage?.data?.comment,
+        //   type: remoteMessage?.data?.type,
+        //   post: {
+        //     post_id: post?.post_id,
+        //     user_id: post?.user_id,
+        //     post_title: post?.post_title,
+        //     post_url: JSON.parse(post?.post_url),
+        //     post_desc: post?.post_desc,
+        //     post_type: post?.post_type,
+        //     post_status: 1,
+        //     post_created_at: notiData?.post_created_at,
+        //     post_updated_at: post?.post_updated_at,
+        //   },
+        //   comment: remoteMessage?.data?.comment,
 
-          created_at: notiData?.created_at,
-          send_to: notiData?.send_to,
-        };
+        //   created_at: notiData?.created_at,
+        //   send_to: notiData?.send_to,
+        // };
+
         // Call api to get notifications data
         if (remoteMessage?.data?.type == 'likePost') {
           getNotifications(USER_ID);
