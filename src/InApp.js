@@ -63,7 +63,8 @@ const MainAppScreens = ({
   const USER_ID = userReducer?.data?.user_id;
 
   useEffect(() => {
-    socket.current = io('http://webprojectmockup.com:9444');
+    // @ts-ignore
+    socket.current = io('https://9981-110-93-244-255.ap.ngrok.io');
     // console.log("=================",socket.current)
     saveSocketRef(socket.current);
     // registerAppWithFCM()

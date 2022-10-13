@@ -15,6 +15,7 @@ import * as actions from './Store/Actions';
 import {useRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import BmadStack from './Screens/BMAD/BmadStack';
 const {width, height} = Dimensions.get('window');
 
 const MyTabs = ({
@@ -24,7 +25,7 @@ const MyTabs = ({
   resetTotalUnreadNotificationsCount,
 }) => {
   const route = useRoute();
-  
+
   const Tab = createBottomTabNavigator();
   const [hasNewRequests, setHasNewRequests] = useState(false);
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
@@ -155,8 +156,8 @@ const MyTabs = ({
           tabBarBadge:
             // routeName === 'notification'
             //   ? null
-            //   : 
-              hasNewRequests && notificationsReducer?.unreadNoti > 0
+            //   :
+            hasNewRequests && notificationsReducer?.unreadNoti > 0
               ? notificationsReducer?.unreadNoti
               : null,
           tabBarBadgeStyle: {color: 'white', backgroundColor: themeRed},
@@ -241,6 +242,7 @@ const MyTabs = ({
           tabBarIcon: () => null,
           tabBarLabel: '',
           tabBarAccessibilityLabel: '',
+          // @ts-ignore
           tabBarVisibilityAnimationConfig: () => null,
           tabBarButton: () => null,
         }}

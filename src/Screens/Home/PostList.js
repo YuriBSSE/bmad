@@ -171,6 +171,7 @@ const PostList = ({
       </View>
 
       {/* Photos Slider  */}
+      {console.log(IMAGES, "000")}
       <View style={styles.photosView}>
         <FlatListSlider
           data={IMAGES}

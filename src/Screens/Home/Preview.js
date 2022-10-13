@@ -10,24 +10,31 @@ import {
 const {width, height} = Dimensions.get('window');
 
 export default Preview = ({
-  style,
-  item,
-  imageKey,
-  onPress,
-  index,
-  active,
-  local,
+item
 }) => {
-  
+  console.log(item, "IMAGE");
   return (
     <View style={styles.videoContainer}>
       <View style={[styles.imageContainer, styles.shadow]}>
+       
+      {
+        item ?
         <Image
           // resizeMethod="cover"
           style={styles.videoPreview}
-          source={{uri: 'http://webprojectmockup.com:9443/post_file/post_file_1652965539266.jpg'}}
-          resizeMode='stretch'
-        />
+          source={{uri: item}}
+          resizeMode='cover'
+        />:
+        <Image
+        // resizeMethod="cover"
+        style={styles.videoPreview}
+        source={{uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}}
+        resizeMode='cover'
+      />
+
+      }
+        
+       
       </View>
     </View>
   );

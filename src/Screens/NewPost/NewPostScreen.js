@@ -258,6 +258,7 @@ const NewPostScreen = ({
                 />
               </View>
             </TouchableOpacity>
+            <View style={{marginTop: 10, flexDirection:'row'}}> 
             {filePath != null
               ? filePath.map((item, index) => {
                   return (
@@ -268,12 +269,13 @@ const NewPostScreen = ({
                         justifyContent: 'flex-start',
                         alignItems: 'flex-start',
                         alignContent: 'center',
-                        padding: 12,
+                        // padding: 12,
                         height: 200,
                         width: 200,
+                        // borderWidth: 1, borderColor:'grey'
                       }}>
                       <Image
-                        resizeMode="stretch"
+                        resizeMode='cover'
                         key={index}
                         source={item}
                         style={{
@@ -281,7 +283,10 @@ const NewPostScreen = ({
                           height: 200,
                           marginHorizontal: 3,
                           // top: 8,
+                          
                           backgroundColor: 'white',
+                          borderWidth: 1,
+                          borderColor:'#e8e8e8',
                           borderRadius: 3,
                         }}
                       />
@@ -289,6 +294,7 @@ const NewPostScreen = ({
                   );
                 })
               : null}
+              </View>
           </ScrollView>
         </View>
       </View>

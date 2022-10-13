@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useEffect} from 'react';
 import {
   StyleSheet,
@@ -136,7 +137,7 @@ const BmadScreen = ({navigation, route, props, userCoordsReducer}) => {
   return (
     <View style={styles.container}>
       <MapView
-        minZoomLevel={16}
+        // minZoomLevel={16}
         initialRegion={state.region}
         onMarkerDragEnd={onRegionChange}
         ref={_map}
