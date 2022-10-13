@@ -45,14 +45,14 @@ const BMAD = ({navigation}) => {
             nol={2}
             textAlign="center"
             family="Poppins-SemiBold"
-            size={height * 0.028}
+            size={height * 0.022}
             color="white"
             Label={`My Profile`}
           />
           <IconComp
             type={'FontAwesome'}
             iconName="user-circle-o"
-            passedStyle={{color: 'white', fontSize: width * 0.064}}
+            passedStyle={{color: 'white', fontSize: width * 0.05}}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -63,14 +63,14 @@ const BMAD = ({navigation}) => {
             nol={2}
             textAlign="center"
             family="Poppins-SemiBold"
-            size={height * 0.028}
+            size={height * 0.022}
             color="white"
             Label={`Buy Drinks`}
           />
           <IconComp
             type={'Entypo'}
             iconName="drink"
-            passedStyle={{color: 'white', fontSize: width * 0.064}}
+            passedStyle={{color: 'white', fontSize: width * 0.05}}
           />
         </TouchableOpacity>
 
@@ -82,14 +82,14 @@ const BMAD = ({navigation}) => {
             nol={2}
             textAlign="center"
             family="Poppins-SemiBold"
-            size={height * 0.028}
+            size={height * 0.022}
             color="white"
             Label={`Change Password`}
           />
           <IconComp
             type={'MaterialCommunityIcons'}
             iconName="form-textbox-password"
-            passedStyle={{color: 'white', fontSize: width * 0.064}}
+            passedStyle={{color: 'white', fontSize: width * 0.05}}
           />
         </TouchableOpacity>
       </SafeAreaView>
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: width * 0.05,
     alignSelf: 'center',
+    height: height * 0.075
   },
   container: {
     flex: 1,
