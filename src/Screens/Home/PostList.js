@@ -173,17 +173,20 @@ const PostList = ({
       {/* Photos Slider  */}
       {console.log(IMAGES, "000")}
       <View style={styles.photosView}>
+      <View style={{height: 30}} />
         <FlatListSlider
           data={IMAGES}
           width={275}
           autoscroll={false}
+          contentContainerStyle={{paddingHorizontal: 16}}
           component={<Preview />}
           // indicatorActiveWidth={30}
           loop={false}
-          contentContainerStyle={{paddingHorizontal: 0}}
+          separatorWidth={10}
+          // contentContainerStyle={{paddingHorizontal: 0}}
           animation={true}
         />
-        <View style={{marginTop: 20}} />
+        <View style={{height: 10}} />
         <View
           style={{
             width: width * 0.95,
@@ -240,6 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     height: height * 0.32,
+    // marginVertical: 10,
     // marginBottom: 10,
     // backgroundColor:'red',
   },

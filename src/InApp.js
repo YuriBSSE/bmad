@@ -64,7 +64,7 @@ const MainAppScreens = ({
 
   useEffect(() => {
     // @ts-ignore
-    socket.current = io('https://9981-110-93-244-255.ap.ngrok.io');
+    socket.current = io('https://4b70-110-93-244-255.ap.ngrok.io');
     // console.log("=================",socket.current)
     saveSocketRef(socket.current);
     // registerAppWithFCM()

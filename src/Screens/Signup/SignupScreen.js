@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useEffect, useState, useRef} from 'react';
 import {
   TouchableOpacity,
@@ -310,17 +311,22 @@ const SignupScreen = ({
                       ref={phoneInput}
                       defaultValue={value}
                       defaultCode="PK"
-                      // layout="first"
+                      layout="first"
                       onChangeText={text => {
                         setValue(text);
                       }}
                       onChangeFormattedText={text => {
                         setFormattedValue(text);
                       }}
-                      placeholder=" "
+                      placeholder=""
                       containerStyle={{
                         backgroundColor: 'rgba(52, 52, 52, 0.1)',
                         height: hp('6%'),
+                        
+                      }}
+                      textInputProps={{
+                        selectionColor:'white',
+                        placeholderTextColor:'white'
                       }}
                       textContainerStyle={{
                         backgroundColor: 'rgba(52, 52, 52, 0.1)',
@@ -338,8 +344,9 @@ const SignupScreen = ({
                       }}
                       flagButtonStyle={{color: 'white'}}
                       countryPickerButtonStyle={{color: 'white'}}
-                      withShadow
-                      withDarkTheme
+                      
+                      // withShadow
+                      // withDarkTheme
                       disableArrowIcon="false"
                     />
                   </View>
@@ -493,9 +500,9 @@ const SignupScreen = ({
                   <Logo />
 
                   {!modalVisible ? (
-                    <Heading Label="I Am a" />
+                   null
                   ) : (
-                    <Heading Label="Interested In" />
+                <Heading passedStyle={{color: 'white', textAlign:'center'}} title="Interested in" />
                   )}
                   {!modalVisible ? (
                     <TextSample Label="Kindly Select Your Gender" />
@@ -603,6 +610,7 @@ const SignupScreen = ({
           {/* </KeyboardAvoidingView> */}
 
           {/* User Interested In Modal  */}
+    
           <Modal
             animationType="fade"
             transparent={true}
@@ -612,6 +620,7 @@ const SignupScreen = ({
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
+           
                 <View
                   style={{
                     justifyContent: 'center',
@@ -656,7 +665,7 @@ const SignupScreen = ({
                       checkedTextColor="#ffffff"
                       width={50}
                       checkImageSource={require('./../../Assets/Images/Check.png')}
-                      circleBorderColor="#EFEFEF"
+                      circleBorderColor="grey"
                       circleBackgroundColor="#B01125"
                       onPress={() => {
                         if (checkedMale) {
@@ -715,7 +724,7 @@ const SignupScreen = ({
                       checkedTextColor="#ffffff"
                       width={50}
                       checkImageSource={require('./../../Assets/Images/Check.png')}
-                      circleBorderColor="#EFEFEF"
+                      circleBorderColor="grey"
                       circleBackgroundColor="#B01125"
                       onPress={() => {
                         if (checkedFemale) {
@@ -775,7 +784,7 @@ const SignupScreen = ({
                       checkedTextColor="#ffffff"
                       width={50}
                       checkImageSource={require('./../../Assets/Images/Check.png')}
-                      circleBorderColor="#EFEFEF"
+                      circleBorderColor="grey"
                       circleBackgroundColor="#B01125"
                       onPress={() => {
                         if (checkedLGBTQ) {

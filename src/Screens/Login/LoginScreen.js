@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useEffect, useState, useRef} from 'react';
 import {
   TouchableOpacity,
@@ -27,6 +28,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {connect} from 'react-redux';
 import * as actions from '../../Store/Actions';
 import SplashScreen from 'react-native-splash-screen';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 import Feather from 'react-native-vector-icons/Feather';
 const {width, height} = Dimensions.get('window');
 
@@ -51,8 +53,18 @@ const LoginScreen = ({navigation, route, loginUser}) => {
     //   ]);
     //   return;
     // }
-    setLoading(true);
-    await loginUser(username, password, onLoginFailed);
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username))
+    {
+      setLoading(true);
+      await loginUser(username, password, onLoginFailed);
+    }else{
+      showMessage({
+        message: 'Oh Snaps!',
+        description: 'Invalid Email Address',
+        danger: 'error',
+      });
+    }
+  
   };
 
   const onLoginFailed = () => {
@@ -142,7 +154,7 @@ const LoginScreen = ({navigation, route, loginUser}) => {
                 <TextInputFeild
                   placeholder="Email"
                   value={username}
-                  onchange={e => onChangeUsername(e.toLowerCase())}
+                  onchange={e => onChangeUsername(e)}
                   keyboardType="default"
                   secureTextEntry={false}
                 />

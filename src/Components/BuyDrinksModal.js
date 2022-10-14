@@ -55,13 +55,13 @@ const BuyDrinksModal = ({
           placeholderTextColor={'grey'}
           style={{
             backgroundColor: 'white',
-            width: width * 0.35,
+            width: width * 0.55,
             paddingHorizontal: width * 0.03,
             paddingBottom:height * 0.007,
             marginVertical: height * 0.02,
             fontFamily: 'Poppins-Medium',
             borderRadius: width * 0.008,
-            fontSize: width * 0.045,
+            fontSize: width * 0.030,
           }}
           onChangeText={e => {
             if (Number(e) <= 5) {

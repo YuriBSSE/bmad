@@ -180,7 +180,7 @@ const NearMeScreen = ({
       <View style={styles.container}>
         <MapView
           optimizeWaypoints={true}
-          minZoomLevel={16} // revert it back to 16 !!
+          // minZoomLevel={16} // revert it back to 16 !!
           onMarkerDragEnd={onRegionChange}
           ref={_map}
           initialRegion={state?.region}
@@ -217,7 +217,7 @@ const NearMeScreen = ({
               parseFloat(state?.region?.longitude)
             ).toString()}
             center={state?.region}
-            radius={100}
+            radius={2000}
             strokeWidth={2}
             strokeColor={themeRed}
             fillColor={'rgba(176,17,37,0.2)'}

@@ -27,6 +27,7 @@ import * as actions from '../../Store/Actions';
 import {connect} from 'react-redux';
 import {themeRed} from '../../Assets/Colors/Colors';
 import {useIsFocused} from '@react-navigation/native';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -314,6 +315,7 @@ const HomeScreen = ({
                     showsHorizontalScrollIndicator={false}
                     data={nearmeUsers}
                     horizontal
+             
                     keyExtractor={(item, index) => index}
                     renderItem={({item, index}) => {
                       // console.log(`${imageUrl}/${item?.user_image}`)
@@ -323,6 +325,7 @@ const HomeScreen = ({
                           style={[
                             styles.cardHeaderStyle,
                             isIos && {marginTop: 5},
+                         
                           ]}
                           onPress={() => {
                             navigation.navigate('profile', {userData: item});

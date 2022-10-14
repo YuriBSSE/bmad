@@ -46,9 +46,7 @@ function MessageStack({navigation}) {
               </View>
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <Icon name="dots-vertical" size={35} color="white" />
-          ),
+          headerRight: () => null
         })}
         component={MessageScreen}
       />

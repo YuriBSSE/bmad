@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useEffect, useState, useRef} from 'react';
 import {
   TouchableOpacity,
@@ -221,32 +222,44 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
   };
 
   const updateProfileChanges = async () => {
-    const data = {
-      user_name: username,
-      user_contact: phone_no,
-      user_id: ID,
-      user_lives: country,
-      user_image: userReducer?.data?.user_image,
-      imageObj: imageObject,
-    };
-
-    if (username && country && phone_no) {
-      if (usernameRegex.test(username)) {
-        setLoading(true);
-        await updateProfile(data, _onSuccess, _onFailed);
+    var numbersRegex = /^[0-9]+$/;
+    if(numbersRegex.test(value)){
+      const data = {
+        user_name: username,
+        user_contact: value,
+        user_id: ID,
+        user_lives: country,
+        user_image: userReducer?.data?.user_image,
+        imageObj: imageObject,
+      };
+  
+      if (username && country && phone_no) {
+        if (usernameRegex.test(username)) {
+          setLoading(true);
+          await updateProfile(data, _onSuccess, _onFailed);
+        } else {
+          showMessage({
+            message: ' Invalid Username, there might be any space.',
+            type: 'danger',
+          });
+        }
       } else {
         showMessage({
-          message: ' Invalid Username, there might be any space.',
+          message: 'All fields are required!',
+          // description: 'Invalid Credentials.',
           type: 'danger',
         });
       }
-    } else {
+
+    }else{
       showMessage({
-        message: 'All fields are required!',
+        message: 'Invalid Number',
         // description: 'Invalid Credentials.',
         type: 'danger',
       });
     }
+
+ 
   };
   const _onSuccess = () => {
     // setLoading(false);
@@ -421,9 +434,11 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
             // flagButtonStyle={{backgroundColor:'red'}}
             onChangeText={text => {
               setValue(text);
+              console.log(text,"NUMBER")
             }}
             onChangeFormattedText={text => {
               setPhone_no(text);
+              console.log(text, "text")
             }}
           />
 
@@ -432,7 +447,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           <CountryPicker
             containerButtonStyle={[
               styles.textInputLabel,
-              {padding: height * 0.01, color: 'black'},
+              {padding: height * 0.02, color: 'black'},
             ]}
             {...{
               countryCode,
@@ -443,6 +458,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
               withCallingCode,
               withEmoji,
             }}
+            
             visible={false}
             onSelect={t => {
               setCountryCode(t.cca2);

@@ -23,13 +23,13 @@ item
           // resizeMethod="cover"
           style={styles.videoPreview}
           source={{uri: item}}
-          resizeMode='cover'
+          resizeMode='contain'
         />:
         <Image
         // resizeMethod="cover"
         style={styles.videoPreview}
         source={{uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}}
-        resizeMode='cover'
+        resizeMode='contain'
       />
 
       }
@@ -44,10 +44,11 @@ const styles = StyleSheet.create({
   videoContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor:'white'
   },
   videoPreview: {
     width: width * 0.85,
-    height: height * 0.3,
+    height: height * 0.25,
     // borderRadius: 8,
     margin: width * 0.022,
   },
@@ -60,6 +61,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+
+    
   },
   shadow: {
     ...Platform.select({
@@ -68,10 +71,13 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.1,
         shadowRadius: 5,
+        backgroundColor: 'white'
       },
       android: {
         elevation: 5,
+        backgroundColor: 'white'
       },
+    
     }),
   },
 });

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useEffect, useState, useRef} from 'react';
 import {
   TouchableOpacity,
@@ -245,13 +246,14 @@ const ProfileScreen = ({
               color="white"
               Label={`${nearMeUserData?.user_gender[0]}`}
             /> */}
+
             <AppText
               nol={1}
               textAlign="left"
               family="Poppins-SemiBold"
               size={width * 0.037}
               color="white"
-              Label={`${nearMeUserData?.user_lives}`}
+              Label={nearMeUserData?.user_lives ? `${nearMeUserData?.user_lives}`: ""}
             />
           </View>
           {/* Profession View  */}
