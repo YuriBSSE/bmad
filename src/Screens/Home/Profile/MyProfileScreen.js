@@ -186,7 +186,8 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
   });
   const ID = userReducer?.data?.user_id;
 
-  const [countryCode, setCountryCode] = useState('FR');
+  const [countryCode, setCountryCode] = useState("AR");
+  const [flagName, setFlagName] = useState('flag-as');
   const [country, setCountry] = useState(userReducer?.data?.user_lives);
   const [withCountryNameButton, setWithCountryNameButton] = useState(false);
   const [imageObject, setImageObject] = useState(null);
@@ -231,6 +232,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
         user_lives: country,
         user_image: userReducer?.data?.user_image,
         imageObj: imageObject,
+        country_code: countryCode
       };
   
       if (username && country && phone_no) {
@@ -275,7 +277,13 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
 
   useEffect(() => {
     setUsername(userReducer?.data?.user_name);
+    if(userReducer?.data?.country_code){
+    
+      setCountryCode(userReducer?.data?.country_code)
+    }
   }, [userReducer?.data]);
+
+  console.log(userReducer?.data, "=================")
   return (
     <SafeAreaView style={styles.container}>
       {/* <StatusBar translucent backgroundColor="transparent" /> */}
@@ -356,7 +364,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           <View style={[styles.textContainer, isIOS && {top: height * 0.33}]}>
             <Text style={styles.nameStyles}>{`${
               username?.length > 17
-                ? `${username.substring(0, 17)}...`
+                ? `${username?.substring(0, 17)}...`
                 : username
             }`}</Text>
             <Text
@@ -461,6 +469,8 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
             
             visible={false}
             onSelect={t => {
+              console.log("T",t, "==============")
+              setFlagName(t.flag)
               setCountryCode(t.cca2);
               setCountry(t.name);
             }}

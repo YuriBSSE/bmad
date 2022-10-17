@@ -1314,25 +1314,24 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
       console.log('Old image going in api');
       // formData.append('post_file', data.user_image);
     }
+    console.log(data, "datadatadatadatadatadatadata")
+
+    formData.append('user_id', data.user_id);
     formData.append('user_name', data.user_name);
     formData.append('user_contact', data.user_contact);
     formData.append('user_lives', data.user_lives);
-    formData.append('user_id', data.user_id);
-    console.log(formData);
-    console.log(data.user_name);
-    console.log(data.user_image);
-    console.log(data.user_id);
-    console.log(data.user_contact);
-    // console.log(data.imageObj.mime);
+    formData.append('country_code', data.country_code);
+    console.log(formData, "formDataformDataformDataformDataformDataformDataformData");
+
     const URL = `${api}/api/post/editProfile`;
     const response = await axios.put(URL, formData, {
       headers: {
         'Content-Type':
-          'multipart/form-data; boundary=<calculated when request is sent>',
+          'multipart/form-data;',
       },
     });
     if (response.data.status === true) {
-      console.log('agaya bc', response.data);
+      console.log( response.data, "==========response.data===========");
       showMessage({
         message: 'Updated Successfully!',
         type: 'success',
@@ -1350,6 +1349,7 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
           user_id: data.user_id,
           user_name: data.user_name,
           user_contact: data.user_contact,
+          country_code: data.country_code
         },
       });
       onSuccess();

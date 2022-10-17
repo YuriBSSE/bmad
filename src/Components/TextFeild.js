@@ -20,7 +20,7 @@ const TextInputFeild = ({
       onChangeText={text => {
         onchange(text.toLowerCase());
       }}
-      maxLength={25}
+      maxLength={35}
       value={value}
       caretHidden={false}
       selectionColor="white"

@@ -155,7 +155,7 @@ const BmadScreen = ({navigation, route, props, userCoordsReducer}) => {
         <MapView.Circle
           key={(state.region.latitude + state.region.longitude).toString()}
           center={state.region}
-          radius={300}
+          radius={2000}
           strokeWidth={0}
           strokeColor={'#1a66ff'}
           fillColor={'rgba(176,17,37,0.2)'}
