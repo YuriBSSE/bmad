@@ -180,7 +180,7 @@ const ProfileScreen = ({
       </View>
     );
   }
-  console.log(nearMeUserData.user_gender[0], "nearMeUserDatanearMeUserData");
+
   // console.log(JSON.stringify(nearMeUserData?.sendBy, null, 2));
   return (
     <View style={styles.container}>

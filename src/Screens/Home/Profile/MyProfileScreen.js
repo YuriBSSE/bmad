@@ -119,6 +119,9 @@ const Data = [
 const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
   const [username, setUsername] = useState(userReducer?.data?.user_name);
   const [phone_no, setPhone_no] = useState(userReducer?.data?.user_contact);
+  const [countryCodeForPhone, onChangecountryCodeForPhone] = useState(
+    userReducer?.data?.user_phoneCountryCode,
+  );
   const phoneInput = useRef(null);
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -186,7 +189,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
   });
   const ID = userReducer?.data?.user_id;
 
-  const [countryCode, setCountryCode] = useState("AR");
+  const [countryCode, setCountryCode] = useState('AR');
   const [flagName, setFlagName] = useState('flag-as');
   const [country, setCountry] = useState(userReducer?.data?.user_lives);
   const [withCountryNameButton, setWithCountryNameButton] = useState(false);
@@ -213,7 +216,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
         cropping: true,
         includeBase64: true,
       }).then(image => {
-        console.log(image);
+        // console.log(image);
         setImageObject(image);
         setImage(`data:${image?.mime};base64,${image?.data}`);
       });
@@ -224,7 +227,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
 
   const updateProfileChanges = async () => {
     var numbersRegex = /^[0-9]+$/;
-    if(numbersRegex.test(value)){
+    if (numbersRegex.test(value)) {
       const data = {
         user_name: username,
         user_contact: value,
@@ -232,9 +235,10 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
         user_lives: country,
         user_image: userReducer?.data?.user_image,
         imageObj: imageObject,
-        country_code: countryCode
+        country_code: countryCode,
+        user_phoneCountryCode: countryCodeForPhone
       };
-  
+
       if (username && country && phone_no) {
         if (usernameRegex.test(username)) {
           setLoading(true);
@@ -252,21 +256,18 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           type: 'danger',
         });
       }
-
-    }else{
+    } else {
       showMessage({
         message: 'Invalid Number',
         // description: 'Invalid Credentials.',
         type: 'danger',
       });
     }
-
- 
   };
   const _onSuccess = () => {
     // setLoading(false);
     ImagePicker.clean().then(() => {
-      console.log('removed all tmp images from tmp directory');
+      // console.log('removed all tmp images from tmp directory');
     });
     // navigation.goBack();
   };
@@ -277,13 +278,12 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
 
   useEffect(() => {
     setUsername(userReducer?.data?.user_name);
-    if(userReducer?.data?.country_code){
-    
-      setCountryCode(userReducer?.data?.country_code)
+    if (userReducer?.data?.country_code) {
+      setCountryCode(userReducer?.data?.country_code);
     }
   }, [userReducer?.data]);
 
-  console.log(userReducer?.data, "=================")
+  // console.log(userReducer?.data, "=================")
   return (
     <SafeAreaView style={styles.container}>
       {/* <StatusBar translucent backgroundColor="transparent" /> */}
@@ -432,7 +432,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
             ref={phoneInput}
             defaultValue={value}
             addInternationalOption={false}
-            defaultCode="PK"
+            defaultCode={countryCodeForPhone || 'PK'}
             layout="first"
             placeholder="Phone"
             containerStyle={styles.phoneInputContainerStyle}
@@ -440,13 +440,15 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
             // codeTextStyle={styles.codeTextStyle}
             textContainerStyle={styles.textContainerStyle}
             // flagButtonStyle={{backgroundColor:'red'}}
+            onChangeCountry={c => {
+              // console.log(c.cca2, "====================================")
+              onChangecountryCodeForPhone(c.cca2);
+            }}
             onChangeText={text => {
               setValue(text);
-              console.log(text,"NUMBER")
             }}
             onChangeFormattedText={text => {
               setPhone_no(text);
-              console.log(text, "text")
             }}
           />
 
@@ -466,11 +468,10 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
               withCallingCode,
               withEmoji,
             }}
-            
             visible={false}
             onSelect={t => {
-              console.log("T",t, "==============")
-              setFlagName(t.flag)
+              // console.log("T",t, "==============")
+              setFlagName(t.flag);
               setCountryCode(t.cca2);
               setCountry(t.name);
             }}
@@ -479,7 +480,7 @@ const MyProfileScreen = ({navigation, route, userReducer, updateProfile}) => {
           <Text
             style={{
               width: width * 0.7,
-              marginTop: isIOS ? height * -0.055 :   height * -0.056,
+              marginTop: isIOS ? height * -0.055 : height * -0.056,
               marginLeft: width * 0.24,
               color: 'black',
               fontSize: width * 0.04,

@@ -1332,7 +1332,7 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
     });
     console.log( response.data, "==========response.data===========");
     if (response.data.status === true) {
-      // console.log( response.data, "==========response.data===========");
+      
       showMessage({
         message: 'Updated Successfully!',
         type: 'success',
@@ -1350,7 +1350,8 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
           user_id: data.user_id,
           user_name: data.user_name,
           user_contact: data.user_contact,
-          country_code: data.country_code
+          country_code: data.country_code,
+          user_phoneCountryCode: data.user_phoneCountryCode
         },
       });
       onSuccess();
