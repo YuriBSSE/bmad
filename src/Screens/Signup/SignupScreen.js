@@ -160,7 +160,7 @@ const SignupScreen = ({
     if (emailRegex.test(email)) {
       if (usernameRegex.test(username)) {
         if (value.length > 5) {
-          const mobileNumber = phoneInput.current.state.code + value;
+          const mobileNumber = value;
           onChangePhone(mobileNumber);
           if (password === confirmPassword) {
             // Otp(null, mobileNumber, fadeChange);
@@ -314,6 +314,7 @@ const SignupScreen = ({
                       layout="first"
                       onChangeText={text => {
                         setValue(text);
+                        console.log(text)
                       }}
                       onChangeFormattedText={text => {
                         setFormattedValue(text);

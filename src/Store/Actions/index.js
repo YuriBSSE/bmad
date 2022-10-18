@@ -1321,7 +1321,7 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
     formData.append('user_contact', data.user_contact);
     formData.append('user_lives', data.user_lives);
     formData.append('country_code', data.country_code);
-    console.log(formData, "formDataformDataformDataformDataformDataformDataformData");
+   
 
     const URL = `${api}/api/post/editProfile`;
     const response = await axios.put(URL, formData, {
