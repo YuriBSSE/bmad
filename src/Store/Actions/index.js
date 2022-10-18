@@ -1330,8 +1330,9 @@ export const updateProfile = (data, onSuccess, _onFailed) => async dispatch => {
           'multipart/form-data;',
       },
     });
+    console.log( response.data, "==========response.data===========");
     if (response.data.status === true) {
-      console.log( response.data, "==========response.data===========");
+      // console.log( response.data, "==========response.data===========");
       showMessage({
         message: 'Updated Successfully!',
         type: 'success',
