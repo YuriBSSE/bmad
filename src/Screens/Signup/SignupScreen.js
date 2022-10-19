@@ -160,8 +160,7 @@ const SignupScreen = ({
     if (emailRegex.test(email)) {
       if (usernameRegex.test(username)) {
         if (value.length > 5) {
-          const mobileNumber = value;
-          onChangePhone(mobileNumber);
+          onChangePhone(value);
           if (password === confirmPassword) {
             // Otp(null, mobileNumber, fadeChange);
             fadeChange();
@@ -314,7 +313,7 @@ const SignupScreen = ({
                       layout="first"
                       onChangeText={text => {
                         setValue(text);
-                        console.log(text)
+                        console.log(text);
                       }}
                       onChangeFormattedText={text => {
                         setFormattedValue(text);
@@ -323,11 +322,10 @@ const SignupScreen = ({
                       containerStyle={{
                         backgroundColor: 'rgba(52, 52, 52, 0.1)',
                         height: hp('6%'),
-                        
                       }}
                       textInputProps={{
-                        selectionColor:'white',
-                        placeholderTextColor:'white'
+                        selectionColor: 'white',
+                        placeholderTextColor: 'white',
                       }}
                       textContainerStyle={{
                         backgroundColor: 'rgba(52, 52, 52, 0.1)',
@@ -345,7 +343,6 @@ const SignupScreen = ({
                       }}
                       flagButtonStyle={{color: 'white'}}
                       countryPickerButtonStyle={{color: 'white'}}
-                      
                       // withShadow
                       // withDarkTheme
                       disableArrowIcon="false"
@@ -500,10 +497,11 @@ const SignupScreen = ({
                 <View style={{flexDirection: 'column', height: hp('110%')}}>
                   <Logo />
 
-                  {!modalVisible ? (
-                   null
-                  ) : (
-                <Heading passedStyle={{color: 'white', textAlign:'center'}} title="Interested in" />
+                  {!modalVisible ? null : (
+                    <Heading
+                      passedStyle={{color: 'white', textAlign: 'center'}}
+                      title="Interested in"
+                    />
                   )}
                   {!modalVisible ? (
                     <TextSample Label="Kindly Select Your Gender" />
@@ -611,7 +609,7 @@ const SignupScreen = ({
           {/* </KeyboardAvoidingView> */}
 
           {/* User Interested In Modal  */}
-    
+
           <Modal
             animationType="fade"
             transparent={true}
@@ -621,7 +619,6 @@ const SignupScreen = ({
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-           
                 <View
                   style={{
                     justifyContent: 'center',
