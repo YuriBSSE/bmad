@@ -28,7 +28,7 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
     "@reduxjs/toolkit": "^1.5.1",
-    "@stripe/stripe-react-native": "^0.4.0",
+    "@stripe/stripe-react-native": "^0.19.0",
     "axios": "^0.21.1",
     "flatted": "^3.2.5",
     "lottie-ios": "3.2.3",
@@ -37,6 +37,7 @@
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-android-location-services-dialog-box": "^2.8.2",
+    "react-native-auto-height-image": "^3.2.4",
     "react-native-checkbox-card": "^0.1.0",
     "react-native-cli": "^2.0.1",
     "react-native-country-picker-modal": "^2.0.0",
@@ -80,8 +81,7 @@
     "redux-persist": "^6.0.0",
     "rn-country-dropdown-picker": "^2.1.8",
     "socket.io-client": "^4.5.0",
-    "styled-components": "^5.3.0",
-    "tipsi-stripe": "^9.2.0"
+    "styled-components": "^5.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -8,6 +8,7 @@ import {
   Platform,Dimensions
 } from 'react-native';
 const {width, height} = Dimensions.get('window');
+import AutoHeightImage from 'react-native-auto-height-image';
 
 export default Preview = ({
 item
@@ -19,12 +20,17 @@ item
        
       {
         item ?
-        <Image
-          // resizeMethod="cover"
-          style={styles.videoPreview}
-          source={{uri: item}}
-          resizeMode='contain'
-        />:
+        <AutoHeightImage
+        width={width*0.9}
+        source={{uri:item}}
+      />
+        // <Image
+        //   // resizeMethod="cover"
+        //   style={styles.videoPreview}
+        //   source={{uri: item}}
+        //   resizeMode='contain'
+        // />
+        :
         <Image
         // resizeMethod="cover"
         style={styles.videoPreview}
